@@ -14,11 +14,27 @@ export class HomeComponent implements OnInit {
   public pageSettings: PageSettingsModel | undefined;
   public sortSettings: SortSettingsModel | undefined;
 
-  constructor() { }
+  public columns: any;
+  public dataColumn: any = [
+    { field: 'taskID', headerText: 'Task ID', textAlign: 'Right', width: '90' },
+    { field: 'taskName', headerText: 'Task Name', textAlign: 'Left', width: '180' },
+    { field: 'startDate', headerText: 'Start Date', textAlign: 'Right', format: 'yMd', width: '90' },
+    { field: 'duration', headerText: 'Duration', textAlign: 'Right', width: '80' },
+  ];
+  constructor() {}
 
   ngOnInit() {
     this.data = sampleData;
+    this.columns = [...this.dataColumn];
     this.pageSettings = { pageSize: 20 };
-    this.sortSettings = { columns: [{ field: 'taskName', direction: 'Ascending' }, { field: 'taskID', direction: 'Descending' }] };
+    this.sortSettings = {
+      columns: [
+        { field: 'taskName', direction: 'Ascending' },
+        { field: 'taskID', direction: 'Descending' },
+      ],
+    };
+  }
+  addColumn(event: any) {
+    this.columns = [...this.dataColumn, { field: 'test', headerText: 'test', textAlign: 'Right', width: '80' }];
   }
 }

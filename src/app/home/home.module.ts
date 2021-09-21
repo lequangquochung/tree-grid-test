@@ -11,6 +11,6 @@ import { PageService, SortService, FilterService } from '@syncfusion/ej2-angular
 @NgModule({
   imports: [CommonModule, TranslateModule, SharedModule, HomeRoutingModule, TreeGridModule],
   declarations: [HomeComponent],
-  providers: [PageService, SortService, FilterService]
+  providers: [PageService, SortService, FilterService],
 })
 export class HomeModule {}
