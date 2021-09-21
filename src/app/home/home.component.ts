@@ -1,6 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { sampleData } from './home.data';
-import { PageSettingsModel, SortSettingsModel } from '@syncfusion/ej2-angular-grids';
+import {
+  PageSettingsModel,
+  SortSettingsModel,
+  EditSettingsModel,
+  ToolbarItems,
+  CommandModel,
+} from '@syncfusion/ej2-angular-grids';
 import { TreeGrid, RowDD, Selection, Page, Resize } from '@syncfusion/ej2-treegrid';
 @Component({
   selector: 'app-home',
@@ -13,6 +19,9 @@ export class HomeComponent implements OnInit {
   public data = <any>[];
   public pageSettings: PageSettingsModel | undefined;
   public sortSettings: SortSettingsModel | undefined;
+  public editSettings: EditSettingsModel | undefined;
+  public toolbarOptions: ToolbarItems[] | undefined;
+  public commands: CommandModel | undefined;
 
   public columns: any;
   public dataColumn: any = [
@@ -33,9 +42,18 @@ export class HomeComponent implements OnInit {
     this.data = sampleData;
     this.columns = [...this.dataColumn];
     this.pageSettings = { pageSize: 20 };
+    // @ts-ignore
+    this.editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Row' };
+    this.toolbarOptions = ['Add', 'Edit', 'Delete', 'Update', 'Cancel'];
+    // @ts-ignore
+    this.commands = [
+      { type: 'Edit', buttonOption: { iconCss: ' e-icons e-edit', cssClass: 'e-flat' } },
+      { type: 'Delete', buttonOption: { iconCss: 'e-icons e-delete', cssClass: 'e-flat' } },
+      { type: 'Save', buttonOption: { iconCss: 'e-icons e-update', cssClass: 'e-flat' } },
+      { type: 'Cancel', buttonOption: { iconCss: 'e-icons e-cancel-icon', cssClass: 'e-flat' } },
+    ];
   }
   addColumn(event: any) {
     this.columns = [...this.dataColumn, { field: 'test', headerText: 'test', textAlign: 'Right', width: '80' }];
-
   }
 }
