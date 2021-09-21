@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { sampleData } from './home.data';
 import { PageSettingsModel, SortSettingsModel } from '@syncfusion/ej2-angular-grids';
-
+import { TreeGrid, RowDD, Selection, Page, Resize } from '@syncfusion/ej2-treegrid';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -24,17 +24,18 @@ export class HomeComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
+    // Allow Drag / Drop to change order
+    TreeGrid.Inject(RowDD, Selection);
+
+    // Allow Resize column
+    TreeGrid.Inject(Page, Resize);
+
     this.data = sampleData;
     this.columns = [...this.dataColumn];
     this.pageSettings = { pageSize: 20 };
-    this.sortSettings = {
-      columns: [
-        { field: 'taskName', direction: 'Ascending' },
-        { field: 'taskID', direction: 'Descending' },
-      ],
-    };
   }
   addColumn(event: any) {
     this.columns = [...this.dataColumn, { field: 'test', headerText: 'test', textAlign: 'Right', width: '80' }];
+
   }
 }
