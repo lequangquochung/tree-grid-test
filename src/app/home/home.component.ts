@@ -7,7 +7,7 @@ import {
   ToolbarItems,
   CommandModel,
 } from '@syncfusion/ej2-angular-grids';
-import { TreeGrid, RowDD, Selection, Page, Resize } from '@syncfusion/ej2-treegrid';
+import { TreeGrid, RowDD, Selection, Page, Resize, Reorder } from '@syncfusion/ej2-treegrid';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -33,8 +33,11 @@ export class HomeComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    // Allow Drag / Drop to change order
+    // Allow Drag / Drop to change order row
     TreeGrid.Inject(RowDD, Selection);
+
+    // Allow Drag / Drop to change order column
+    TreeGrid.Inject(Reorder, Page);
 
     // Allow Resize column
     TreeGrid.Inject(Page, Resize);
@@ -53,6 +56,7 @@ export class HomeComponent implements OnInit {
       { type: 'Cancel', buttonOption: { iconCss: 'e-icons e-cancel-icon', cssClass: 'e-flat' } },
     ];
   }
+
   addColumn(event: any) {
     this.columns = [...this.dataColumn, { field: 'test', headerText: 'test', textAlign: 'Right', width: '80' }];
   }
