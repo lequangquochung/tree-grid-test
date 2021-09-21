@@ -1,7 +1,12 @@
-<div class="container-fluid">
-  <div class="jumbotron text-center">
-    <h1>
-      <span translate>Hello, Hung please put RJ TABLE HERE</span>
-    </h1>
-  </div>
+<div class="container">
+  <h1 class="text-center">STDIO TREE GRID DEMO</h1>
+  <ejs-treegrid [dataSource]='data' [treeColumnIndex]='1' [allowFiltering]="true" [sortSettings]="sortSettings"
+    [allowSorting]="true" childMapping='subtasks' [allowPaging]="true" [pageSettings]='pageSettings'>
+    <e-columns>
+      <e-column field='taskID' headerText='Task ID' textAlign='Right' width=90></e-column>
+      <e-column field='taskName' headerText='Task Name' textAlign='Left' width=180></e-column>
+      <e-column field='startDate' headerText='Start Date' textAlign='Right' format='yMd' width=90></e-column>
+      <e-column field='duration' headerText='Duration' textAlign='Right' width=80></e-column>
+    </e-columns>
+  </ejs-treegrid>
 </div>
