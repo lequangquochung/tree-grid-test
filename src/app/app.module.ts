@@ -19,7 +19,7 @@ import { AppRoutingModule } from './app-routing.module';
   imports: [
     BrowserModule,
     ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production }),
-    FormsModule,
+
     HttpClientModule,
     RouterModule,
     TranslateModule.forRoot(),
@@ -27,6 +27,7 @@ import { AppRoutingModule } from './app-routing.module';
     SharedModule,
     ShellModule,
     HomeModule,
+    FormsModule,
     AppRoutingModule, // must be imported as the last module as it contains the fallback route,
   ],
   declarations: [AppComponent],

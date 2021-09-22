@@ -1,12 +1,25 @@
-.button-group{
-    display: flex;
-    justify-content: right;
-    .button-submit{
-        margin-top: 10px;
-    }
-
+.button-group {
+  display: flex;
+  justify-content: right;
+  .button-submit {
+    margin-top: 10px;
+  }
 }
 
-.btn-create{
-    margin-bottom: 10px;
+.btn-create {
+  margin-bottom: 10px;
+}
+
+.close-modal {
+  float: right;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #000;
+  text-shadow: 0 1px 0 #fff;
+  opacity: 0.5;
+  padding: 1rem;
+  margin: -1rem -1rem -1rem auto;
+  background-color: transparent;
+  border: 0;
 }

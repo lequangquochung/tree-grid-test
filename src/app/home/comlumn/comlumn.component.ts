@@ -7,23 +7,32 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./comlumn.component.scss'],
 })
 export class ComlumnComponent implements OnInit {
-  @Input() listColumnData: any | undefined;
+  @Input() type: any | undefined;
+  @Input() column: any | undefined;
   @Output() columnEmitter = new EventEmitter<any>();
 
   constructor(private modalService: NgbModal) {}
   columnName: string = '';
+  columnTitle: string = '';
+  ngOnInit(): void {
+    this.columnTitle = this.type === 'add' ? 'Add' : 'Edit';
+    console.log(this.column);
+    if (this.type === 'edit') this.columnName = this.column?.text;
+  }
 
-  ngOnInit(): void {}
-
-  open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
+  close() {
+    this.columnEmitter.emit({ event: false });
   }
 
   saveColumn() {
-    this.columnEmitter.emit([
-      ...this.listColumnData,
-      { field: this.columnName.trim(), headerText: this.columnName, textAlign: 'Right', width: '80' },
-    ]);
-    this.columnName = '';
+    this.columnEmitter.emit({
+      event: {
+        type: this.type,
+        column: {
+          ...this.column,
+          text: this.columnName,
+        },
+      },
+    });
   }
 }

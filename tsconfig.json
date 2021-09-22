@@ -16,13 +16,8 @@
     "strict": true,
     "suppressImplicitAnyIndexErrors": true,
     "target": "es2017",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "lib": [
-      "es2018",
-      "dom"
-    ],
+    "typeRoots": ["node_modules/@types"],
+    "lib": ["es2018", "dom"],
     "baseUrl": "./",
     "paths": {
       "@app/*": ["src/app/*"],
@@ -32,10 +27,10 @@
     }
   },
   "angularCompilerOptions": {
-    "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true,
-    "preserveWhitespaces": true,
-    "strictInputAccessModifiers": true,
+    "fullTemplateTypeCheck": false,
+    "strictInjectionParameters": false,
+    "preserveWhitespaces": false,
+    "strictInputAccessModifiers": false,
     "strictTemplates": false
   }
 }

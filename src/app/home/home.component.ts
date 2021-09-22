@@ -1,5 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { sampleData } from './home.data';
+
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ComlumnComponent } from './comlumn/comlumn.component';
+import { TreeGridComponent } from '@syncfusion/ej2-angular-treegrid';
 import {
   PageSettingsModel,
   SortSettingsModel,
@@ -24,13 +28,13 @@ export class HomeComponent implements OnInit {
   quote: string | undefined;
   isLoading = false;
   public data = <any>[];
-  public dataWithoutNested:object[] = []
+  public dataWithoutNested: object[] = [];
   public pageSettings: PageSettingsModel | undefined;
   public sortSettings: SortSettingsModel | undefined;
   public editSettings: EditSettingsModel | undefined;
-  public toolbarOptions: ToolbarItems[] | undefined;
   public commands: CommandModel | undefined;
-  selectedRow:Array<any> = []
+  public columnMenuItems = <any>[];
+  selectedRow: Array<any> = [];
 
   // public contextMenuItems: ContextMenuItem[] = ['Copy', 'Edit', 'Delete', 'Save', 'Cancel', 'FirstPage', 'PrevPage','LastPage', 'NextPage'];
   public contextMenuItems: any = [
@@ -39,8 +43,11 @@ export class HomeComponent implements OnInit {
     { text: 'Cut', target: '.e-content', id: 'cut' },
     { text: 'Paste as sibling', target: '.e-content', id: 'pastesibling' },
     { text: 'Paste as child', target: '.e-content', id: 'pasteschild' },
-    { text: 'Turn on / off multi select mode', target: '.e-content', id: 'multiselect'},
-    'Edit', 'Delete', 'Save', 'Cancel'
+    { text: 'Turn on / off multi select mode', target: '.e-content', id: 'multiselect' },
+    'Edit',
+    'Delete',
+    'Save',
+    'Cancel',
   ];
   @ViewChild('grid') public grid: GridComponent | undefined;
 
@@ -52,7 +59,9 @@ export class HomeComponent implements OnInit {
     { field: 'duration', headerText: 'Duration', textAlign: 'Right', width: '80' },
   ];
 
-  ngOnInit() {    
+  constructor(public modalService: NgbModal) {}
+
+  ngOnInit() {
     // Allow Drag / Drop to change order row
     TreeGrid.Inject(RowDD, Selection);
 
@@ -62,14 +71,13 @@ export class HomeComponent implements OnInit {
     // Allow Resize column
     TreeGrid.Inject(Page, Resize);
 
-
     this.data = sampleData;
-    this.getFullRecordWithoutNested(this.data)
+    this.getFullRecordWithoutNested(this.data);
     this.columns = [...this.dataColumn];
     this.pageSettings = { pageSize: 20 };
     // @ts-ignore
     this.editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Row' };
-    this.toolbarOptions = ['Add', 'Edit', 'Delete', 'Update', 'Cancel'];
+
     // @ts-ignore
     this.commands = [
       { type: 'Edit', buttonOption: { iconCss: ' e-icons e-edit', cssClass: 'e-flat' } },
@@ -77,42 +85,81 @@ export class HomeComponent implements OnInit {
       { type: 'Save', buttonOption: { iconCss: 'e-icons e-update', cssClass: 'e-flat' } },
       { type: 'Cancel', buttonOption: { iconCss: 'e-icons e-cancel-icon', cssClass: 'e-flat' } },
     ];
+    this.columnMenuItems = [
+      { text: 'Edit', id: 'edit' },
+      { text: 'Delete', id: 'delete' },
+    ];
   }
 
   updateColumns(newColumns: any) {
     this.dataColumn = this.columns = newColumns;
   }
 
+  columnMenuClick(args: any): void {
+    if (args.item.id === 'edit') {
+      this.openModal(args.item.id, { field: args.column.field, text: args.column.headerText });
+    } else if (args.item.id === 'delete') {
+      this.dataColumn = this.dataColumn.filter((column: any) => column.field !== args.column.field);
+      this.columns = this.dataColumn;
+    }
+  }
+
+  openModal(type: string, column?: any): void {
+    const modalRef = this.modalService.open(ComlumnComponent);
+    modalRef.componentInstance.type = type;
+    modalRef.componentInstance.column = column;
+    modalRef.componentInstance.columnEmitter.subscribe((res: any) => {
+      if (res.event) {
+        switch (res.event.type) {
+          case 'add':
+            this.dataColumn.push({
+              field: `${res.event.column.text.trim()}${this.dataColumn.length}`,
+              headerText: res.event.column.text,
+              textAlign: 'Right',
+              width: '80',
+            });
+            this.columns = [...this.dataColumn];
+            break;
+          case 'edit':
+            const column: any = this?.grid?.getColumnByField(res.event.column.field);
+            column.headerText = res.event.column.text;
+            this?.grid?.refreshColumns();
+            break;
+          default:
+            break;
+        }
+        modalRef.close();
+      } else modalRef.close();
+    });
+  }
   contextMenuClick(args: MenuEventArgs): void {
     if (args?.item?.id === 'copywithheader') {
       this.grid?.copy(true);
     }
 
-    if(args?.item?.id === 'cut') {
-      // let selectedrowindex: Array<any> = this.grid?.getSelectedRowIndexes() || [1]; 
-      const selectedrecords: object[] = this.grid?.getSelectedRecords() || []; 
-      this.selectedRow = selectedrecords
-      this.data = [...sampleData]
+    if (args?.item?.id === 'cut') {
+      // let selectedrowindex: Array<any> = this.grid?.getSelectedRowIndexes() || [1];
+      const selectedrecords: object[] = this.grid?.getSelectedRecords() || [];
+      this.selectedRow = selectedrecords;
+      this.data = [...sampleData];
     }
     return;
   }
 
   rowBound(args: RowDataBoundEventArgs) {
-    const taskID:any = args?.data?.['taskID']
-    if(this.selectedRow.find(item => item.taskID === taskID)) {
+    const taskID: any = args?.data?.['taskID'];
+    if (this.selectedRow.find((item) => item.taskID === taskID)) {
       // @ts-ignore
-      args?.row?.style?.background= '#f8d7da';
-    } 
+      args?.row?.style?.background = '#f8d7da';
+    }
   }
 
-  
-  getFullRecordWithoutNested(data:object[]): any {
-    data.map((record:any) => {
-      this.dataWithoutNested.push(record)
-      if(record.subtasks && record.subtasks.length) {
-        this.getFullRecordWithoutNested(record.subtasks)
+  getFullRecordWithoutNested(data: object[]): any {
+    data.map((record: any) => {
+      this.dataWithoutNested.push(record);
+      if (record.subtasks && record.subtasks.length) {
+        this.getFullRecordWithoutNested(record.subtasks);
       }
-    })
+    });
   }
-
 }

@@ -1,26 +1,21 @@
-<ng-template #content let-modal>
-    <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Create new Column</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-            <span aria-hidden="true">&times;</span>
-        </button>
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">
+    {{ columnTitle }}
+    Column
+  </h4>
+  <button type="button" class="close-modal" aria-label="Close" (click)="close()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form #form="ngForm" (submit)="saveColumn()">
+    <div class="form-group">
+      <div class="input-group">
+        <input required placeholder="Column name" name="column" class="form-control" [(ngModel)]="columnName" />
+      </div>
     </div>
-    <div class="modal-body">
-        <form #form="ngForm" (submit)="saveColumn()">
-            <div class="form-group">
-                <label for="firstname">Column name:</label>
-                <div class="input-group">
-                    <input required placeholder="Column name" name="column" class="form-control"
-                        [(ngModel)]="columnName">
-                </div>
-            </div>
-            <div class="button-group">
-                <button [disabled]="form.invalid" type="submit" class="button-submit btn btn-outline-primary"
-                (click)="modal.dismiss('Cross click')">Save</button>
-            </div>
-            
-        </form>
+    <div class="button-group">
+      <button [disabled]="form.invalid" type="submit" class="button-submit btn btn-outline-primary">Save</button>
     </div>
-</ng-template>
-
-<button class="btn-create btn btn-lg btn-outline-primary" (click)="open(content)">Create new volumn</button>
+  </form>
+</div>
