@@ -3,9 +3,12 @@
 
   <app-comlumn [listColumnData]="dataColumn" (columnEmitter)="updateColumns($event)"></app-comlumn>
 
+  
   <ejs-treegrid
+    #grid
     [dataSource]="data"
     [allowRowDragAndDrop]="true"
+    [allowReordering]="true"
     [allowSelection]="true"
     [selectionSettings]="{ type: 'Multiple' }"
     [allowResizing]="true"
@@ -20,6 +23,8 @@
     [allowMultiSorting]="true"
     [editSettings]="editSettings"
     [toolbar]="toolbarOptions"
+    [contextMenuItems]="contextMenuItems"
+    (contextMenuClick)="contextMenuClick($event)" 
   >
    
   </ejs-treegrid>

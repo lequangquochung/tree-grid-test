@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { sampleData } from './home.data';
 import {
   PageSettingsModel,
@@ -6,8 +6,13 @@ import {
   EditSettingsModel,
   ToolbarItems,
   CommandModel,
+  ContextMenuItem,
+  ContextMenuService,
+  GridComponent,
+  ContextMenuItemModel,
 } from '@syncfusion/ej2-angular-grids';
 import { TreeGrid, RowDD, Selection, Page, Resize, Reorder } from '@syncfusion/ej2-treegrid';
+import { MenuEventArgs } from '@syncfusion/ej2-navigations';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -22,6 +27,18 @@ export class HomeComponent implements OnInit {
   public editSettings: EditSettingsModel | undefined;
   public toolbarOptions: ToolbarItems[] | undefined;
   public commands: CommandModel | undefined;
+
+  // public contextMenuItems: ContextMenuItem[] = ['Copy', 'Edit', 'Delete', 'Save', 'Cancel', 'FirstPage', 'PrevPage','LastPage', 'NextPage'];
+  public contextMenuItems: any = [
+    { text: 'Copy with headers', target: '.e-content', id: 'copywithheader' },
+    'Copy',
+    { text: 'Cut', target: '.e-content', id: 'cut' },
+    { text: 'Paste as sibling', target: '.e-content', id: 'pastesibling' },
+    { text: 'Paste as child', target: '.e-content', id: 'pasteschild' },
+    { text: 'Turn on / off multi select mode', target: '.e-content', id: 'multiselect'},
+    'Edit', 'Delete', 'Save', 'Cancel'
+  ];
+  @ViewChild('grid') public grid: GridComponent | undefined;
 
   public columns: any;
   public dataColumn: any = [
@@ -41,6 +58,7 @@ export class HomeComponent implements OnInit {
     // Allow Resize column
     TreeGrid.Inject(Page, Resize);
 
+
     this.data = sampleData;
     this.columns = [...this.dataColumn];
     this.pageSettings = { pageSize: 20 };
@@ -58,5 +76,12 @@ export class HomeComponent implements OnInit {
 
   updateColumns(newColumns: any) {
     this.dataColumn = this.columns = newColumns;
+  }
+
+  contextMenuClick(args: MenuEventArgs): void {
+    if (args?.item?.id === 'copywithheader') {
+      this.grid?.copy(true);
+    }
+    return;
   }
 }
