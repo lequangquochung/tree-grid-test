@@ -30,7 +30,6 @@ export class HomeComponent implements OnInit {
     { field: 'startDate', headerText: 'Start Date', textAlign: 'Right', format: 'yMd', width: '90' },
     { field: 'duration', headerText: 'Duration', textAlign: 'Right', width: '80' },
   ];
-  constructor() {}
 
   ngOnInit() {
     // Allow Drag / Drop to change order row
@@ -57,7 +56,7 @@ export class HomeComponent implements OnInit {
     ];
   }
 
-  addColumn(event: any) {
-    this.columns = [...this.dataColumn, { field: 'test', headerText: 'test', textAlign: 'Right', width: '80' }];
+  updateColumns(newColumns: any) {
+    this.dataColumn = this.columns = newColumns;
   }
 }

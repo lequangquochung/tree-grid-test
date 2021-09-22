@@ -13,10 +13,11 @@ import {
   SortService,
   FilterService,
 } from '@syncfusion/ej2-angular-treegrid';
-
+import { FormsModule } from '@angular/forms';
+import { ComlumnComponent } from './comlumn/comlumn.component';
 @NgModule({
-  imports: [CommonModule, TranslateModule, SharedModule, HomeRoutingModule, TreeGridModule],
-  declarations: [HomeComponent],
+  imports: [CommonModule, FormsModule, TranslateModule, SharedModule, HomeRoutingModule, TreeGridModule],
+  declarations: [HomeComponent, ComlumnComponent],
   providers: [PageService, SortService, FilterService, EditService, ToolbarService],
 })
 export class HomeModule {}

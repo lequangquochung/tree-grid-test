@@ -1,45 +1,29 @@
 <div class="container">
-  <h1 class="text-center mb-5">STDIO TREE GRID DEMO</h1>
-  <div class="row">
-    <div class="col-12 col-lg-8 offset-lg-2">
-      <ejs-treegrid
-        #grid=''
-        [dataSource]="data"
-        [allowRowDragAndDrop]="true"
-        [allowSelection]="true"
-        [selectionSettings]="{ type: 'Multiple' }"
-        [allowResizing]="true"
-        [allowReordering]="true"
-        [treeColumnIndex]="1"
-        [allowFiltering]="true"
-        [sortSettings]="sortSettings"
-        [allowSorting]="true"
-        childMapping="subtasks"
-        [allowPaging]="true"
-        [pageSettings]="pageSettings"
-        [columns]="columns"
-        [allowMultiSorting]="true"
-        [editSettings]="editSettings"
-        [toolbar]="toolbarOptions"
-      >
-        >
-        <e-columns>
-          <e-column isPrimaryKey="true" field="taskID" headerText="Task ID" textAlign="Right" width="90"></e-column>
-          <e-column field="taskName" headerText="Task Name" textAlign="Left" width="180"></e-column>
-          <e-column
-            field="startDate"
-            headerText="Start Date"
-            textAlign="Right"
-            editType="datetimepickeredit"
-            format="yMd"
-            width="90"
-          ></e-column>
-          <e-column field="duration" headerText="Duration" textAlign="Right" width="80"></e-column>
-        </e-columns>
-      </ejs-treegrid>
-      <button id='btn' (click)='addColumn($event)'>Add Column </button>
-    </div>
-  </div>
+  <h1 class="text-center">STDIO TREE GRID DEMO</h1>  
+
+  <app-comlumn [listColumnData]="dataColumn" (columnEmitter)="updateColumns($event)"></app-comlumn>
+
+  <ejs-treegrid
+    [dataSource]="data"
+    [allowRowDragAndDrop]="true"
+    [allowSelection]="true"
+    [selectionSettings]="{ type: 'Multiple' }"
+    [allowResizing]="true"
+    [treeColumnIndex]="1"
+    [allowFiltering]="true"
+    [sortSettings]="sortSettings"
+    [allowSorting]="true"
+    childMapping="subtasks"
+    [allowPaging]="true"
+    [pageSettings]="pageSettings"
+    [columns]="columns"
+    [allowMultiSorting]="true"
+    [editSettings]="editSettings"
+    [toolbar]="toolbarOptions"
+  >
+   
+  </ejs-treegrid>
+  
   
 </div>
 
