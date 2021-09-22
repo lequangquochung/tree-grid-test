@@ -24,7 +24,8 @@
     [editSettings]="editSettings"
     [toolbar]="toolbarOptions"
     [contextMenuItems]="contextMenuItems"
-    (contextMenuClick)="contextMenuClick($event)" 
+    (contextMenuClick)="contextMenuClick($event)"
+    (rowDataBound)="rowBound($event)"
   >
    
   </ejs-treegrid>
