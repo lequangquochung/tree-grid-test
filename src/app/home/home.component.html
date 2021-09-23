@@ -1,6 +1,5 @@
 <div class="container pb-5">
-  <h1 class="text-center">STDIO TREE GRID DEMO</h1>
-  <button class="btn-create btn btn btn-outline-primary mb-2" (click)="openModal('add')">Add column</button>
+  <h1 class="text-center my-4">STDIO TREE GRID DEMO</h1>
   
   <ejs-treegrid
     #grid
@@ -23,7 +22,6 @@
     [columnMenuItems]="columnMenuItems"
     (columnMenuClick)="columnMenuClick($event)"
     [contextMenuItems]="contextMenuItems"
-    (contextMenuClick)="contextMenuClick($event)"
     (rowDataBound)="rowBound($event)"
     [editSettings]="editSettings"
     [toolbar]="toolbarOptions"

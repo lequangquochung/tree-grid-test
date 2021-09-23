@@ -3,21 +3,16 @@ import { sampleData } from './home.data';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ComlumnComponent } from './comlumn/comlumn.component';
-import { TreeGridComponent } from '@syncfusion/ej2-angular-treegrid';
 import {
   PageSettingsModel,
   SortSettingsModel,
   EditSettingsModel,
   ToolbarItems,
   CommandModel,
-  ContextMenuItem,
-  ContextMenuService,
   GridComponent,
-  ContextMenuItemModel,
-  RowSelectEventArgs,
   RowDataBoundEventArgs,
 } from '@syncfusion/ej2-angular-grids';
-import { TreeGrid, RowDD, Selection, Page, Resize, Reorder, Freeze, Sort } from '@syncfusion/ej2-treegrid';
+import { TreeGrid, RowDD, Selection, Page, Resize, Reorder, Freeze } from '@syncfusion/ej2-treegrid';
 import { MenuEventArgs } from '@syncfusion/ej2-navigations';
 import { SettingsComponent } from './settings/settings.component';
 @Component({
@@ -62,7 +57,7 @@ export class HomeComponent implements OnInit {
     { field: 'duration', headerText: 'Duration', textAlign: 'Left' },
   ];
   multiSelect: any;
-  constructor(public modalService: NgbModal) {}
+  constructor(public modalService: NgbModal) { }
 
   ngOnInit() {
     // Allow Drag / Drop to change order row
@@ -83,8 +78,26 @@ export class HomeComponent implements OnInit {
     this.columns = [...this.dataColumn];
     this.pageSettings = { pageSize: 20 };
     // @ts-ignore
-    this.editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Row' };
-    this.toolbarOptions = [{ text: '', tooltipText: '', id: 'openModalSetting', prefixIcon: 'fas fa-cogs' }];
+    this.editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Dialog' };
+    this.toolbarOptions = [
+      'Add',
+      'Edit',
+      'Delete',
+      {
+        align: 'Right',
+        text: 'Add Column',
+        tooltipText: 'Add Column',
+        prefixIcon: 'fas fa-columns',
+        id: 'addColumnAction',
+      },
+      {
+        align: 'Right',
+        text: 'Setting',
+        tooltipText: 'Setting',
+        prefixIcon: 'fas fa-cogs',
+        id: 'openModalSetting',
+      },
+    ];
     // @ts-ignore
     this.commands = [
       { type: 'Edit', buttonOption: { iconCss: ' e-icons e-edit', cssClass: 'e-flat' } },
@@ -144,6 +157,7 @@ export class HomeComponent implements OnInit {
     switch (args?.item?.id) {
       case 'copywithheader':
         this.grid?.copy(true);
+
         break;
     }
 
@@ -191,10 +205,14 @@ export class HomeComponent implements OnInit {
       }
     });
   }
+
   toolbarClick(args: MenuEventArgs) {
     switch (args?.item?.id) {
       case 'openModalSetting':
-        this.openModalSetting();
+        this.openModalSetting(); break;
+      case 'addColumnAction':
+        this.openModal('add'); break;
+      default: return;
     }
   }
 
