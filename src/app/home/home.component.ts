@@ -45,7 +45,7 @@ export class HomeComponent implements OnInit {
     { text: 'Cut', target: '.e-content', id: 'cut' },
     { text: 'Paste as sibling', target: '.e-content', id: 'pastesibling' },
     { text: 'Paste as child', target: '.e-content', id: 'pasteschild' },
-    { text: 'Turn on / off multi select mode', target: '.e-content', id: 'multiselect' },
+    { text: 'Turn off multi select mode', target: '.e-content', id: 'multiselect' },
     'Edit',
     'Delete',
     'Save',
@@ -61,8 +61,8 @@ export class HomeComponent implements OnInit {
     { field: 'startDate', headerText: 'Start Date', textAlign: 'Left', format: 'yMd' },
     { field: 'duration', headerText: 'Duration', textAlign: 'Left' },
   ];
-
-  constructor(public modalService: NgbModal) { }
+  multiSelect: any;
+  constructor(public modalService: NgbModal) {}
 
   ngOnInit() {
     // Allow Drag / Drop to change order row
@@ -77,16 +77,14 @@ export class HomeComponent implements OnInit {
     // Allow Freeze
     TreeGrid.Inject(Freeze);
 
-    this.frozenColumns = 0
+    this.frozenColumns = 0;
     this.data = sampleData;
     this.getFullRecordWithoutNested(this.data);
     this.columns = [...this.dataColumn];
     this.pageSettings = { pageSize: 20 };
     // @ts-ignore
     this.editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Row' };
-    this.toolbarOptions = [
-      { text: '', tooltipText: '', id: 'openModalSetting', prefixIcon: 'fas fa-cogs' },
-    ];
+    this.toolbarOptions = [{ text: '', tooltipText: '', id: 'openModalSetting', prefixIcon: 'fas fa-cogs' }];
     // @ts-ignore
     this.commands = [
       { type: 'Edit', buttonOption: { iconCss: ' e-icons e-edit', cssClass: 'e-flat' } },
@@ -98,7 +96,7 @@ export class HomeComponent implements OnInit {
       { text: 'Edit', id: 'edit' },
       { text: 'Delete', id: 'delete' },
     ];
-
+    this.multiSelect = { type: 'Multiple' };
   }
 
   updateColumns(newColumns: any) {
@@ -155,6 +153,25 @@ export class HomeComponent implements OnInit {
       this.selectedRow = selectedrecords;
       this.data = [...sampleData];
     }
+    if (args?.item?.id === 'multiselect') {
+      if (this.multiSelect.type == 'Single') {
+        this.multiSelect = { type: 'Multiple' };
+        this.contextMenuItems = this.contextMenuItems.map((element: any) => {
+          if (element.id == 'multiselect') {
+            element.text = 'Turn off multi select mode';
+          }
+          return element;
+        });
+      } else {
+        this.multiSelect = { type: 'Single' };
+        this.contextMenuItems = this.contextMenuItems.map((element: any) => {
+          if (element.id == 'multiselect') {
+            element.text = 'Turn on multi select mode';
+          }
+          return element;
+        });
+      }
+    }
     return;
   }
 
@@ -177,7 +194,7 @@ export class HomeComponent implements OnInit {
   toolbarClick(args: MenuEventArgs) {
     switch (args?.item?.id) {
       case 'openModalSetting':
-        this.openModalSetting()
+        this.openModalSetting();
     }
   }
 
@@ -185,7 +202,7 @@ export class HomeComponent implements OnInit {
     const modalRef = this.modalService.open(SettingsComponent);
     modalRef.componentInstance.frozenColumnsInput = this.frozenColumns;
     modalRef.componentInstance.toggleFilterInput = this.toggleFilter;
-    modalRef.componentInstance.dataColumnInput = this.dataColumn
+    modalRef.componentInstance.dataColumnInput = this.dataColumn;
     modalRef.componentInstance.settingEmitter.subscribe((res: any) => {
       if (res) {
         this.frozenColumns = res.frozenColumns;

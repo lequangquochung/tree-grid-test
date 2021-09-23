@@ -8,7 +8,7 @@
     [allowRowDragAndDrop]="true"
     [allowReordering]="true"
     [allowSelection]="true"
-    [selectionSettings]="{ type: 'Multiple' }"
+    [selectionSettings]="multiSelect"
     [allowResizing]="true"
     [treeColumnIndex]="1"
     [allowFiltering]="toggleFilter"
@@ -28,7 +28,6 @@
     [editSettings]="editSettings"
     [toolbar]="toolbarOptions"
     [frozenColumns]="frozenColumns"
-    (contextMenuClick)="contextMenuClick($event)" 
     (toolbarClick)="toolbarClick($event)"
   >
   </ejs-treegrid>
