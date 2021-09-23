@@ -199,6 +199,7 @@ export class HomeComponent implements OnInit {
       // reset data
       this.data = newData
     }
+
     if (args?.item?.id === 'multiselect') {
       if (this.multiSelect.type == 'Single') {
         this.multiSelect = { type: 'Multiple' };
@@ -343,6 +344,8 @@ export class HomeComponent implements OnInit {
   }
 
   removeCuttedItem(data:object[], insertRecords:object[]):any {
+    console.log("insertRecords: ", insertRecords);
+    
     data = data.map((record:any) => {
       const item:any = insertRecords.find((item:any) => item.taskID === record.taskID)
       if(!item && record.subtasks) {
