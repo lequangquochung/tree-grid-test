@@ -59,7 +59,7 @@ export class HomeComponent implements OnInit {
     { field: 'duration', headerText: 'Duration', textAlign: 'Left' },
   ];
   multiSelect: any;
-  constructor(public modalService: NgbModal) { }
+  constructor(public modalService: NgbModal) {}
 
   ngOnInit() {
     // Allow Drag / Drop to change order row
@@ -161,43 +161,40 @@ export class HomeComponent implements OnInit {
       // let selectedrowindex: Array<any> = this.grid?.getSelectedRowIndexes() || [1];
       const selectedrecords: object[] = this.grid?.getSelectedRecords() || [];
       this.selectedRow = selectedrecords;
-      this.selectedRowForCopy = []
+      this.selectedRowForCopy = [];
       this.data = [...this.data];
     }
 
     if (args?.item?.id === 'copyrows') {
       const selectedrecords: object[] = this.grid?.getSelectedRecords() || [];
       this.selectedRowForCopy = selectedrecords;
-      this.selectedRow = []
+      this.selectedRow = [];
       this.data = [...this.data];
     }
 
-    if( args?.item?.id === 'pastesibling') {
+    if (args?.item?.id === 'pasteschild' || args?.item?.id === 'pastesibling') {
       const selectedrecords: object[] = this.grid?.getSelectedRecords() || [];
-      const selectedItem:any = selectedrecords[0]
-      
-      if(!selectedItem) {
-        alert("Please select a row to paste")
-        return;  
+      const selectedItem: any = selectedrecords[0];
+
+      if (!selectedItem) {
+        alert('Please select a row to paste');
+        return;
       }
+      const isCopy = this.selectedRowForCopy.length ? true : false;
+      let dataForPaste = isCopy ? this.selectedRowForCopy : this.selectedRow;
 
-      const isCopy = this.selectedRowForCopy.length ? true : false
-      let dataForPaste = isCopy ? this.selectedRowForCopy : this.selectedRow
-
-      dataForPaste = this.createNewIDForRecord(dataForPaste)
-
-      let newData = this.pasteAsSubling(this.data, selectedItem, dataForPaste)
-      if(!isCopy) {
+      dataForPaste = this.createNewIDForRecord(dataForPaste);
+      let newData = this.pasteRow(this.data, selectedItem, dataForPaste, args?.item?.id);
+      if (!isCopy) {
         // remove cutted item
-        newData = this.removeCuttedItem(newData, this.selectedRow)
+        newData = this.removeCuttedItem(newData, this.selectedRow);
       }
-
       // reset copy and cut item
-      this.selectedRowForCopy = []
-      this.selectedRow = []
+      this.selectedRowForCopy = [];
+      this.selectedRow = [];
 
       // reset data
-      this.data = newData
+      this.data = [...newData];
     }
 
     if (args?.item?.id === 'multiselect') {
@@ -246,10 +243,13 @@ export class HomeComponent implements OnInit {
   toolbarClick(args: MenuEventArgs) {
     switch (args?.item?.id) {
       case 'openModalSetting':
-        this.openModalSetting(); break;
+        this.openModalSetting();
+        break;
       case 'addColumnAction':
-        this.openModal('add'); break;
-      default: return;
+        this.openModal('add');
+        break;
+      default:
+        return;
     }
   }
 
@@ -266,94 +266,69 @@ export class HomeComponent implements OnInit {
       modalRef.close();
     });
   }
-  
-  getRootOfItem(data: object[], item:any):any {
-    const findItem:any = data.find((record:any) => record.taskID === item.taskID)
-    if(!findItem && item?.parentItem?.taskID) {
-      return this.getRootOfItem(data, item?.parentItem)
+
+  getRootOfItem(data: object[], item: any): any {
+    const findItem: any = data.find((record: any) => record.taskID === item.taskID);
+    if (!findItem && item?.parentItem?.taskID) {
+      return this.getRootOfItem(data, item?.parentItem);
     }
-    
-    return {findItem, data}
+
+    return { findItem, data };
   }
 
   createNewIDForRecord(insertItems: object[]) {
-    insertItems = insertItems.map((data:any) => {
-      let newID = Math.floor(Math.random() * 100000000)
-      while(this.dataWithoutNested.find((record:any) => record.taskID === newID)) {
-        newID = Math.floor(Math.random() * 100000000)
+    insertItems = insertItems.map((data: any) => {
+      let newID = Math.floor(Math.random() * 100000000);
+      while (this.dataWithoutNested.find((record: any) => record.taskID === newID)) {
+        newID = Math.floor(Math.random() * 100000000);
       }
       const newData = {
         ...data,
-        taskID: newID
+        taskID: newID,
+      };
+
+      if (data.subtasks) {
+        newData.subtasks = this.createNewIDForRecord(data.subtasks);
       }
-      
-      if(data.subtasks) {
-        newData.subtasks = this.createNewIDForRecord(data.subtasks)
-      }
-      return newData
-    })
-    return insertItems
+      return newData;
+    });
+    return insertItems;
   }
 
-  pasteAsSubling(data:object[], item:any, insertRecords:object[]):any {
-    let isAddAtRoot = false
-    data = data.map((record:any) => {
-      if(record.taskID === item.taskID) {
-        isAddAtRoot = true
+  pasteRow(data: any, item: any, insertRecords: object[], pasteType: string) {
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].taskID === item.taskID) {
+        switch (pasteType) {
+          case 'pastesibling':
+            data.splice(i + 1, 0, insertRecords?.[0]);
+            break;
+          case 'pasteschild':
+            data[i].subtasks = insertRecords;
+            break;
+          default:
+            break;
+        }
+        return data;
       }
-      if(record.subtasks) {
-        const subTasks = record.subtasks
-        const findItem = subTasks.find((task:any) => task.taskID === item.taskID)
-        if(findItem) {
-          const indexOfItem = subTasks.indexOf(findItem)
-          const newSubTasks = [
-            ...subTasks.slice(0, indexOfItem + 1),
-            ...insertRecords,
-            ...subTasks.slice(indexOfItem + 1)
-          ]
-          record.subtasks = newSubTasks
-          this.pasteAsSubling(newSubTasks, item, insertRecords)
-        }
+      if (data[i].subtasks) {
+        const found = this.pasteRow(data[i].subtasks, item, insertRecords, pasteType);
+        if (found) return data;
       }
-      return record
-    })
-    if(isAddAtRoot) {
-      const rootItem:any = data.find((task:any) => task.taskID === item.taskID)
-      const indexOfItem = data.indexOf(rootItem)
-      insertRecords = insertRecords.map((data:any) => {
-        data.parentItem = {
-          ...data.parentItem,
-          taskID: data.taskID,
-        }
-        data = {
-          ...data
-        }
-        delete data.level
-        delete data.parentUniqueID
-        delete data.parentItem
-        return data
-      })
-      const newData = [
-        ...data.slice(0, indexOfItem + 1),
-        ...insertRecords,
-        ...data.slice(indexOfItem + 1)
-      ]
-      data = newData
     }
-    return data
+    return false;
   }
 
-  removeCuttedItem(data:object[], insertRecords:object[]):any {
-    console.log("insertRecords: ", insertRecords);
-    
-    data = data.map((record:any) => {
-      const item:any = insertRecords.find((item:any) => item.taskID === record.taskID)
-      if(!item && record.subtasks) {
-        this.removeCuttedItem(record.subtasks, insertRecords)
+  removeCuttedItem(data: object[], insertRecords: object[]): any {
+    console.log('insertRecords: ', insertRecords);
+
+    data = data.map((record: any) => {
+      const item: any = insertRecords.find((item: any) => item.taskID === record.taskID);
+      if (!item && record.subtasks) {
+        this.removeCuttedItem(record.subtasks, insertRecords);
       }
-      if(!item) return record
-    })
-    data = data.filter(item => item)
-    return data
+      if (!item) return record;
+    });
+    data = data.filter((item) => item);
+    return data;
   }
 }
