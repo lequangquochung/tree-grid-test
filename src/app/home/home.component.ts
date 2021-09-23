@@ -31,12 +31,14 @@ export class HomeComponent implements OnInit {
   public commands: CommandModel | undefined;
   public columnMenuItems = <any>[];
   selectedRow: Array<any> = [];
+  selectedRowForCopy: Array<any> = [];
 
   public toolbarOptions: ToolbarItems[] | Object[] | undefined;
   public frozenColumns: number | undefined;
   public contextMenuItems: any = [
     { text: 'Copy with headers', target: '.e-content', id: 'copywithheader' },
     'Copy',
+    { text: 'Copy selected rows', target: '.e-content', id: 'copyrows' },
     { text: 'Cut', target: '.e-content', id: 'cut' },
     { text: 'Paste as sibling', target: '.e-content', id: 'pastesibling' },
     { text: 'Paste as child', target: '.e-content', id: 'pasteschild' },
@@ -153,19 +155,49 @@ export class HomeComponent implements OnInit {
       } else modalRef.close();
     });
   }
+
   contextMenuClick(args: MenuEventArgs): void {
-    switch (args?.item?.id) {
-      case 'copywithheader':
-        this.grid?.copy(true);
-
-        break;
-    }
-
     if (args?.item?.id === 'cut') {
       // let selectedrowindex: Array<any> = this.grid?.getSelectedRowIndexes() || [1];
       const selectedrecords: object[] = this.grid?.getSelectedRecords() || [];
       this.selectedRow = selectedrecords;
-      this.data = [...sampleData];
+      this.selectedRowForCopy = []
+      this.data = [...this.data];
+    }
+
+    if (args?.item?.id === 'copyrows') {
+      const selectedrecords: object[] = this.grid?.getSelectedRecords() || [];
+      this.selectedRowForCopy = selectedrecords;
+      this.selectedRow = []
+      this.data = [...this.data];
+    }
+
+    if( args?.item?.id === 'pastesibling') {
+      const selectedrecords: object[] = this.grid?.getSelectedRecords() || [];
+      const selectedItem:any = selectedrecords[0]
+      
+      if(!selectedItem) {
+        alert("Please select a row to paste")
+        return;  
+      }
+
+      const isCopy = this.selectedRowForCopy.length ? true : false
+      let dataForPaste = isCopy ? this.selectedRowForCopy : this.selectedRow
+
+      dataForPaste = this.createNewIDForRecord(dataForPaste)
+
+      let newData = this.pasteAsSubling(this.data, selectedItem, dataForPaste)
+      if(!isCopy) {
+        // remove cutted item
+        newData = this.removeCuttedItem(newData, this.selectedRow)
+      }
+
+      // reset copy and cut item
+      this.selectedRowForCopy = []
+      this.selectedRow = []
+
+      // reset data
+      this.data = newData
     }
     if (args?.item?.id === 'multiselect') {
       if (this.multiSelect.type == 'Single') {
@@ -194,6 +226,10 @@ export class HomeComponent implements OnInit {
     if (this.selectedRow.find((item) => item.taskID === taskID)) {
       // @ts-ignore
       args?.row?.style?.background = '#f8d7da';
+    }
+    if (this.selectedRowForCopy.find((item) => item.taskID === taskID)) {
+      // @ts-ignore
+      args?.row?.style?.background = '#d1ecf1';
     }
   }
 
@@ -228,5 +264,93 @@ export class HomeComponent implements OnInit {
       }
       modalRef.close();
     });
+  }
+  
+  getRootOfItem(data: object[], item:any):any {
+    const findItem:any = data.find((record:any) => record.taskID === item.taskID)
+    if(!findItem && item?.parentItem?.taskID) {
+      return this.getRootOfItem(data, item?.parentItem)
+    }
+    
+    return {findItem, data}
+  }
+
+  createNewIDForRecord(insertItems: object[]) {
+    insertItems = insertItems.map((data:any) => {
+      let newID = Math.floor(Math.random() * 100000000)
+      while(this.dataWithoutNested.find((record:any) => record.taskID === newID)) {
+        newID = Math.floor(Math.random() * 100000000)
+      }
+      const newData = {
+        ...data,
+        taskID: newID
+      }
+      
+      if(data.subtasks) {
+        newData.subtasks = this.createNewIDForRecord(data.subtasks)
+      }
+      return newData
+    })
+    return insertItems
+  }
+
+  pasteAsSubling(data:object[], item:any, insertRecords:object[]):any {
+    let isAddAtRoot = false
+    data = data.map((record:any) => {
+      if(record.taskID === item.taskID) {
+        isAddAtRoot = true
+      }
+      if(record.subtasks) {
+        const subTasks = record.subtasks
+        const findItem = subTasks.find((task:any) => task.taskID === item.taskID)
+        if(findItem) {
+          const indexOfItem = subTasks.indexOf(findItem)
+          const newSubTasks = [
+            ...subTasks.slice(0, indexOfItem + 1),
+            ...insertRecords,
+            ...subTasks.slice(indexOfItem + 1)
+          ]
+          record.subtasks = newSubTasks
+          this.pasteAsSubling(newSubTasks, item, insertRecords)
+        }
+      }
+      return record
+    })
+    if(isAddAtRoot) {
+      const rootItem:any = data.find((task:any) => task.taskID === item.taskID)
+      const indexOfItem = data.indexOf(rootItem)
+      insertRecords = insertRecords.map((data:any) => {
+        data.parentItem = {
+          ...data.parentItem,
+          taskID: data.taskID,
+        }
+        data = {
+          ...data
+        }
+        delete data.level
+        delete data.parentUniqueID
+        delete data.parentItem
+        return data
+      })
+      const newData = [
+        ...data.slice(0, indexOfItem + 1),
+        ...insertRecords,
+        ...data.slice(indexOfItem + 1)
+      ]
+      data = newData
+    }
+    return data
+  }
+
+  removeCuttedItem(data:object[], insertRecords:object[]):any {
+    data = data.map((record:any) => {
+      const item:any = insertRecords.find((item:any) => item.taskID === record.taskID)
+      if(!item && record.subtasks) {
+        this.removeCuttedItem(record.subtasks, insertRecords)
+      }
+      if(!item) return record
+    })
+    data = data.filter(item => item)
+    return data
   }
 }
