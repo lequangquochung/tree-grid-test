@@ -1,0 +1,32 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">
+    Settings
+  </h4>
+  <button type="button" class="close-modal" aria-label="Close" (click)="close()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form #form="ngForm" (submit)="saveSettings()">
+    <div class="form-group">
+      <div class="input-group align-items-center">
+        <label for="toggle-filter">On/Off Filter</label>
+        <input id="toggle-filter" type="checkbox" [checked]="toggleFilter" name="toggleFilter" [(ngModel)]="toggleFilter" />
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="input-group align-items-center">
+        <label for="select-frezon">Frozen Column:</label>
+        <select name="frozenColumn" [(ngModel)]="frozenColumn" id="select-frezon" class="form-control">
+          <option *ngFor="let option of arrayOptionFrozen; let i = index" [ngValue]="option.value">
+            {{option.title}}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="button-group">
+      <button type="submit" class="button-submit btn btn-outline-primary">Save</button>
+    </div>
+  </form>
+</div>
+  

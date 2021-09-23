@@ -13,13 +13,15 @@ import {
   SortService,
   FilterService,
   ContextMenuService,
+  ToolbarService,
 } from '@syncfusion/ej2-angular-treegrid';
 import { FormsModule } from '@angular/forms';
 import { ResizeService, ColumnMenuService } from '@syncfusion/ej2-angular-treegrid';
 import { ComlumnComponent } from './comlumn/comlumn.component';
+import { SettingsComponent } from './settings/settings.component';
 @NgModule({
   imports: [CommonModule, FormsModule, TranslateModule, SharedModule, HomeRoutingModule, TreeGridModule],
-  declarations: [HomeComponent, ComlumnComponent],
-  providers: [ContextMenuService, PageService, SortService, FilterService, EditService, ColumnMenuService],
+  declarations: [HomeComponent, ComlumnComponent, SettingsComponent],
+  providers: [ContextMenuService, PageService, SortService, FilterService, EditService, ToolbarService, ColumnMenuService],
 })
-export class HomeModule {}
+export class HomeModule { }

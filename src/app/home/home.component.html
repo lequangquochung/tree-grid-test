@@ -1,7 +1,7 @@
 <div class="container pb-5">
   <h1 class="text-center">STDIO TREE GRID DEMO</h1>
   <button class="btn-create btn btn btn-outline-primary mb-2" (click)="openModal('add')">Add column</button>
-
+  
   <ejs-treegrid
     #grid
     [dataSource]="data"
@@ -11,7 +11,7 @@
     [selectionSettings]="{ type: 'Multiple' }"
     [allowResizing]="true"
     [treeColumnIndex]="1"
-    [allowFiltering]="true"
+    [allowFiltering]="toggleFilter"
     [sortSettings]="sortSettings"
     [allowSorting]="true"
     childMapping="subtasks"
@@ -25,6 +25,11 @@
     [contextMenuItems]="contextMenuItems"
     (contextMenuClick)="contextMenuClick($event)"
     (rowDataBound)="rowBound($event)"
+    [editSettings]="editSettings"
+    [toolbar]="toolbarOptions"
+    [frozenColumns]="frozenColumns"
+    (contextMenuClick)="contextMenuClick($event)" 
+    (toolbarClick)="toolbarClick($event)"
   >
   </ejs-treegrid>
 </div>

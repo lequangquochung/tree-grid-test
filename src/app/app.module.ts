@@ -14,7 +14,6 @@ import { HomeModule } from './home/home.module';
 import { ShellModule } from './shell/shell.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-
 @NgModule({
   imports: [
     BrowserModule,
@@ -49,4 +48,4 @@ import { AppRoutingModule } from './app-routing.module';
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

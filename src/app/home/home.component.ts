@@ -17,8 +17,9 @@ import {
   RowSelectEventArgs,
   RowDataBoundEventArgs,
 } from '@syncfusion/ej2-angular-grids';
-import { TreeGrid, RowDD, Selection, Page, Resize, Reorder } from '@syncfusion/ej2-treegrid';
+import { TreeGrid, RowDD, Selection, Page, Resize, Reorder, Freeze, Sort } from '@syncfusion/ej2-treegrid';
 import { MenuEventArgs } from '@syncfusion/ej2-navigations';
+import { SettingsComponent } from './settings/settings.component';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -36,7 +37,8 @@ export class HomeComponent implements OnInit {
   public columnMenuItems = <any>[];
   selectedRow: Array<any> = [];
 
-  // public contextMenuItems: ContextMenuItem[] = ['Copy', 'Edit', 'Delete', 'Save', 'Cancel', 'FirstPage', 'PrevPage','LastPage', 'NextPage'];
+  public toolbarOptions: ToolbarItems[] | Object[] | undefined;
+  public frozenColumns: number | undefined;
   public contextMenuItems: any = [
     { text: 'Copy with headers', target: '.e-content', id: 'copywithheader' },
     'Copy',
@@ -50,16 +52,17 @@ export class HomeComponent implements OnInit {
     'Cancel',
   ];
   @ViewChild('grid') public grid: GridComponent | undefined;
+  public toggleFilter: Boolean | undefined;
 
   public columns: any;
   public dataColumn: any = [
-    { field: 'taskID', headerText: 'Task ID', textAlign: 'Right', width: '90' },
-    { field: 'taskName', headerText: 'Task Name', textAlign: 'Left', width: '180' },
-    { field: 'startDate', headerText: 'Start Date', textAlign: 'Right', format: 'yMd', width: '90' },
-    { field: 'duration', headerText: 'Duration', textAlign: 'Right', width: '80' },
+    { field: 'taskID', headerText: 'Task ID', textAlign: 'Left' },
+    { field: 'taskName', headerText: 'Task Name', textAlign: 'Left' },
+    { field: 'startDate', headerText: 'Start Date', textAlign: 'Left', format: 'yMd' },
+    { field: 'duration', headerText: 'Duration', textAlign: 'Left' },
   ];
 
-  constructor(public modalService: NgbModal) {}
+  constructor(public modalService: NgbModal) { }
 
   ngOnInit() {
     // Allow Drag / Drop to change order row
@@ -71,13 +74,19 @@ export class HomeComponent implements OnInit {
     // Allow Resize column
     TreeGrid.Inject(Page, Resize);
 
+    // Allow Freeze
+    TreeGrid.Inject(Freeze);
+
+    this.frozenColumns = 0
     this.data = sampleData;
     this.getFullRecordWithoutNested(this.data);
     this.columns = [...this.dataColumn];
     this.pageSettings = { pageSize: 20 };
     // @ts-ignore
     this.editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Row' };
-
+    this.toolbarOptions = [
+      { text: '', tooltipText: '', id: 'openModalSetting', prefixIcon: 'fas fa-cogs' },
+    ];
     // @ts-ignore
     this.commands = [
       { type: 'Edit', buttonOption: { iconCss: ' e-icons e-edit', cssClass: 'e-flat' } },
@@ -89,6 +98,7 @@ export class HomeComponent implements OnInit {
       { text: 'Edit', id: 'edit' },
       { text: 'Delete', id: 'delete' },
     ];
+
   }
 
   updateColumns(newColumns: any) {
@@ -133,8 +143,10 @@ export class HomeComponent implements OnInit {
     });
   }
   contextMenuClick(args: MenuEventArgs): void {
-    if (args?.item?.id === 'copywithheader') {
-      this.grid?.copy(true);
+    switch (args?.item?.id) {
+      case 'copywithheader':
+        this.grid?.copy(true);
+        break;
     }
 
     if (args?.item?.id === 'cut') {
@@ -160,6 +172,26 @@ export class HomeComponent implements OnInit {
       if (record.subtasks && record.subtasks.length) {
         this.getFullRecordWithoutNested(record.subtasks);
       }
+    });
+  }
+  toolbarClick(args: MenuEventArgs) {
+    switch (args?.item?.id) {
+      case 'openModalSetting':
+        this.openModalSetting()
+    }
+  }
+
+  openModalSetting() {
+    const modalRef = this.modalService.open(SettingsComponent);
+    modalRef.componentInstance.frozenColumnsInput = this.frozenColumns;
+    modalRef.componentInstance.toggleFilterInput = this.toggleFilter;
+    modalRef.componentInstance.dataColumnInput = this.dataColumn
+    modalRef.componentInstance.settingEmitter.subscribe((res: any) => {
+      if (res) {
+        this.frozenColumns = res.frozenColumns;
+        this.toggleFilter = !!res.toggleFilter;
+      }
+      modalRef.close();
     });
   }
 }

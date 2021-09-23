@@ -11,12 +11,11 @@ export class ComlumnComponent implements OnInit {
   @Input() column: any | undefined;
   @Output() columnEmitter = new EventEmitter<any>();
 
-  constructor(private modalService: NgbModal) {}
+  constructor(private modalService: NgbModal) { }
   columnName: string = '';
   columnTitle: string = '';
   ngOnInit(): void {
     this.columnTitle = this.type === 'add' ? 'Add' : 'Edit';
-    console.log(this.column);
     if (this.type === 'edit') this.columnName = this.column?.text;
   }
 
