@@ -8,9 +8,8 @@ describe('ComlumnComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ComlumnComponent ]
-    })
-    .compileComponents();
+      declarations: [ComlumnComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

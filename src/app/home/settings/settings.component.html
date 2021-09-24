@@ -1,7 +1,5 @@
 <div class="modal-header border-bottom-0">
-  <h6 class="modal-title" id="modal-basic-title">
-    Settings
-  </h6>
+  <h6 class="modal-title" id="modal-basic-title">Settings</h6>
   <button type="button" class="close-modal" aria-label="Close" (click)="close()">
     <span aria-hidden="true">&times;</span>
   </button>
@@ -16,7 +14,7 @@
         offColor="secondary"
         offText="off"
         size=""
-        name="toggleFilter" 
+        name="toggleFilter"
         [(ngModel)]="toggleFilter"
       >
       </ng-toggle>
@@ -26,7 +24,7 @@
         <label for="select-frezon">Frozen Column:</label>
         <select name="frozenColumn" [(ngModel)]="frozenColumn" id="select-frezon" class="form-control">
           <option *ngFor="let option of arrayOptionFrozen; let i = index" [ngValue]="option.value">
-            {{option.title}}
+            {{ option.title }}
           </option>
         </select>
       </div>
@@ -37,4 +35,3 @@
     </div>
   </form>
 </div>
-  

@@ -1,16 +1,14 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { I18nService } from '@app/i18n';
+import { environment } from '@env/environment';
 import { TranslateService } from '@ngx-translate/core';
+import { Logger, UntilDestroy, untilDestroyed } from '@shared';
 import { merge } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
 
-import { environment } from '@env/environment';
-import { Logger, UntilDestroy, untilDestroyed } from '@shared';
-import { I18nService } from '@app/i18n';
-
 const log = new Logger('App');
-
 @UntilDestroy()
 @Component({
   selector: 'app-root',
@@ -39,7 +37,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
     const onNavigationEnd = this.router.events.pipe(filter((event) => event instanceof NavigationEnd));
 
-    // Change page title on navigation or language change, based on route data
     merge(this.translateService.onLangChange, onNavigationEnd)
       .pipe(
         map(() => {

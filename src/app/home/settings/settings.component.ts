@@ -10,20 +10,19 @@ export class SettingsComponent implements OnInit {
   @Input() dataColumnInput: Array<any> = [];
   @Output() settingEmitter = new EventEmitter<any>();
 
-  constructor() { }
+  constructor() {}
   frozenColumn: Number | undefined = 0;
   toggleFilter: Boolean | undefined = false;
-  arrayOptionFrozen: Array<any> = []
+  arrayOptionFrozen: Array<any> = [];
   ngOnInit(): void {
     this.frozenColumn = this.frozenColumnsInput;
     this.toggleFilter = this.toggleFilterInput;
-    this.arrayOptionFrozen = [{ title: "None", value: 0 }];
+    this.arrayOptionFrozen = [{ title: 'None', value: 0 }];
 
     this.dataColumnInput.map((e, index) => {
       if (index < this.dataColumnInput.length - 1)
-        this.arrayOptionFrozen.push({ title: e.headerText, value: index + 1 })
-    })
-
+        this.arrayOptionFrozen.push({ title: e.headerText, value: index + 1 });
+    });
   }
   close() {
     this.settingEmitter.emit();
@@ -31,7 +30,7 @@ export class SettingsComponent implements OnInit {
   saveSettings() {
     this.settingEmitter.emit({
       frozenColumns: this.frozenColumn,
-      toggleFilter: this.toggleFilter
+      toggleFilter: this.toggleFilter,
     });
   }
 }

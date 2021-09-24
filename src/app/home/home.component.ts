@@ -1,20 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { sampleData } from './home.data';
-
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ComlumnComponent } from './comlumn/comlumn.component';
 import {
-  PageSettingsModel,
-  SortSettingsModel,
-  EditSettingsModel,
-  ToolbarItems,
-  CommandModel,
-  GridComponent,
-  RowDataBoundEventArgs,
+  CommandModel, EditSettingsModel, GridComponent, PageSettingsModel, RowDataBoundEventArgs, SortSettingsModel, ToolbarItems
 } from '@syncfusion/ej2-angular-grids';
-import { TreeGrid, RowDD, Selection, Page, Resize, Reorder, Freeze } from '@syncfusion/ej2-treegrid';
 import { MenuEventArgs } from '@syncfusion/ej2-navigations';
+import { Freeze, Page, Reorder, Resize, RowDD, Selection, TreeGrid } from '@syncfusion/ej2-treegrid';
+import { ComlumnComponent } from './comlumn/comlumn.component';
+import { sampleData } from './home.data';
 import { SettingsComponent } from './settings/settings.component';
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -59,7 +53,7 @@ export class HomeComponent implements OnInit {
     { field: 'duration', headerText: 'Duration', textAlign: 'Left' },
   ];
   multiSelect: any;
-  constructor(public modalService: NgbModal) { }
+  constructor(public modalService: NgbModal) {}
 
   ngOnInit() {
     // Allow Drag / Drop to change order row
@@ -158,7 +152,6 @@ export class HomeComponent implements OnInit {
 
   contextMenuClick(args: MenuEventArgs): void {
     if (args?.item?.id === 'cut') {
-      // let selectedrowindex: Array<any> = this.grid?.getSelectedRowIndexes() || [1];
       const selectedrecords: object[] = this.grid?.getSelectedRecords() || [];
       this.selectedRow = selectedrecords;
       this.selectedRowForCopy = [];
@@ -300,18 +293,17 @@ export class HomeComponent implements OnInit {
       if (data[i].taskID === item.taskID) {
         switch (pasteType) {
           case 'pastesibling':
-            for(let j = 0; j < insertRecords.length; j++) {
+            for (let j = 0; j < insertRecords.length; j++) {
               data.splice(i + 1, 0, insertRecords[j]);
             }
             break;
           case 'pasteschild':
-            insertRecords = insertRecords.map((record:any) => {
-              record.parentItem = item
-              return record
-            })
-            data[i].subtasks = data[i].subtasks && data[i].subtasks.length 
-              ? data[i].subtasks.concat(insertRecords) 
-              : insertRecords;
+            insertRecords = insertRecords.map((record: any) => {
+              record.parentItem = item;
+              return record;
+            });
+            data[i].subtasks =
+              data[i].subtasks && data[i].subtasks.length ? data[i].subtasks.concat(insertRecords) : insertRecords;
             break;
           default:
             break;
