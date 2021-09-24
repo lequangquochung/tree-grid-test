@@ -300,10 +300,18 @@ export class HomeComponent implements OnInit {
       if (data[i].taskID === item.taskID) {
         switch (pasteType) {
           case 'pastesibling':
-            data.splice(i + 1, 0, insertRecords?.[0]);
+            for(let j = 0; j < insertRecords.length; j++) {
+              data.splice(i + 1, 0, insertRecords[j]);
+            }
             break;
           case 'pasteschild':
-            data[i].subtasks = insertRecords;
+            insertRecords = insertRecords.map((record:any) => {
+              record.parentItem = item
+              return record
+            })
+            data[i].subtasks = data[i].subtasks && data[i].subtasks.length 
+              ? data[i].subtasks.concat(insertRecords) 
+              : insertRecords;
             break;
           default:
             break;
@@ -319,12 +327,10 @@ export class HomeComponent implements OnInit {
   }
 
   removeCuttedItem(data: object[], insertRecords: object[]): any {
-    console.log('insertRecords: ', insertRecords);
-
     data = data.map((record: any) => {
       const item: any = insertRecords.find((item: any) => item.taskID === record.taskID);
       if (!item && record.subtasks) {
-        this.removeCuttedItem(record.subtasks, insertRecords);
+        record.subtasks = this.removeCuttedItem(record.subtasks, insertRecords);
       }
       if (!item) return record;
     });
