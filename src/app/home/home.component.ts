@@ -1,7 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import {
-  CommandModel, EditSettingsModel, GridComponent, PageSettingsModel, RowDataBoundEventArgs, SortSettingsModel, ToolbarItems
+  CommandModel,
+  EditSettingsModel,
+  GridComponent,
+  PageSettingsModel,
+  RowDataBoundEventArgs,
+  SortSettingsModel,
+  ToolbarItems,
 } from '@syncfusion/ej2-angular-grids';
 import { MenuEventArgs } from '@syncfusion/ej2-navigations';
 import { Freeze, Page, Reorder, Resize, RowDD, Selection, TreeGrid } from '@syncfusion/ej2-treegrid';
@@ -47,9 +53,9 @@ export class HomeComponent implements OnInit {
 
   public columns: any;
   public dataColumn: any = [
-    { field: 'taskID', headerText: 'Task ID', textAlign: 'Left' },
+    { field: 'taskID', headerText: 'Task ID', textAlign: 'Left', isPrimaryKey: true },
     { field: 'taskName', headerText: 'Task Name', textAlign: 'Left' },
-    { field: 'startDate', headerText: 'Start Date', textAlign: 'Left', format: 'yMd' },
+    { field: 'startDate', headerText: 'Start Date', textAlign: 'Left', format: 'yMd', editType: 'datetimepickeredit' },
     { field: 'duration', headerText: 'Duration', textAlign: 'Left' },
   ];
   multiSelect: any;
@@ -328,5 +334,12 @@ export class HomeComponent implements OnInit {
     });
     data = data.filter((item) => item);
     return data;
+  }
+
+  actionComplete(args: any): void {
+    if (args.requestType === 'beginEdit' || args.requestType === 'add') {
+      const dialog = args.dialog;
+      dialog.header = args.requestType === 'beginEdit' ? 'Edit Record of ' + args.rowData['taskID'] : 'New Record';
+    }
   }
 }
