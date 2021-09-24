@@ -59,7 +59,7 @@ export class HomeComponent implements OnInit {
     { field: 'duration', headerText: 'Duration', textAlign: 'Left' },
   ];
   multiSelect: any;
-  constructor(public modalService: NgbModal) {}
+  constructor(public modalService: NgbModal) { }
 
   ngOnInit() {
     // Allow Drag / Drop to change order row
@@ -256,7 +256,7 @@ export class HomeComponent implements OnInit {
   openModalSetting() {
     const modalRef = this.modalService.open(SettingsComponent);
     modalRef.componentInstance.frozenColumnsInput = this.frozenColumns;
-    modalRef.componentInstance.toggleFilterInput = this.toggleFilter;
+    modalRef.componentInstance.toggleFilterInput = !!this.toggleFilter;
     modalRef.componentInstance.dataColumnInput = this.dataColumn;
     modalRef.componentInstance.settingEmitter.subscribe((res: any) => {
       if (res) {

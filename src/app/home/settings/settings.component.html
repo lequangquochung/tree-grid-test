@@ -1,18 +1,25 @@
-<div class="modal-header">
-  <h4 class="modal-title" id="modal-basic-title">
+<div class="modal-header border-bottom-0">
+  <h6 class="modal-title" id="modal-basic-title">
     Settings
-  </h4>
+  </h6>
   <button type="button" class="close-modal" aria-label="Close" (click)="close()">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 <div class="modal-body">
   <form #form="ngForm" (submit)="saveSettings()">
-    <div class="form-group">
-      <div class="input-group align-items-center">
-        <label for="toggle-filter">On/Off Filter</label>
-        <input id="toggle-filter" type="checkbox" [checked]="toggleFilter" name="toggleFilter" [(ngModel)]="toggleFilter" />
-      </div>
+    <div class="form-group toggle-filter">
+      <label>On/Off Filter:</label>
+      <ng-toggle
+        onColor="primary"
+        onText="on"
+        offColor="secondary"
+        offText="off"
+        size=""
+        name="toggleFilter" 
+        [(ngModel)]="toggleFilter"
+      >
+      </ng-toggle>
     </div>
     <div class="form-group">
       <div class="input-group align-items-center">
@@ -24,8 +31,9 @@
         </select>
       </div>
     </div>
-    <div class="button-group">
-      <button type="submit" class="button-submit btn btn-outline-primary">Save</button>
+    <div class="e-footer-content d-flex justify-content-end mt-4">
+      <button type="submit" [disabled]="form.invalid" class="e-control e-btn e-lib e-primary e-flat">Save</button
+      ><button (click)="close()" type="button" class="e-control e-btn e-lib e-flat">Cancel</button>
     </div>
   </form>
 </div>

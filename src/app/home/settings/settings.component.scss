@@ -9,10 +9,30 @@
 .btn-create {
   margin-bottom: 10px;
 }
+.toggle-filter {
+  margin-bottom: 20px;
+  label {
+    margin-right: 34px;
+  }
+  .span-checkbox {
+    margin-left: 36px;
+  }
+}
 .form-group {
   .input-group {
     label {
       margin-right: 16px;
+    }
+    select {
+      border: none;
+      border-bottom: 1px solid black;
+      border-radius: 0;
+    }
+    select:focus {
+      border: none;
+      border-bottom: 1px solid #e3165b;
+      border-radius: 0;
+      box-shadow: none;
     }
   }
 }

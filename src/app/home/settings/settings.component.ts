@@ -1,6 +1,4 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
@@ -25,6 +23,7 @@ export class SettingsComponent implements OnInit {
       if (index < this.dataColumnInput.length - 1)
         this.arrayOptionFrozen.push({ title: e.headerText, value: index + 1 })
     })
+
   }
   close() {
     this.settingEmitter.emit();
