@@ -10,7 +10,7 @@ export class SettingsComponent implements OnInit {
   @Input() dataColumnInput: Array<any> = [];
   @Output() settingEmitter = new EventEmitter<any>();
 
-  constructor() {}
+  constructor() { }
   frozenColumn: Number | undefined = 0;
   toggleFilter: Boolean | undefined = false;
   arrayOptionFrozen: Array<any> = [];

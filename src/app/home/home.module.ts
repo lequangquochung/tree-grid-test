@@ -12,7 +12,6 @@ import { ComlumnComponent } from './comlumn/comlumn.component';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { SettingsComponent } from './settings/settings.component';
-
 @NgModule({
   imports: [
     CommonModule,
@@ -34,4 +33,4 @@ import { SettingsComponent } from './settings/settings.component';
     ColumnMenuService,
   ],
 })
-export class HomeModule {}
+export class HomeModule { }

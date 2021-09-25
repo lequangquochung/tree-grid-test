@@ -23,3 +23,4 @@ describe('SettingsComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+
