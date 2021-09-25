@@ -36,6 +36,8 @@ export class HomeComponent implements OnInit {
   public toolbarOptions: ToolbarItems[] | Object[] | undefined;
   public frozenColumns: number | undefined;
   public contextMenuItems: any = [
+    { text: 'Edit', target: '.e-headercontent', id: 'edit' },
+    { text: 'Delete', target: '.e-headercontent', id: 'delete' },
     { text: 'Copy with headers', target: '.e-content', id: 'copywithheader' },
     'Copy',
     { text: 'Copy selected rows', target: '.e-content', id: 'copyrows' },
@@ -107,10 +109,10 @@ export class HomeComponent implements OnInit {
       { type: 'Save', buttonOption: { iconCss: 'e-icons e-update', cssClass: 'e-flat' } },
       { type: 'Cancel', buttonOption: { iconCss: 'e-icons e-cancel-icon', cssClass: 'e-flat' } },
     ];
-    this.columnMenuItems = [
-      { text: 'Edit', id: 'edit' },
-      { text: 'Delete', id: 'delete' },
-    ];
+    // this.columnMenuItems = [
+    //   { text: 'Edit', id: 'edit' },
+    //   { text: 'Delete', id: 'delete' },
+    // ];
     this.multiSelect = { type: 'Multiple' };
   }
 
@@ -139,7 +141,7 @@ export class HomeComponent implements OnInit {
               field: `${res.event.column.text.trim()}${this.dataColumn.length}`,
               headerText: res.event.column.text,
               textAlign: 'Right',
-              width: '80',
+              width: 'auto',
             });
             this.columns = [...this.dataColumn];
             break;
@@ -156,7 +158,7 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  contextMenuClick(args: MenuEventArgs): void {
+  contextMenuClick(args: any): void {
     if (args?.item?.id === 'cut') {
       const selectedrecords: object[] = this.grid?.getSelectedRecords() || [];
       this.selectedRow = selectedrecords;
@@ -214,6 +216,13 @@ export class HomeComponent implements OnInit {
           return element;
         });
       }
+    }
+
+    if (args.item.id === 'edit') {
+      this.openModal(args.item.id, { field: args.column.field, text: args.column.headerText });
+    } else if (args.item.id === 'delete') {
+      this.dataColumn = this.dataColumn.filter((column: any) => column.field !== args.column.field);
+      this.columns = this.dataColumn;
     }
     return;
   }
