@@ -36,9 +36,12 @@ export class HomeComponent implements OnInit {
   public toolbarOptions: ToolbarItems[] | Object[] | undefined;
   public frozenColumns: number | undefined;
   public contextMenuItems: any = [
+    { text: 'Add', target: '.e-headercontent', id: 'add' },
     { text: 'Edit', target: '.e-headercontent', id: 'edit' },
     { text: 'Delete', target: '.e-headercontent', id: 'delete' },
+    { text: 'Multiple Sorting Off', target: '.e-headercontent', id: 'mutiple-sorting' },
     { text: 'Freeze', target: '.e-headercontent', id: 'freeze' },
+    { text: 'Filter Off', target: '.e-headercontent', id: 'filter' },
     { text: 'Copy with headers', target: '.e-content', id: 'copywithheader' },
     'Copy',
     { text: 'Copy selected rows', target: '.e-content', id: 'copyrows' },
@@ -53,7 +56,7 @@ export class HomeComponent implements OnInit {
   ];
   @ViewChild('grid') public grid: GridComponent | undefined;
   public toggleFilter: Boolean | undefined;
-
+  public toggleMultiSorting: Boolean | undefined;
   public columns: any;
   public dataColumn: any = [
     { field: 'taskID', headerText: 'Task ID', textAlign: 'Left', isPrimaryKey: true },
@@ -62,7 +65,7 @@ export class HomeComponent implements OnInit {
     { field: 'duration', headerText: 'Duration', textAlign: 'Left' },
   ];
   multiSelect: any;
-  constructor(public modalService: NgbModal) { }
+  constructor(public modalService: NgbModal) {}
 
   ngOnInit() {
     // Allow Drag / Drop to change order row
@@ -78,6 +81,8 @@ export class HomeComponent implements OnInit {
     TreeGrid.Inject(Freeze);
 
     this.frozenColumns = 0;
+    this.toggleMultiSorting = true;
+    this.toggleFilter = true;
     this.data = sampleData;
     this.getFullRecordWithoutNested(this.data);
     this.columns = [...this.dataColumn];
@@ -88,13 +93,13 @@ export class HomeComponent implements OnInit {
       'Add',
       'Edit',
       'Delete',
-      {
-        align: 'Right',
-        text: 'Add Column',
-        tooltipText: 'Add Column',
-        prefixIcon: 'fas fa-columns',
-        id: 'addColumnAction',
-      },
+      // {
+      //   align: 'Right',
+      //   text: 'Add Column',
+      //   tooltipText: 'Add Column',
+      //   prefixIcon: 'fas fa-columns',
+      //   id: 'addColumnAction',
+      // },
       // {
       //   align: 'Right',
       //   text: 'Setting',
@@ -102,13 +107,13 @@ export class HomeComponent implements OnInit {
       //   prefixIcon: 'fas fa-cogs',
       //   id: 'openModalSetting',
       // },
-      {
-        align: 'Right',
-        text: 'Filter',
-        tooltipText: 'On/Off Filter',
-        prefixIcon: 'fas fa-filter',
-        id: 'toggleFilter',
-      }
+      // {
+      //   align: 'Right',
+      //   text: 'Filter',
+      //   tooltipText: 'On/Off Filter',
+      //   prefixIcon: 'fas fa-filter',
+      //   id: 'toggleFilter',
+      // }
     ];
     // @ts-ignore
     this.commands = [
@@ -167,6 +172,8 @@ export class HomeComponent implements OnInit {
   }
 
   contextMenuClick(args: any): void {
+    const _contextMenuItems = [...this.contextMenuItems];
+    const _contextMenuIndex = _contextMenuItems.findIndex((item: any) => item.id === args.item.id);
     if (args?.item?.id === 'cut') {
       const selectedrecords: object[] = this.grid?.getSelectedRecords() || [];
       this.selectedRow = selectedrecords;
@@ -226,16 +233,33 @@ export class HomeComponent implements OnInit {
       }
     }
 
+    if (args.item.id === 'add') {
+      this.openModal(args.item.id);
+    }
+
     if (args.item.id === 'edit') {
       this.openModal(args.item.id, { field: args.column.field, text: args.column.headerText });
-    } else if (args.item.id === 'delete') {
+    }
+    if (args.item.id === 'delete') {
       this.dataColumn = this.dataColumn.filter((column: any) => column.field !== args.column.field);
       this.columns = this.dataColumn;
     }
 
     if (args.item.id === 'freeze') {
       let index = this.dataColumn.findIndex((column: any) => column.field === args.column.field);
-      this.frozenColumns = index != this.frozenColumns ? index : 0
+      this.frozenColumns = index != this.frozenColumns ? index : 0;
+    }
+
+    if (args.item.id === 'filter') {
+      this.toggleFilter = !this.toggleFilter;
+      _contextMenuItems[_contextMenuIndex].text = `Filter ${this.toggleFilter ? `Off` : `On`}`;
+      this.contextMenuItems = [..._contextMenuItems];
+    }
+
+    if (args.item.id === 'mutiple-sorting') {
+      this.toggleMultiSorting = !this.toggleMultiSorting;
+      _contextMenuItems[_contextMenuIndex].text = `Mutiple Sorting ${this.toggleMultiSorting ? `Off` : `On`}`;
+      this.contextMenuItems = [..._contextMenuItems];
     }
 
     return;
