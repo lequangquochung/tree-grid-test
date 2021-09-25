@@ -38,6 +38,7 @@ export class HomeComponent implements OnInit {
   public contextMenuItems: any = [
     { text: 'Edit', target: '.e-headercontent', id: 'edit' },
     { text: 'Delete', target: '.e-headercontent', id: 'delete' },
+    { text: 'Freeze', target: '.e-headercontent', id: 'freeze' },
     { text: 'Copy with headers', target: '.e-content', id: 'copywithheader' },
     'Copy',
     { text: 'Copy selected rows', target: '.e-content', id: 'copyrows' },
@@ -94,13 +95,20 @@ export class HomeComponent implements OnInit {
         prefixIcon: 'fas fa-columns',
         id: 'addColumnAction',
       },
+      // {
+      //   align: 'Right',
+      //   text: 'Setting',
+      //   tooltipText: 'Setting',
+      //   prefixIcon: 'fas fa-cogs',
+      //   id: 'openModalSetting',
+      // },
       {
         align: 'Right',
-        text: 'Setting',
-        tooltipText: 'Setting',
-        prefixIcon: 'fas fa-cogs',
-        id: 'openModalSetting',
-      },
+        text: 'Filter',
+        tooltipText: 'On/Off Filter',
+        prefixIcon: 'fas fa-filter',
+        id: 'toggleFilter',
+      }
     ];
     // @ts-ignore
     this.commands = [
@@ -224,6 +232,12 @@ export class HomeComponent implements OnInit {
       this.dataColumn = this.dataColumn.filter((column: any) => column.field !== args.column.field);
       this.columns = this.dataColumn;
     }
+
+    if (args.item.id === 'freeze') {
+      let index = this.dataColumn.findIndex((column: any) => column.field === args.column.field);
+      this.frozenColumns = index != this.frozenColumns ? index : 0
+    }
+
     return;
   }
 
@@ -255,6 +269,9 @@ export class HomeComponent implements OnInit {
         break;
       case 'addColumnAction':
         this.openModal('add');
+        break;
+      case 'toggleFilter':
+        this.toggleFilter = !this.toggleFilter;
         break;
       default:
         return;
