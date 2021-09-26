@@ -39,9 +39,14 @@ export class HomeComponent implements OnInit {
     { text: 'Add', target: '.e-headercontent', id: 'add' },
     { text: 'Edit', target: '.e-headercontent', id: 'edit' },
     { text: 'Delete', target: '.e-headercontent', id: 'delete' },
-    { text: 'Multiple Sorting Off', target: '.e-headercontent', id: 'mutiple-sorting' },
+    { text: 'Multiple sorting off', target: '.e-headercontent', id: 'mutiple-sorting' },
     { text: 'Freeze', target: '.e-headercontent', id: 'freeze' },
-    { text: 'Filter Off', target: '.e-headercontent', id: 'filter' },
+    { text: 'Filter off', target: '.e-headercontent', id: 'filter' },
+    {
+      text: 'Customizes',
+      target: '.e-headercontent', 
+      id: 'customize'
+    },
     { text: 'Copy with headers', target: '.e-content', id: 'copywithheader' },
     'Copy',
     { text: 'Copy selected rows', target: '.e-content', id: 'copyrows' },
@@ -49,6 +54,7 @@ export class HomeComponent implements OnInit {
     { text: 'Paste as sibling', target: '.e-content', id: 'pastesibling' },
     { text: 'Paste as child', target: '.e-content', id: 'pasteschild' },
     { text: 'Turn off multi select mode', target: '.e-content', id: 'multiselect' },
+    'AddRow',
     'Edit',
     'Delete',
     'Save',
@@ -59,13 +65,16 @@ export class HomeComponent implements OnInit {
   public toggleMultiSorting: Boolean | undefined;
   public columns: any;
   public dataColumn: any = [
-    { field: 'taskID', headerText: 'Task ID', textAlign: 'Left', isPrimaryKey: true },
-    { field: 'taskName', headerText: 'Task Name', textAlign: 'Left' },
+    { field: 'taskID', headerText: 'Task ID', textAlign: 'Left', isPrimaryKey: true, customAttributes: {
+      'font-size': 20
+    } },
+    { field: 'taskName', headerText: 'Task Name', textAlign: 'Left', wrapMode: 'Both' },
     { field: 'startDate', headerText: 'Start Date', textAlign: 'Left', format: 'yMd', editType: 'datetimepickeredit' },
     { field: 'duration', headerText: 'Duration', textAlign: 'Left' },
   ];
+  // Set the current column Data Type, Default Value, Font-Size, Color, Alignment, Text-wrap
   multiSelect: any;
-  constructor(public modalService: NgbModal) {}
+  constructor(public modalService: NgbModal) { }
 
   ngOnInit() {
     // Allow Drag / Drop to change order row
@@ -89,32 +98,6 @@ export class HomeComponent implements OnInit {
     this.pageSettings = { pageSize: 20 };
     // @ts-ignore
     this.editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Dialog' };
-    this.toolbarOptions = [
-      'Add',
-      'Edit',
-      'Delete',
-      // {
-      //   align: 'Right',
-      //   text: 'Add Column',
-      //   tooltipText: 'Add Column',
-      //   prefixIcon: 'fas fa-columns',
-      //   id: 'addColumnAction',
-      // },
-      // {
-      //   align: 'Right',
-      //   text: 'Setting',
-      //   tooltipText: 'Setting',
-      //   prefixIcon: 'fas fa-cogs',
-      //   id: 'openModalSetting',
-      // },
-      // {
-      //   align: 'Right',
-      //   text: 'Filter',
-      //   tooltipText: 'On/Off Filter',
-      //   prefixIcon: 'fas fa-filter',
-      //   id: 'toggleFilter',
-      // }
-    ];
     // @ts-ignore
     this.commands = [
       { type: 'Edit', buttonOption: { iconCss: ' e-icons e-edit', cssClass: 'e-flat' } },
@@ -122,10 +105,6 @@ export class HomeComponent implements OnInit {
       { type: 'Save', buttonOption: { iconCss: 'e-icons e-update', cssClass: 'e-flat' } },
       { type: 'Cancel', buttonOption: { iconCss: 'e-icons e-cancel-icon', cssClass: 'e-flat' } },
     ];
-    // this.columnMenuItems = [
-    //   { text: 'Edit', id: 'edit' },
-    //   { text: 'Delete', id: 'delete' },
-    // ];
     this.multiSelect = { type: 'Multiple' };
   }
 
