@@ -24,6 +24,7 @@ export class ComlumnComponent implements OnInit {
   }
 
   saveColumn() {
+    document.documentElement.style.setProperty('--color2', 'blue');
     this.columnEmitter.emit({
       event: {
         type: this.type,

@@ -2,3 +2,20 @@
  * Global application theme.
  * Framework overrides and customization goes here.
  */
+:root {
+  @for $i from 1 through 200 {
+    --fontSize#{$i}: 14px;
+    --color#{$i}: #757575;
+    --textWrap#{$i}: "normal";
+  }
+}
+
+@for $i from 1 through 200 {
+  .e-grid .e-headercell.header-column-font#{$i} {
+    .e-headertext {
+      font-size: var(--fontSize#{$i}) !important;
+      color: var(--color#{$i}) !important;
+      word-wrap: var(--textWrap#{$i});
+    }
+  }
+}

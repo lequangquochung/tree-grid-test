@@ -1,0 +1,112 @@
+<div class="modal-header border-bottom-0">
+  <h6 class="modal-title" id="modal-basic-title">Edit Styling</h6>
+  <button type="button" class="close-modal" aria-label="Close" (click)="close()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form #form="ngForm" (submit)="saveColumn()">
+    <div class="form-group mb-3">
+      <label class="text-header">Column Type</label>
+      <ejs-dropdownlist
+        (change)="onChangeColumnType($event)"
+        id="ddlelement"
+        #samples
+        [dataSource]="columnTypeData"
+        [value]="columnType"
+        placeholder="Please choose column type"
+      ></ejs-dropdownlist>
+    </div>
+    <div class="form-group mb-3">
+      <div class="e-float-input e-control-wrapper e-valid-input">
+        <input
+          required
+          [(ngModel)]="columnValue"
+          class="e-field e-defaultcell e-control e-textbox e-lib"
+          type="text"
+          value="3"
+          style="text-align: Left"
+          id="_gridcontrolColumnValue"
+          name="columnValue"
+          e-mappinguid="grid-column1000"
+          role="textbox"
+          aria-labelledby="label__gridcontroltaskID"
+        /><span class="e-float-line"></span
+        ><label class="e-float-text e-label-top" id="label__gridcontrolColumnValue" for="_gridcontrolColumnValue"
+          >Column Value</label
+        >
+      </div>
+    </div>
+
+    <div class="form-group mb-3">
+      <div class="e-float-input e-control-wrapper e-valid-input">
+        <input
+          required
+          [(ngModel)]="fontSize"
+          class="e-field e-defaultcell e-control e-textbox e-lib"
+          type="number"
+          value="3"
+          style="text-align: Left"
+          id="_gridcontrolFontSize"
+          name="fontSize"
+          e-mappinguid="grid-column1001"
+          role="textbox"
+          aria-labelledby="label__gridcontrolFontSize"
+        /><span class="e-float-line"></span
+        ><label class="e-float-text e-label-top" id="label__gridcontrolFontSize" for="_gridcontrolFontSize"
+          >Font Size</label
+        >
+      </div>
+    </div>
+
+    <div class="form-group mb-3">
+      <div class="e-float-input e-control-wrapper e-valid-input">
+        <input
+          required
+          [(ngModel)]="color"
+          class="e-field e-defaultcell e-control e-textbox e-lib"
+          type="text"
+          value="3"
+          style="text-align: Left"
+          id="_gridcontrolColor"
+          name="color"
+          e-mappinguid="grid-column1001"
+          role="textbox"
+          aria-labelledby="label__gridcontrolColor"
+          [(colorPicker)]="color"
+          [style.background]="color"
+        /><span class="e-float-line"></span
+        ><label class="e-float-text e-label-top" id="label__gridcontrolColor" for="_gridcontrolColor">Color</label>
+      </div>
+    </div>
+
+    <div class="form-group mb-3">
+      <label class="text-header">Align Type</label>
+      <ejs-dropdownlist
+        (change)="onChangeAlignType($event)"
+        [value]="alignValue"
+        id="ddlelement"
+        #samples
+        [dataSource]="alignType"
+        placeholder="Please choose alignment type"
+      ></ejs-dropdownlist>
+    </div>
+
+    <div class="form-group mb-3">
+      <label class="text-header">TextWrap Type</label>
+      <ejs-dropdownlist
+        (change)="onChangeTextWrapType($event)"
+        id="ddlelement"
+        #samples
+        [dataSource]="textWrapType"
+        [value]="textWrapValue"
+        placeholder="Please choose text wrap type"
+      ></ejs-dropdownlist>
+    </div>
+
+    <div class="e-footer-content d-flex justify-content-end mt-4">
+      <button type="submit" [disabled]="form.invalid" class="e-control e-btn e-lib e-primary e-flat">Save</button
+      ><button (click)="close()" type="button" class="e-control e-btn e-lib e-flat">Cancel</button>
+    </div>
+  </form>
+</div>

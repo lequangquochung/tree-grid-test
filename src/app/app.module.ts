@@ -13,7 +13,6 @@ import { AppComponent } from './app.component';
 import { HomeModule } from './home/home.module';
 import { ShellModule } from './shell/shell.module';
 
-
 @NgModule({
   imports: [
     BrowserModule,

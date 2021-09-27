@@ -14,6 +14,7 @@ import { Freeze, Page, Reorder, Resize, RowDD, Selection, TreeGrid } from '@sync
 import { ComlumnComponent } from './comlumn/comlumn.component';
 import { sampleData } from './home.data';
 import { SettingsComponent } from './settings/settings.component';
+import { StylingComponent } from './styling/styling.component';
 
 @Component({
   selector: 'app-home',
@@ -42,6 +43,7 @@ export class HomeComponent implements OnInit {
     { text: 'Multiple Sorting Off', target: '.e-headercontent', id: 'mutiple-sorting' },
     { text: 'Freeze', target: '.e-headercontent', id: 'freeze' },
     { text: 'Filter Off', target: '.e-headercontent', id: 'filter' },
+    { text: 'Styling', target: '.e-headercontent', id: 'styling' },
     { text: 'Copy with headers', target: '.e-content', id: 'copywithheader' },
     'Copy',
     { text: 'Copy selected rows', target: '.e-content', id: 'copyrows' },
@@ -59,10 +61,49 @@ export class HomeComponent implements OnInit {
   public toggleMultiSorting: Boolean | undefined;
   public columns: any;
   public dataColumn: any = [
-    { field: 'taskID', headerText: 'Task ID', textAlign: 'Left', isPrimaryKey: true },
-    { field: 'taskName', headerText: 'Task Name', textAlign: 'Left' },
-    { field: 'startDate', headerText: 'Start Date', textAlign: 'Left', format: 'yMd', editType: 'datetimepickeredit' },
-    { field: 'duration', headerText: 'Duration', textAlign: 'Left' },
+    {
+      field: 'taskID',
+      headerText: 'Task ID',
+      textAlign: 'Left',
+      isPrimaryKey: true,
+      type: 'number',
+      fontSize: 14,
+      color: '#757575',
+      textWrap: 'normal',
+      customAttributes: { class: 'header-column-font1' },
+    },
+    {
+      field: 'taskName',
+      headerText: 'Task Name',
+      textAlign: 'Left',
+      type: 'string',
+      fontSize: 14,
+      color: '#757575',
+      textWrap: 'normal',
+      customAttributes: { class: 'header-column-font2' },
+    },
+    {
+      field: 'startDate',
+      headerText: 'Start Date',
+      textAlign: 'Left',
+      format: 'yMd',
+      editType: 'datetimepickeredit',
+      type: 'date',
+      fontSize: 14,
+      color: '#757575',
+      textWrap: 'normal',
+      customAttributes: { class: 'header-column-font3' },
+    },
+    {
+      field: 'duration',
+      headerText: 'Duration',
+      textAlign: 'Left',
+      type: 'number',
+      fontSize: 14,
+      color: '#757575',
+      textWrap: 'normal',
+      customAttributes: { class: 'header-column-font4' },
+    },
   ];
   multiSelect: any;
   constructor(public modalService: NgbModal) {}
@@ -155,12 +196,17 @@ export class HomeComponent implements OnInit {
               headerText: res.event.column.text,
               textAlign: 'Right',
               width: 'auto',
+              type: 'string',
+              fontSize: 14,
+              color: '#757575',
+              customAttributes: { class: `header-column-font${this.dataColumn.length + 1}` },
             });
             this.columns = [...this.dataColumn];
             break;
           case 'edit':
             const column: any = this?.grid?.getColumnByField(res.event.column.field);
             column.headerText = res.event.column.text;
+            console.log(column);
             this?.grid?.refreshColumns();
             break;
           default:
@@ -260,6 +306,38 @@ export class HomeComponent implements OnInit {
       this.toggleMultiSorting = !this.toggleMultiSorting;
       _contextMenuItems[_contextMenuIndex].text = `Mutiple Sorting ${this.toggleMultiSorting ? `Off` : `On`}`;
       this.contextMenuItems = [..._contextMenuItems];
+    }
+
+    if (args.item.id === 'styling') {
+      let index = this.dataColumn.findIndex((column: any) => column.field === args.column.field);
+      console.log(args.column);
+      const modalRef = this.modalService.open(StylingComponent);
+      modalRef.componentInstance.column = this.dataColumn[index];
+      modalRef.componentInstance.columnEmitter.subscribe((res: any) => {
+        if (res.alignValue) {
+          this.dataColumn[index].textAlign = res.alignValue;
+        }
+        if (res.columnType) {
+          this.dataColumn[index].type = res.columnType;
+        }
+        if (res.columnValue) {
+          this.dataColumn[index].headerText = res.columnValue;
+        }
+        if (res.color) {
+          this.dataColumn[index].color = res.color;
+          document.documentElement.style.setProperty(`--color${index + 1}`, res.color);
+        }
+        if (res.fontSize) {
+          this.dataColumn[index].fontSize = res.fontSize;
+          document.documentElement.style.setProperty(`--fontSize${index + 1}`, `${res.fontSize}px`);
+        }
+        if (res.textWrap) {
+          this.dataColumn[index].textWrap = res.textWrap;
+          document.documentElement.style.setProperty(`--textWrap${index + 1}`, res.textWrap);
+        }
+        this.columns = [...this.dataColumn];
+        modalRef.close();
+      });
     }
 
     return;

@@ -1,19 +1,7 @@
-.logo {
-  width: 100px;
-}
-
-q {
-  font-style: italic;
-  font-size: 1.2rem;
-  quotes: "« " " »";
-}
-.action-filter {
-  cursor: pointer;
-}
-
 .button-group {
   display: flex;
   justify-content: right;
+
   .button-submit {
     margin-top: 10px;
   }
@@ -22,25 +10,31 @@ q {
 .btn-create {
   margin-bottom: 10px;
 }
+
 .toggle-filter {
   margin-bottom: 20px;
+
   label {
     margin-right: 34px;
   }
+
   .span-checkbox {
     margin-left: 36px;
   }
 }
+
 .form-group {
   .input-group {
     label {
       margin-right: 16px;
     }
+
     select {
       border: none;
       border-bottom: 1px solid black;
       border-radius: 0;
     }
+
     select:focus {
       border: none;
       border-bottom: 1px solid #e3165b;
@@ -49,6 +43,7 @@ q {
     }
   }
 }
+
 .close-modal {
   float: right;
   font-size: 1.5rem;
@@ -63,37 +58,7 @@ q {
   border: 0;
 }
 
-:root {
-  @for $i from 1 through 200 {
-    --fontSize#{$i}: 12;
-  }
-}
-
-@for $i from 1 through 200 {
-  .e-grid .e-headercell.header-column-font#{$i} {
-    background-color: red !important;
-    font-size: attr(--fontSize#{$i});
-  }
-}
-
-.e-headercell.header-column-font1 {
-  background: red !important;
-}
-
-.e-grid .e-rowcell.header-column-font1 {
-  background-color: #ecedee;
-  color: "red";
-  font-family: "Bell MT";
-  font-size: 40px;
-}
-
-.e-grid .e-headercell.header-column-font1 {
-  background-color: #2382c3;
-  color: white;
-  font-family: "Bell MT";
-  font-size: 40px;
-}
-
-.fontsizebig {
-  font-size: 100px !important;
+.text-header {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.54);
 }

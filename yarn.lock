@@ -1790,6 +1790,13 @@
     tslib "^2.0.0"
     yargs-parser "20.0.0"
 
+"@nth-cloud/ng-toggle@^8.0.2":
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/@nth-cloud/ng-toggle/-/ng-toggle-8.0.2.tgz#ef837511cf23b011edc4aff288cf1667e9066e6c"
+  integrity sha512-1wwdhADSNMV1/eb9wld5ly3zE5I314cNt6IxNGD2ssIyoyPKFu5+0aGVz+cPiaLkD+yAje1Fk01+PhpIHpkEhw==
+  dependencies:
+    tslib "^2.2.0"
+
 "@phenomnomnominal/tsquery@^4.1.1":
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/@phenomnomnominal/tsquery/-/tsquery-4.1.1.tgz#42971b83590e9d853d024ddb04a18085a36518df"
@@ -1848,6 +1855,15 @@
     rxjs-compat "^6.5.4"
     zone.js "^0.10.2"
 
+"@syncfusion/ej2-angular-dropdowns@^19.2.62":
+  version "19.2.62"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-angular-dropdowns/-/ej2-angular-dropdowns-19.2.62.tgz#2827cf0d6908ab0caa819bfcdb4ec156df24eef8"
+  integrity sha512-6L5YyxliIk+xhMUQjtAfweb0fmmUSIf/31vNRT/eEWeRzlD9DgcL8vegvQEc40ygA2g6nE6DVoumsB8XtwHUlg==
+  dependencies:
+    "@syncfusion/ej2-angular-base" "~19.2.60"
+    "@syncfusion/ej2-base" "~19.2.60"
+    "@syncfusion/ej2-dropdowns" "19.2.62"
+
 "@syncfusion/ej2-angular-grids@^19.2.62":
   version "19.2.62"
   resolved "https://registry.yarnpkg.com/@syncfusion/ej2-angular-grids/-/ej2-angular-grids-19.2.62.tgz#c178d11b8f1a7c2edafbd5d97d37e55ad43ec6bf"
@@ -1905,7 +1921,7 @@
   dependencies:
     "@syncfusion/ej2-base" "~19.2.60"
 
-"@syncfusion/ej2-dropdowns@~19.2.62":
+"@syncfusion/ej2-dropdowns@19.2.62", "@syncfusion/ej2-dropdowns@~19.2.62":
   version "19.2.62"
   resolved "https://registry.yarnpkg.com/@syncfusion/ej2-dropdowns/-/ej2-dropdowns-19.2.62.tgz#ce703e735b24e270cb608b1c97729a716f218c91"
   integrity sha512-szbw4Aqtosba1D83M7EhcWjNFw3Q0sdw4g09YEUS2hPvXOd/3l+RS5eMy99bgFO/rD0ZVWbgm4gT5KwoAD9eeQ==
@@ -8090,6 +8106,13 @@ neo-async@^2.6.2:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
+
+ngx-color-picker@^11.0.0:
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-color-picker/-/ngx-color-picker-11.0.0.tgz#c1e5468505953bc579bf21014a135808820ea753"
+  integrity sha512-HyiFNPYLrCyYbFpLvZJaHC43RhjfDdFDij4pnvk9R46iH1scVtO6f2ibBgxRwBKKsT94KYvOH8wF8OrvztWdEw==
+  dependencies:
+    tslib "^2.0.0"
 
 nice-try@^1.0.4:
   version "1.0.5"

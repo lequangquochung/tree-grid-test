@@ -33,9 +33,11 @@
     "@ng-bootstrap/ng-bootstrap": "^11.0.0-beta.2",
     "@ngx-translate/core": "^13.0.0",
     "@nth-cloud/ng-toggle": "^8.0.2",
+    "@syncfusion/ej2-angular-dropdowns": "^19.2.62",
     "@syncfusion/ej2-angular-grids": "^19.2.62",
     "@syncfusion/ej2-angular-treegrid": "^19.2.60",
     "bootstrap": "^5.0.2",
+    "ngx-color-picker": "^11.0.0",
     "rxjs": "^6.6.3",
     "tslib": "^2.2.0",
     "zone.js": "~0.11.4"
