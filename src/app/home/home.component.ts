@@ -40,7 +40,7 @@ export class HomeComponent implements OnInit {
     { text: 'Add', target: '.e-headercontent', id: 'add' },
     { text: 'Edit', target: '.e-headercontent', id: 'edit' },
     { text: 'Delete', target: '.e-headercontent', id: 'delete' },
-    { text: 'Multiple Sorting Off', target: '.e-headercontent', id: 'mutiple-sorting' },
+    { text: 'Multiple sorting off', target: '.e-headercontent', id: 'mutiple-sorting' },
     { text: 'Freeze', target: '.e-headercontent', id: 'freeze' },
     { text: 'Filter Off', target: '.e-headercontent', id: 'filter' },
     { text: 'Styling', target: '.e-headercontent', id: 'styling' },
@@ -51,6 +51,8 @@ export class HomeComponent implements OnInit {
     { text: 'Paste as sibling', target: '.e-content', id: 'pastesibling' },
     { text: 'Paste as child', target: '.e-content', id: 'pasteschild' },
     { text: 'Turn off multi select mode', target: '.e-content', id: 'multiselect' },
+
+    'AddRow',
     'Edit',
     'Delete',
     'Save',
@@ -105,6 +107,7 @@ export class HomeComponent implements OnInit {
       customAttributes: { class: 'header-column-font4' },
     },
   ];
+  // Set the current column Data Type, Default Value, Font-Size, Color, Alignment, Text-wrap
   multiSelect: any;
   constructor(public modalService: NgbModal) {}
 
@@ -130,32 +133,6 @@ export class HomeComponent implements OnInit {
     this.pageSettings = { pageSize: 20 };
     // @ts-ignore
     this.editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Dialog' };
-    this.toolbarOptions = [
-      'Add',
-      'Edit',
-      'Delete',
-      // {
-      //   align: 'Right',
-      //   text: 'Add Column',
-      //   tooltipText: 'Add Column',
-      //   prefixIcon: 'fas fa-columns',
-      //   id: 'addColumnAction',
-      // },
-      // {
-      //   align: 'Right',
-      //   text: 'Setting',
-      //   tooltipText: 'Setting',
-      //   prefixIcon: 'fas fa-cogs',
-      //   id: 'openModalSetting',
-      // },
-      // {
-      //   align: 'Right',
-      //   text: 'Filter',
-      //   tooltipText: 'On/Off Filter',
-      //   prefixIcon: 'fas fa-filter',
-      //   id: 'toggleFilter',
-      // }
-    ];
     // @ts-ignore
     this.commands = [
       { type: 'Edit', buttonOption: { iconCss: ' e-icons e-edit', cssClass: 'e-flat' } },
@@ -163,10 +140,6 @@ export class HomeComponent implements OnInit {
       { type: 'Save', buttonOption: { iconCss: 'e-icons e-update', cssClass: 'e-flat' } },
       { type: 'Cancel', buttonOption: { iconCss: 'e-icons e-cancel-icon', cssClass: 'e-flat' } },
     ];
-    // this.columnMenuItems = [
-    //   { text: 'Edit', id: 'edit' },
-    //   { text: 'Delete', id: 'delete' },
-    // ];
     this.multiSelect = { type: 'Multiple' };
   }
 
