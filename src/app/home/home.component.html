@@ -1,5 +1,4 @@
-<div class="container pb-5">
-  <h1 class="text-center my-4">STDIO TREE GRID DEMO</h1>
+<div class="p-1">
   <ejs-treegrid
     #grid
     [dataSource]="data"
@@ -13,8 +12,6 @@
     [sortSettings]="sortSettings"
     [allowSorting]="true"
     childMapping="subtasks"
-    [allowPaging]="true"
-    [pageSettings]="pageSettings"
     [columns]="columns"
     [allowMultiSorting]="toggleMultiSorting"
     (columnMenuClick)="columnMenuClick($event)"
@@ -25,6 +22,7 @@
     [toolbar]="toolbarOptions"
     [frozenColumns]="frozenColumns"
     (toolbarClick)="toolbarClick($event)"
+    (actionBegin)="actionBegin($event)"
     (actionComplete)="actionComplete($event)"
   >
   </ejs-treegrid>

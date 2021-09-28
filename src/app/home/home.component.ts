@@ -4,7 +4,6 @@ import {
   CommandModel,
   EditSettingsModel,
   GridComponent,
-  PageSettingsModel,
   RowDataBoundEventArgs,
   SortSettingsModel,
   ToolbarItems,
@@ -26,7 +25,6 @@ export class HomeComponent implements OnInit {
   isLoading = false;
   public data = <any>[];
   public dataWithoutNested: object[] = [];
-  public pageSettings: PageSettingsModel | undefined;
   public sortSettings: SortSettingsModel | undefined;
   public editSettings: EditSettingsModel | undefined;
   public commands: CommandModel | undefined;
@@ -62,6 +60,13 @@ export class HomeComponent implements OnInit {
   public toggleFilter: Boolean | undefined;
   public toggleMultiSorting: Boolean | undefined;
   public columns: any;
+
+  public uniqueIdRule: (args: { [key: string]: string }) => boolean = (args: { [key: string]: string }) => {
+    const existedIds: any = this.getIds(this.data)
+    console.log(existedIds);
+    return existedIds.filter((taskID: any) => taskID == args.value)?.length === 0
+  }
+
   public dataColumn: any = [
     {
       field: 'taskID',
@@ -73,6 +78,7 @@ export class HomeComponent implements OnInit {
       color: '#757575',
       textWrap: 'normal',
       customAttributes: { class: 'header-column-font1' },
+      validationRules: { unique: [this.uniqueIdRule, 'Task Id must be unique'] }
     },
     {
       field: 'taskName',
@@ -107,9 +113,9 @@ export class HomeComponent implements OnInit {
       customAttributes: { class: 'header-column-font4' },
     },
   ];
-  // Set the current column Data Type, Default Value, Font-Size, Color, Alignment, Text-wrap
+
   multiSelect: any;
-  constructor(public modalService: NgbModal) {}
+  constructor(public modalService: NgbModal) { }
 
   ngOnInit() {
     // Allow Drag / Drop to change order row
@@ -130,7 +136,6 @@ export class HomeComponent implements OnInit {
     this.data = sampleData;
     this.getFullRecordWithoutNested(this.data);
     this.columns = [...this.dataColumn];
-    this.pageSettings = { pageSize: 20 };
     // @ts-ignore
     this.editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Dialog' };
     // @ts-ignore
@@ -442,5 +447,17 @@ export class HomeComponent implements OnInit {
       const dialog = args.dialog;
       dialog.header = args.requestType === 'beginEdit' ? 'Edit Record of ' + args.rowData['taskID'] : 'New Record';
     }
+  }
+
+  actionBegin(args: any): void {
+    console.log(args.requestType)
+    if (args.requestType === 'beginEdit' || args.requestType === 'add') {
+    }
+  }
+
+  getIds(datasets: any[]){
+    const dataStr = JSON.stringify(datasets);
+    const ids = dataStr.match(/"taskID":\w+/g)?.map(e=> e.replace('"taskID":',''))
+    return ids
   }
 }
