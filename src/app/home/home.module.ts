@@ -10,7 +10,6 @@ import {
   ContextMenuService,
   EditService,
   FilterService,
-  // PageService,
   SortService,
   ToolbarService,
   TreeGridModule,
@@ -36,7 +35,6 @@ import { DropDownListModule } from '@syncfusion/ej2-angular-dropdowns';
   declarations: [HomeComponent, ComlumnComponent, SettingsComponent, StylingComponent],
   providers: [
     ContextMenuService,
-    // PageService,
     SortService,
     FilterService,
     EditService,

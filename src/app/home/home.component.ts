@@ -63,7 +63,6 @@ export class HomeComponent implements OnInit {
 
   public uniqueIdRule: (args: { [key: string]: string }) => boolean = (args: { [key: string]: string }) => {
     const existedIds: any = this.getIds(this.data)
-    console.log(existedIds);
     return existedIds.filter((taskID: any) => taskID == args.value)?.length === 0
   }
 
