@@ -70,18 +70,6 @@ export class HomeComponent implements OnInit {
 
   public dataColumn: any = [
     {
-      field: 'taskID',
-      headerText: 'Task ID',
-      textAlign: 'Left',
-      isPrimaryKey: true,
-      type: 'number',
-      fontSize: 14,
-      color: '#757575',
-      textWrap: 'normal',
-      customAttributes: { class: 'header-column-font1' },
-      validationRules: { unique: [this.uniqueIdRule, 'Task Id must be unique'] },
-    },
-    {
       field: 'taskName',
       headerText: 'Task Name',
       textAlign: 'Left',
