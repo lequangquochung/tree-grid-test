@@ -63,10 +63,10 @@ export class HomeComponent implements OnInit {
 
   public uniqueIdRule: (args: { [key: string]: string }) => boolean = (args: { [key: string]: string }) => {
     const element: any = args.element;
-    if(element?.ej2_instances?.[0]?.enabled === false) return true
-    const existedIds: any = this.getIds(this.data)
-    return existedIds.filter((taskID: any) => taskID == args.value)?.length === 0
-  }
+    if (element?.ej2_instances?.[0]?.enabled === false) return true;
+    const existedIds: any = this.getIds(this.data);
+    return existedIds.filter((taskID: any) => taskID == args.value)?.length === 0;
+  };
 
   public dataColumn: any = [
     {
@@ -79,7 +79,7 @@ export class HomeComponent implements OnInit {
       color: '#757575',
       textWrap: 'normal',
       customAttributes: { class: 'header-column-font1' },
-      validationRules: { unique: [this.uniqueIdRule, 'Task Id must be unique'] }
+      validationRules: { unique: [this.uniqueIdRule, 'Task Id must be unique'] },
     },
     {
       field: 'taskName',
@@ -116,7 +116,7 @@ export class HomeComponent implements OnInit {
   ];
 
   multiSelect: any;
-  constructor(public modalService: NgbModal) { }
+  constructor(public modalService: NgbModal) {}
 
   ngOnInit() {
     // Allow Drag / Drop to change order row
@@ -159,6 +159,7 @@ export class HomeComponent implements OnInit {
     } else if (args.item.id === 'delete') {
       this.dataColumn = this.dataColumn.filter((column: any) => column.field !== args.column.field);
       this.columns = this.dataColumn;
+      this?.grid?.refreshColumns();
     }
   }
 
@@ -174,10 +175,11 @@ export class HomeComponent implements OnInit {
               field: `${res.event.column.text.trim()}${this.dataColumn.length}`,
               headerText: res.event.column.text,
               textAlign: 'Right',
-              width: 'auto',
+              width: 150,
               type: 'string',
               fontSize: 14,
               color: '#757575',
+              allowSorting: false,
               customAttributes: { class: `header-column-font${this.dataColumn.length + 1}` },
             });
             this.columns = [...this.dataColumn];
@@ -185,7 +187,6 @@ export class HomeComponent implements OnInit {
           case 'edit':
             const column: any = this?.grid?.getColumnByField(res.event.column.field);
             column.headerText = res.event.column.text;
-            console.log(column);
             this?.grid?.refreshColumns();
             break;
           default:
@@ -451,14 +452,14 @@ export class HomeComponent implements OnInit {
   }
 
   actionBegin(args: any): void {
-    console.log(args.requestType)
+    console.log(args.requestType);
     if (args.requestType === 'beginEdit' || args.requestType === 'add') {
     }
   }
 
-  getIds(datasets: any[]){
+  getIds(datasets: any[]) {
     const dataStr = JSON.stringify(datasets);
-    const ids = dataStr.match(/"taskID":\w+/g)?.map(e=> e.replace('"taskID":',''))
-    return ids
+    const ids = dataStr.match(/"taskID":\w+/g)?.map((e) => e.replace('"taskID":', ''));
+    return ids;
   }
 }
