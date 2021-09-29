@@ -70,10 +70,23 @@ export class HomeComponent implements OnInit {
 
   public dataColumn: any = [
     {
+      field: 'taskID',
+      headerText: 'Task ID1',
+      textAlign: 'Left',
+      type: 'string',
+      visible: false,
+      isPrimaryKey: true,
+      fontSize: 14,
+      color: '#757575',
+      textWrap: 'normal',
+      customAttributes: { class: 'header-column-font1' },
+    },
+    {
       field: 'taskCode',
       headerText: 'Task ID',
       textAlign: 'Left',
       type: 'string',
+
       fontSize: 14,
       color: '#757575',
       textWrap: 'normal',
@@ -172,7 +185,7 @@ export class HomeComponent implements OnInit {
             this.dataColumn.push({
               field: `${res.event.column.text.trim()}${this.dataColumn.length}`,
               headerText: res.event.column.text,
-              textAlign: 'Right',
+              textAlign: 'Left',
               width: 150,
               type: 'string',
               fontSize: 14,
