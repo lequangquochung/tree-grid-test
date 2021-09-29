@@ -62,6 +62,8 @@ export class HomeComponent implements OnInit {
   public columns: any;
 
   public uniqueIdRule: (args: { [key: string]: string }) => boolean = (args: { [key: string]: string }) => {
+    const element: any = args.element;
+    if(element?.ej2_instances?.[0]?.enabled === false) return true
     const existedIds: any = this.getIds(this.data)
     return existedIds.filter((taskID: any) => taskID == args.value)?.length === 0
   }
