@@ -70,6 +70,16 @@ export class HomeComponent implements OnInit {
 
   public dataColumn: any = [
     {
+      field: 'taskCode',
+      headerText: 'Task ID',
+      textAlign: 'Left',
+      type: 'string',
+      fontSize: 14,
+      color: '#757575',
+      textWrap: 'normal',
+      customAttributes: { class: 'header-column-font1' },
+    },
+    {
       field: 'taskName',
       headerText: 'Task Name',
       textAlign: 'Left',
@@ -199,7 +209,8 @@ export class HomeComponent implements OnInit {
       const selectedrecords: object[] = this.grid?.getSelectedRecords() || [];
       this.selectedRowForCopy = selectedrecords;
       this.selectedRow = [];
-      this.data = [...this.data];
+      // this.data = [...this.data];
+      this?.grid?.refreshColumns();
     }
 
     if (args?.item?.id === 'pasteschild' || args?.item?.id === 'pastesibling') {
@@ -225,6 +236,7 @@ export class HomeComponent implements OnInit {
 
       // reset data
       this.data = [...newData];
+      // this?.grid?.refreshColumns();
     }
 
     if (args?.item?.id === 'multiselect') {
