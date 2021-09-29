@@ -87,7 +87,7 @@ export class HomeComponent implements OnInit {
       fontSize: 14,
       color: '#757575',
       textWrap: 'normal',
-      customAttributes: { class: 'header-column-font1' },
+      customAttributes: { class: 'header-column-font2' },
     },
     {
       field: 'startDate',
@@ -99,7 +99,7 @@ export class HomeComponent implements OnInit {
       fontSize: 14,
       color: '#757575',
       textWrap: 'normal',
-      customAttributes: { class: 'header-column-font2' },
+      customAttributes: { class: 'header-column-font3' },
     },
     {
       field: 'duration',
@@ -109,7 +109,7 @@ export class HomeComponent implements OnInit {
       fontSize: 14,
       color: '#757575',
       textWrap: 'normal',
-      customAttributes: { class: 'header-column-font3' },
+      customAttributes: { class: 'header-column-font4' },
     },
   ];
 
