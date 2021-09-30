@@ -171,7 +171,15 @@ export class HomeComponent implements OnInit {
     } else if (args.item.id === 'delete') {
       this.dataColumn = this.dataColumn.filter((column: any) => column.field !== args.column.field);
       this.columns = this.dataColumn;
-      this?.grid?.refreshColumns();
+      try {
+        this.grid?.clearSorting();
+        this.grid?.clearFiltering();
+        this.grid?.clearGrouping();
+        this.grid?.goToPage(1);
+        this.grid?.refreshColumns();
+      } catch (e) {
+        console.log(e);
+      }
     }
   }
 
@@ -191,7 +199,6 @@ export class HomeComponent implements OnInit {
               type: 'string',
               fontSize: 14,
               color: '#757575',
-              allowSorting: false,
               customAttributes: { class: `header-column-font${this.dataColumn.length + 1}` },
             });
             this.columns = [...this.dataColumn];
@@ -283,6 +290,7 @@ export class HomeComponent implements OnInit {
     if (args.item.id === 'delete') {
       this.dataColumn = this.dataColumn.filter((column: any) => column.field !== args.column.field);
       this.columns = this.dataColumn;
+      this.grid?.clearSorting();
     }
 
     if (args.item.id === 'freeze') {
@@ -333,7 +341,6 @@ export class HomeComponent implements OnInit {
         modalRef.close();
       });
     }
-
     return;
   }
 
