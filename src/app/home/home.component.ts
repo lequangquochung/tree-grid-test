@@ -34,7 +34,7 @@ export class HomeComponent implements OnInit {
 
   public toolbarOptions: ToolbarItems[] | Object[] | undefined;
   public frozenColumns: number | undefined;
-  public filterSettings: any = { type: 'FilterBar', hierarchyMode: 'Parent', mode: 'Immediate' }
+  public filterSettings: any = { type: 'FilterBar', hierarchyMode: 'Parent', mode: 'Immediate' };
   public contextMenuItems: any = [
     { text: 'Add', target: '.e-headercontent', id: 'add' },
     { text: 'Edit', target: '.e-headercontent', id: 'edit' },
@@ -91,7 +91,7 @@ export class HomeComponent implements OnInit {
       fontSize: 14,
       color: '#757575',
       textWrap: 'normal',
-      customAttributes: { class: 'header-column-font1' },
+      customAttributes: { class: 'header-column-font2' },
     },
     {
       field: 'taskName',
@@ -101,7 +101,7 @@ export class HomeComponent implements OnInit {
       fontSize: 14,
       color: '#757575',
       textWrap: 'normal',
-      customAttributes: { class: 'header-column-font2' },
+      customAttributes: { class: 'header-column-font3' },
     },
     {
       field: 'startDate',
@@ -113,7 +113,7 @@ export class HomeComponent implements OnInit {
       fontSize: 14,
       color: '#757575',
       textWrap: 'normal',
-      customAttributes: { class: 'header-column-font3' },
+      customAttributes: { class: 'header-column-font4' },
     },
     {
       field: 'duration',
@@ -123,12 +123,12 @@ export class HomeComponent implements OnInit {
       fontSize: 14,
       color: '#757575',
       textWrap: 'normal',
-      customAttributes: { class: 'header-column-font4' },
+      customAttributes: { class: 'header-column-font5' },
     },
   ];
 
   multiSelect: any;
-  constructor(public modalService: NgbModal) { }
+  constructor(public modalService: NgbModal) {}
 
   ngOnInit() {
     // Allow Drag / Drop to change order row
