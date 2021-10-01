@@ -345,7 +345,7 @@ export class HomeComponent implements OnInit {
             document.documentElement.style.setProperty(`--textOverFlow${index + 1}`, `ellipsis`);
             document.documentElement.style.setProperty(`--whiteSpace${index + 1}`, `nowrap`);
             document.documentElement.style.setProperty(`--marginColumn${index + 1}`, `-7px`);
-            document.documentElement.style.setProperty(`--heightColumn${index + 1}`, `21px`);
+            document.documentElement.style.setProperty(`--heightColumn${index + 1}`, `25px`);
           }
         }
         this.columns = [...this.dataColumn];
