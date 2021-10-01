@@ -6,7 +6,11 @@
   @for $i from 1 through 200 {
     --fontSize#{$i}: 14px;
     --color#{$i}: #757575;
-    --textWrap#{$i}: "normal";
+    --textWrap#{$i}: normal;
+    --textOverFlow#{$i}: ellipsis;
+    --whiteSpace#{$i}: nowrap;
+    --marginColumn#{$i}: -7px;
+    --heightColumn#{$i}: 19px;
   }
 }
 
@@ -17,5 +21,20 @@
       color: var(--color#{$i}) !important;
       word-wrap: var(--textWrap#{$i});
     }
+    div {
+      text-overflow: var(--textOverFlow#{$i}) !important;
+      white-space: var(--whiteSpace#{$i}) !important;
+      margin: var(--marginColumn#{$i}) !important;
+      height: var(--heightColumn#{$i}) !important;
+    }
+  }
+}
+
+.text-wrap-break-words {
+  div {
+    height: auto !important;
+    text-overflow: inherit !important;
+    white-space: inherit !important;
+    margin-top: inherit !important;
   }
 }

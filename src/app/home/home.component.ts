@@ -336,6 +336,17 @@ export class HomeComponent implements OnInit {
         if (res.textWrap) {
           this.dataColumn[index].textWrap = res.textWrap;
           document.documentElement.style.setProperty(`--textWrap${index + 1}`, res.textWrap);
+          if (res.textWrap === 'break-word') {
+            document.documentElement.style.setProperty(`--textOverFlow${index + 1}`, `inherit`);
+            document.documentElement.style.setProperty(`--whiteSpace${index + 1}`, `inherit`);
+            document.documentElement.style.setProperty(`--marginColumn${index + 1}`, `inherit`);
+            document.documentElement.style.setProperty(`--heightColumn${index + 1}`, `auto`);
+          } else {
+            document.documentElement.style.setProperty(`--textOverFlow${index + 1}`, `ellipsis`);
+            document.documentElement.style.setProperty(`--whiteSpace${index + 1}`, `nowrap`);
+            document.documentElement.style.setProperty(`--marginColumn${index + 1}`, `-7px`);
+            document.documentElement.style.setProperty(`--heightColumn${index + 1}`, `19px`);
+          }
         }
         this.columns = [...this.dataColumn];
         modalRef.close();
