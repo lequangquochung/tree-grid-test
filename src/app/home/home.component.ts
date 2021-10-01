@@ -33,7 +33,8 @@ export class HomeComponent implements OnInit {
   selectedRowForCopy: Array<any> = [];
 
   public toolbarOptions: ToolbarItems[] | Object[] | undefined;
-  public frozenColumns: number | undefined;
+  public declare frozenColumns: number;
+  public declare allowReordering: boolean;
   public filterSettings: any = { type: 'FilterBar', hierarchyMode: 'Parent', mode: 'Immediate' };
   public contextMenuItems: any = [
     { text: 'Add', target: '.e-headercontent', id: 'add' },
@@ -144,6 +145,7 @@ export class HomeComponent implements OnInit {
     TreeGrid.Inject(Freeze);
 
     this.frozenColumns = 0;
+    this.allowReordering = true;
     this.toggleMultiSorting = true;
     this.toggleFilter = true;
     this.data = sampleData;
@@ -294,8 +296,18 @@ export class HomeComponent implements OnInit {
     }
 
     if (args.item.id === 'freeze') {
-      let index = this.dataColumn.findIndex((column: any) => column.field === args.column.field);
-      this.frozenColumns = index != this.frozenColumns ? index : 0;
+      let index = this.dataColumn.findIndex((column: any) => column.field === args.column.field) + 1;
+
+      //reset frozen
+      if (this.frozenColumns > 0 && index == this.frozenColumns) {
+        this.allowReordering = true;
+        this.frozenColumns = 0;
+        return;
+      }
+      this.frozenColumns = index;
+      setTimeout(() => {
+        this.allowReordering = false;
+      }, 1000);
     }
 
     if (args.item.id === 'filter') {

@@ -4,11 +4,10 @@
     [filterSettings]="filterSettings"
     [dataSource]="data"
     [allowRowDragAndDrop]="true"
-    [allowReordering]="true"
+    [allowReordering]="allowReordering"
     [allowSelection]="true"
     [selectionSettings]="multiSelect"
     [allowResizing]="true"
-    [treeColumnIndex]="1"
     [allowFiltering]="toggleFilter"
     [sortSettings]="sortSettings"
     [allowSorting]="true"
@@ -25,7 +24,6 @@
     (toolbarClick)="toolbarClick($event)"
     (actionBegin)="actionBegin($event)"
     (actionComplete)="actionComplete($event)"
-    [treeColumnIndex]="2"
   >
   </ejs-treegrid>
 </div>
