@@ -37,6 +37,7 @@ export class HomeComponent implements OnInit {
   public declare frozenColumns: number;
   public filterSettings: any = { type: 'FilterBar', hierarchyMode: 'Parent', mode: 'Immediate' };
   public contextMenuItems: any = [
+    { text: 'Show/Hide Column', target: '.e-headercontent', id: 'show-hide-column' },
     { text: 'Add', target: '.e-headercontent', id: 'add' },
     { text: 'Edit', target: '.e-headercontent', id: 'edit' },
     { text: 'Delete', target: '.e-headercontent', id: 'delete' },
@@ -284,6 +285,10 @@ export class HomeComponent implements OnInit {
           return element;
         });
       }
+    }
+
+    if (args?.item?.id === 'show-hide-column') {
+      this.grid?.columnChooserModule.openColumnChooser(); // give X and Y axis
     }
 
     if (args.item.id === 'add') {

@@ -15,6 +15,7 @@ import {
   SortService,
   ToolbarService,
   TreeGridModule,
+  ColumnChooserService,
 } from '@syncfusion/ej2-angular-treegrid';
 import { ComlumnComponent } from './comlumn/comlumn.component';
 import { HomeRoutingModule } from './home-routing.module';
@@ -44,6 +45,7 @@ import { DropDownListModule } from '@syncfusion/ej2-angular-dropdowns';
     ColumnMenuService,
     PageService,
     InfiniteScrollService,
+    ColumnChooserService,
   ],
 })
 export class HomeModule {}
