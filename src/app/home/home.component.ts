@@ -27,6 +27,7 @@ export class HomeComponent implements OnInit {
   public dataWithoutNested: object[] = [];
   public sortSettings: SortSettingsModel | undefined;
   public editSettings: EditSettingsModel | undefined;
+  declare pageSettings: any;
   public commands: CommandModel | undefined;
   public columnMenuItems = <any>[];
   selectedRow: Array<any> = [];
@@ -145,6 +146,7 @@ export class HomeComponent implements OnInit {
     // Allow Freeze
     TreeGrid.Inject(Freeze);
 
+    this.pageSettings = { pageSize: 20 };
     this.gridBodyHeight = window.innerHeight - 100;
     this.frozenColumns = 0;
     this.toggleMultiSorting = true;
@@ -298,6 +300,7 @@ export class HomeComponent implements OnInit {
     }
 
     if (args.item.id === 'freeze') {
+      this.grid?.clearSelection(); //if freeze while still select row => error
       //reset collumn re ordering
       this.columns = this.columns.map((column: any) => {
         column.allowReordering = true;

@@ -98,13 +98,22 @@ q {
   font-size: 100px !important;
 }
 
-:host ::ng-deep .e-table {
-  width: 100% !important;
-}
+:host ::ng-deep .p-1 {
+  //fix the column being shrink after freeze
+  .e-table {
+    width: 100% !important;
+  }
 
-:host ::ng-deep .e-headercell {
-  .e-rhandler.e-rcursor {
-    margin: 0px !important;
-    height: 100% !important;
+  //fix can't see the resize line on the header
+  .e-headercell {
+    .e-rhandler.e-rcursor {
+      margin: 0px !important;
+      height: 100% !important;
+    }
+  }
+
+  //fix freeze column can't see the resize line on the header
+  .e-frozenheader .e-headercell .e-rhandler {
+    right: 0 !important;
   }
 }
