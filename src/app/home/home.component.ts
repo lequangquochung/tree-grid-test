@@ -34,7 +34,6 @@ export class HomeComponent implements OnInit {
 
   public toolbarOptions: ToolbarItems[] | Object[] | undefined;
   public declare frozenColumns: number;
-  public declare allowReordering: boolean;
   public filterSettings: any = { type: 'FilterBar', hierarchyMode: 'Parent', mode: 'Immediate' };
   public contextMenuItems: any = [
     { text: 'Add', target: '.e-headercontent', id: 'add' },
@@ -59,6 +58,7 @@ export class HomeComponent implements OnInit {
     'Cancel',
   ];
   @ViewChild('grid') public grid: GridComponent | undefined;
+  declare gridBodyHeight: number;
   public toggleFilter: Boolean | undefined;
   public toggleMultiSorting: Boolean | undefined;
   public columns: any;
@@ -129,6 +129,7 @@ export class HomeComponent implements OnInit {
   ];
 
   multiSelect: any;
+
   constructor(public modalService: NgbModal) {}
 
   ngOnInit() {
@@ -144,13 +145,14 @@ export class HomeComponent implements OnInit {
     // Allow Freeze
     TreeGrid.Inject(Freeze);
 
+    this.gridBodyHeight = window.innerHeight - 100;
     this.frozenColumns = 0;
-    this.allowReordering = true;
     this.toggleMultiSorting = true;
     this.toggleFilter = true;
     this.data = sampleData;
     this.getFullRecordWithoutNested(this.data);
     this.columns = [...this.dataColumn];
+
     // @ts-ignore
     this.editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Dialog' };
     // @ts-ignore
@@ -296,18 +298,28 @@ export class HomeComponent implements OnInit {
     }
 
     if (args.item.id === 'freeze') {
+      //reset collumn re ordering
+      this.columns = this.columns.map((column: any) => {
+        column.allowReordering = true;
+        return column;
+      });
+
+      //index of chosen froze column
       let index = this.dataColumn.findIndex((column: any) => column.field === args.column.field) + 1;
+
+      //block re ordering for all the columns on the leftside of chosen froze column
+      this.columns.forEach((column: any) => {
+        if (column.index < index) {
+          column.allowReordering = false;
+        }
+      });
 
       //reset frozen
       if (this.frozenColumns > 0 && index == this.frozenColumns) {
-        this.allowReordering = true;
         this.frozenColumns = 0;
         return;
       }
       this.frozenColumns = index;
-      setTimeout(() => {
-        this.allowReordering = false;
-      }, 1000);
     }
 
     if (args.item.id === 'filter') {

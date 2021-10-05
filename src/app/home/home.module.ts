@@ -10,6 +10,8 @@ import {
   ContextMenuService,
   EditService,
   FilterService,
+  InfiniteScrollService,
+  PageService,
   SortService,
   ToolbarService,
   TreeGridModule,
@@ -40,6 +42,8 @@ import { DropDownListModule } from '@syncfusion/ej2-angular-dropdowns';
     EditService,
     ToolbarService,
     ColumnMenuService,
+    PageService,
+    InfiniteScrollService,
   ],
 })
 export class HomeModule {}
