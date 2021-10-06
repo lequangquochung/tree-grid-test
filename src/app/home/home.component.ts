@@ -83,6 +83,7 @@ export class HomeComponent implements OnInit {
       fontSize: 14,
       color: '#757575',
       textWrap: 'normal',
+      showInColumnChooser: false,
       customAttributes: { class: 'header-column-font1' },
     },
     {
@@ -201,9 +202,10 @@ export class HomeComponent implements OnInit {
             this.dataColumn.push({
               field: `${res.event.column.text.trim()}${this.dataColumn.length}`,
               headerText: res.event.column.text,
+              editType: res.event.column.columnType.includes('date') ? 'datetimepickeredit' : 'string',
               textAlign: 'Left',
               width: 150,
-              type: 'string',
+              type: res.event.column.columnType || 'string',
               fontSize: 14,
               color: '#757575',
               customAttributes: { class: `header-column-font${this.dataColumn.length + 1}` },

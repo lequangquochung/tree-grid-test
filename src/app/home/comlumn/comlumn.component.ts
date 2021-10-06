@@ -10,9 +10,10 @@ export class ComlumnComponent implements OnInit {
   @Input() type: any | undefined;
   @Input() column: any | undefined;
   @Output() columnEmitter = new EventEmitter<any>();
-
+  columnTypeData: any = ['string', 'number', 'boolean', 'date', 'datetime'];
   constructor(private modalService: NgbModal) {}
   columnName: string = '';
+  columnType: string = '';
   columnTitle: string = '';
   ngOnInit(): void {
     this.columnTitle = this.type === 'add' ? 'Add' : 'Edit';
@@ -23,6 +24,10 @@ export class ComlumnComponent implements OnInit {
     this.columnEmitter.emit({ event: false });
   }
 
+  onChangeColumnType(args: any): void {
+    this.columnType = args.value;
+  }
+
   saveColumn() {
     this.columnEmitter.emit({
       event: {
@@ -30,6 +35,7 @@ export class ComlumnComponent implements OnInit {
         column: {
           ...this.column,
           text: this.columnName,
+          columnType: this.columnType,
         },
       },
     });
