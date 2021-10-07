@@ -13,7 +13,7 @@ export class ComlumnComponent implements OnInit {
   columnTypeData: any = ['string', 'number', 'boolean', 'date', 'datetime'];
   constructor(private modalService: NgbModal) {}
   columnName: string = '';
-  columnType: string = '';
+  columnType: string = 'string';
   columnTitle: string = '';
   ngOnInit(): void {
     this.columnTitle = this.type === 'add' ? 'Add' : 'Edit';
