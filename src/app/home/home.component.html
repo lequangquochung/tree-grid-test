@@ -1,5 +1,6 @@
 <div class="p-1">
   <ejs-treegrid
+    *ngIf="!isLoading"
     #grid
     [height]="gridBodyHeight"
     [columns]="columns"
@@ -11,6 +12,7 @@
     [filterSettings]="filterSettings"
     [pageSettings]="pageSettings"
     [selectionSettings]="multiSelect"
+    [infiniteScrollSettings]="infiniteOptions"
     [enableInfiniteScrolling]="true"
     [allowRowDragAndDrop]="true"
     [allowReordering]="true"
@@ -31,4 +33,7 @@
     [showColumnChooser]="true"
   >
   </ejs-treegrid>
+  <div class="loading" *ngIf="isLoading">
+    <div class="spinner-border" role="status"></div>
+  </div>
 </div>

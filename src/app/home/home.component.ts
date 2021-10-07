@@ -3,7 +3,16 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GridComponent, RowDataBoundEventArgs } from '@syncfusion/ej2-angular-grids';
 import { EditSettingsModel, SortSettingsModel, ToolbarItems } from '@syncfusion/ej2-angular-treegrid';
 import { MenuEventArgs } from '@syncfusion/ej2-navigations';
-import { Freeze, Page, Reorder, Resize, RowDD, Selection, TreeGrid } from '@syncfusion/ej2-treegrid';
+import {
+  Freeze,
+  InfiniteScrollSettingsModel,
+  Page,
+  Reorder,
+  Resize,
+  RowDD,
+  Selection,
+  TreeGrid,
+} from '@syncfusion/ej2-treegrid';
 import { ComlumnComponent } from './comlumn/comlumn.component';
 import { CONTEXT_MENU_ITEM } from './context-menu-item';
 import { DATA_COLUMNS } from './data-columns';
@@ -20,6 +29,7 @@ export class HomeComponent implements OnInit {
   @ViewChild('grid') declare grid: GridComponent;
   declare quote: string;
   public isLoading = false;
+  private declare loadedRecordCount: number;
 
   public declare columns: any[];
 
@@ -39,9 +49,11 @@ export class HomeComponent implements OnInit {
   public declare sortSettings: SortSettingsModel;
   public declare editSettings: EditSettingsModel;
   public declare filterSettings: any;
+  public declare infiniteOptions: InfiniteScrollSettingsModel;
 
   public declare gridBodyHeight: number;
 
+  public declare allowDragAndDrop: boolean;
   public declare toggleFilter: Boolean;
   public declare toggleMultiSorting: Boolean;
   public declare frozenColumns: number;
@@ -52,8 +64,10 @@ export class HomeComponent implements OnInit {
     this.editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Dialog' };
 
     //infinite scroll setting
-    this.pageSettings = { pageSize: 20 };
+    this.pageSettings = { pageSize: 50 };
+    this.loadedRecordCount = this.pageSettings.pageSize;
     this.gridBodyHeight = window.innerHeight - 100;
+    this.infiniteOptions = { initialBlocks: 1 };
 
     this.frozenColumns = 0;
     this.toggleMultiSorting = true;
@@ -226,13 +240,26 @@ export class HomeComponent implements OnInit {
       this.openModal(args.item.id, { field: args.column.field, text: args.column.headerText });
     }
     if (args.item.id === 'delete') {
+      if (this.frozenColumns > 0) {
+        this.grid.clearSelection();
+        this.infiniteOptions = { initialBlocks: 1 };
+        this.loadedRecordCount = this.pageSettings.pageSize;
+
+        this.frozenColumns = 0;
+        this.columns = this.columns.map((column: any) => {
+          column.allowReordering = true;
+          return column;
+        });
+      }
+
       this.dataColumn = this.dataColumn.filter((column: any) => column.field !== args.column.field);
       this.columns = this.dataColumn;
       this.grid?.clearSorting();
     }
 
     if (args.item.id === 'freeze') {
-      this.grid?.clearSelection(); //if freeze while still select row => error
+      const lastScrollPosition = this.grid.element.querySelector('.e-gridcontent .e-content')?.scrollTop;
+      this.isLoading = true;
       //reset collumn re ordering
       this.columns = this.columns.map((column: any) => {
         column.allowReordering = true;
@@ -251,10 +278,18 @@ export class HomeComponent implements OnInit {
 
       //reset frozen
       if (this.frozenColumns > 0 && index == this.frozenColumns) {
-        this.frozenColumns = 0;
-        return;
+        index = 0;
       }
       this.frozenColumns = index;
+      this.infiniteOptions = { initialBlocks: this.loadedRecordCount / this.pageSettings.pageSize };
+
+      setTimeout(() => {
+        this.isLoading = false;
+        setTimeout(() => {
+          // @ts-ignore
+          this.grid.element.querySelector('.e-gridcontent .e-content')?.scrollTop = lastScrollPosition;
+        }, 700);
+      }, 200);
     }
 
     if (args.item.id === 'filter') {
@@ -316,6 +351,8 @@ export class HomeComponent implements OnInit {
     }
     return;
   }
+
+  freezeColumn() {}
 
   rowBound(args: RowDataBoundEventArgs) {
     const taskID: any = args?.data?.['taskID'];
@@ -446,8 +483,11 @@ export class HomeComponent implements OnInit {
   }
 
   actionBegin(args: any): void {
-    console.log(this.gridBodyHeight);
+    // console.log(args.requestType)
     if (args.requestType === 'beginEdit' || args.requestType === 'add') {
+    }
+    if (args.requestType == 'infiniteScroll') {
+      this.loadedRecordCount += this.pageSettings.pageSize;
     }
   }
 
