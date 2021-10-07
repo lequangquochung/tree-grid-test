@@ -1,16 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import {
-  CommandModel,
-  EditSettingsModel,
-  GridComponent,
-  RowDataBoundEventArgs,
-  SortSettingsModel,
-  ToolbarItems,
-} from '@syncfusion/ej2-angular-grids';
+import { GridComponent, RowDataBoundEventArgs } from '@syncfusion/ej2-angular-grids';
+import { EditSettingsModel, SortSettingsModel, ToolbarItems } from '@syncfusion/ej2-angular-treegrid';
 import { MenuEventArgs } from '@syncfusion/ej2-navigations';
 import { Freeze, Page, Reorder, Resize, RowDD, Selection, TreeGrid } from '@syncfusion/ej2-treegrid';
 import { ComlumnComponent } from './comlumn/comlumn.component';
+import { CONTEXT_MENU_ITEM } from './context-menu-item';
+import { DATA_COLUMNS } from './data-columns';
 import { sampleData } from './home.data';
 import { SettingsComponent } from './settings/settings.component';
 import { StylingComponent } from './styling/styling.component';
@@ -21,119 +17,58 @@ import { StylingComponent } from './styling/styling.component';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  quote: string | undefined;
-  isLoading = false;
+  @ViewChild('grid') declare grid: GridComponent;
+  declare quote: string;
+  public isLoading = false;
+
+  public declare columns: any[];
+
+  public columnMenuItems = <any>[];
+  public dataColumn: any = DATA_COLUMNS;
+  public contextMenuItems: any = CONTEXT_MENU_ITEM;
+
   public data = <any>[];
   public dataWithoutNested: object[] = [];
-  public sortSettings: SortSettingsModel | undefined;
-  public editSettings: EditSettingsModel | undefined;
-  declare pageSettings: any;
-  public commands: CommandModel | undefined;
-  public columnMenuItems = <any>[];
+
   selectedRow: Array<any> = [];
   selectedRowForCopy: Array<any> = [];
 
-  public toolbarOptions: ToolbarItems[] | Object[] | undefined;
+  public declare pageSettings: any;
+  public declare commands: any;
+  public declare toolbarOptions: ToolbarItems[];
+  public declare sortSettings: SortSettingsModel;
+  public declare editSettings: EditSettingsModel;
+  public declare filterSettings: any;
+
+  public declare gridBodyHeight: number;
+
+  public declare toggleFilter: Boolean;
+  public declare toggleMultiSorting: Boolean;
   public declare frozenColumns: number;
-  public filterSettings: any = { type: 'FilterBar', hierarchyMode: 'Parent', mode: 'Immediate' };
-  public contextMenuItems: any = [
-    { text: 'Show/Hide Column', target: '.e-headercontent', id: 'show-hide-column' },
-    { text: 'Add', target: '.e-headercontent', id: 'add' },
-    { text: 'Edit', target: '.e-headercontent', id: 'edit' },
-    { text: 'Delete', target: '.e-headercontent', id: 'delete' },
-    { text: 'Multiple sorting off', target: '.e-headercontent', id: 'mutiple-sorting' },
-    { text: 'Freeze', target: '.e-headercontent', id: 'freeze' },
-    { text: 'Filter Off', target: '.e-headercontent', id: 'filter' },
-    { text: 'Styling', target: '.e-headercontent', id: 'styling' },
-    { text: 'Copy with headers', target: '.e-content', id: 'copywithheader' },
-    'Copy',
-    { text: 'Copy selected rows', target: '.e-content', id: 'copyrows' },
-    { text: 'Cut', target: '.e-content', id: 'cut' },
-    { text: 'Paste as sibling', target: '.e-content', id: 'pastesibling' },
-    { text: 'Paste as child', target: '.e-content', id: 'pasteschild' },
-    { text: 'Turn off multi select mode', target: '.e-content', id: 'multiselect' },
+  public declare multiSelect: any;
 
-    'AddRow',
-    'Edit',
-    'Delete',
-    'Save',
-    'Cancel',
-  ];
-  @ViewChild('grid') public grid: GridComponent | undefined;
-  declare gridBodyHeight: number;
-  public toggleFilter: Boolean | undefined;
-  public toggleMultiSorting: Boolean | undefined;
-  public columns: any;
+  constructor(public modalService: NgbModal) {
+    this.filterSettings = { type: 'FilterBar', hierarchyMode: 'Parent', mode: 'Immediate' };
+    this.editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Dialog' };
 
-  public uniqueIdRule: (args: { [key: string]: string }) => boolean = (args: { [key: string]: string }) => {
-    const element: any = args.element;
-    if (element?.ej2_instances?.[0]?.enabled === false) return true;
-    const existedIds: any = this.getIds(this.data);
-    return existedIds.filter((taskID: any) => taskID == args.value)?.length === 0;
-  };
+    //infinite scroll setting
+    this.pageSettings = { pageSize: 20 };
+    this.gridBodyHeight = window.innerHeight - 100;
 
-  public dataColumn: any = [
-    {
-      field: 'taskID',
-      headerText: 'Task ID1',
-      textAlign: 'Left',
-      type: 'string',
-      visible: false,
-      isPrimaryKey: true,
-      fontSize: 14,
-      color: '#757575',
-      textWrap: 'normal',
-      showInColumnChooser: false,
-      customAttributes: { class: 'header-column-font1' },
-    },
-    {
-      field: 'taskCode',
-      headerText: 'Task ID',
-      textAlign: 'Left',
-      type: 'string',
+    this.frozenColumns = 0;
+    this.toggleMultiSorting = true;
+    this.toggleFilter = true;
+    this.multiSelect = { type: 'Multiple' };
 
-      fontSize: 14,
-      color: '#757575',
-      textWrap: 'normal',
-      customAttributes: { class: 'header-column-font2' },
-    },
-    {
-      field: 'taskName',
-      headerText: 'Task Name',
-      textAlign: 'Left',
-      type: 'string',
-      fontSize: 14,
-      color: '#757575',
-      textWrap: 'normal',
-      customAttributes: { class: 'header-column-font3' },
-    },
-    {
-      field: 'startDate',
-      headerText: 'Start Date',
-      textAlign: 'Left',
-      format: 'yMd',
-      editType: 'datetimepickeredit',
-      type: 'date',
-      fontSize: 14,
-      color: '#757575',
-      textWrap: 'normal',
-      customAttributes: { class: 'header-column-font4' },
-    },
-    {
-      field: 'duration',
-      headerText: 'Duration',
-      textAlign: 'Left',
-      type: 'number',
-      fontSize: 14,
-      color: '#757575',
-      textWrap: 'normal',
-      customAttributes: { class: 'header-column-font5' },
-    },
-  ];
+    this.columns = [...this.dataColumn];
 
-  multiSelect: any;
-
-  constructor(public modalService: NgbModal) {}
+    this.commands = [
+      { type: 'Edit', buttonOption: { iconCss: ' e-icons e-edit', cssClass: 'e-flat' } },
+      { type: 'Delete', buttonOption: { iconCss: 'e-icons e-delete', cssClass: 'e-flat' } },
+      { type: 'Save', buttonOption: { iconCss: 'e-icons e-update', cssClass: 'e-flat' } },
+      { type: 'Cancel', buttonOption: { iconCss: 'e-icons e-cancel-icon', cssClass: 'e-flat' } },
+    ];
+  }
 
   ngOnInit() {
     // Allow Drag / Drop to change order row
@@ -148,26 +83,16 @@ export class HomeComponent implements OnInit {
     // Allow Freeze
     TreeGrid.Inject(Freeze);
 
-    this.pageSettings = { pageSize: 20 };
-    this.gridBodyHeight = window.innerHeight - 100;
-    this.frozenColumns = 0;
-    this.toggleMultiSorting = true;
-    this.toggleFilter = true;
     this.data = sampleData;
     this.getFullRecordWithoutNested(this.data);
-    this.columns = [...this.dataColumn];
-
-    // @ts-ignore
-    this.editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Dialog' };
-    // @ts-ignore
-    this.commands = [
-      { type: 'Edit', buttonOption: { iconCss: ' e-icons e-edit', cssClass: 'e-flat' } },
-      { type: 'Delete', buttonOption: { iconCss: 'e-icons e-delete', cssClass: 'e-flat' } },
-      { type: 'Save', buttonOption: { iconCss: 'e-icons e-update', cssClass: 'e-flat' } },
-      { type: 'Cancel', buttonOption: { iconCss: 'e-icons e-cancel-icon', cssClass: 'e-flat' } },
-    ];
-    this.multiSelect = { type: 'Multiple' };
   }
+
+  public uniqueIdRule: (args: { [key: string]: string }) => boolean = (args: { [key: string]: string }) => {
+    const element: any = args.element;
+    if (element?.ej2_instances?.[0]?.enabled === false) return true;
+    const existedIds: any = this.getIds(this.data);
+    return existedIds.filter((taskID: any) => taskID == args.value)?.length === 0;
+  };
 
   updateColumns(newColumns: any) {
     this.dataColumn = this.columns = newColumns;
@@ -336,6 +261,9 @@ export class HomeComponent implements OnInit {
       this.toggleFilter = !this.toggleFilter;
       _contextMenuItems[_contextMenuIndex].text = `Filter ${this.toggleFilter ? `Off` : `On`}`;
       this.contextMenuItems = [..._contextMenuItems];
+
+      //change grid content height when togle filter
+      this.gridBodyHeight = this.toggleFilter ? window.innerHeight - 100 : window.innerHeight - 60;
     }
 
     if (args.item.id === 'mutiple-sorting') {
@@ -518,7 +446,7 @@ export class HomeComponent implements OnInit {
   }
 
   actionBegin(args: any): void {
-    console.log(args.requestType);
+    console.log(this.gridBodyHeight);
     if (args.requestType === 'beginEdit' || args.requestType === 'add') {
     }
   }

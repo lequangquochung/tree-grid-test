@@ -99,9 +99,15 @@ q {
 }
 
 :host ::ng-deep .p-1 {
+  // height: 100vh;
+
   //fix the column being shrink after freeze
   .e-table {
     width: 100% !important;
+  }
+
+  .e-gridcontent .e-content {
+    overflow-y: scroll;
   }
 
   //fix can't see the resize line on the header
@@ -115,5 +121,15 @@ q {
   //fix freeze column can't see the resize line on the header
   .e-frozenheader .e-headercell .e-rhandler {
     right: 0 !important;
+  }
+
+  //fix frozen column can't load on scroll
+  .e-frozencontent,
+  .e-movablecontent {
+    height: 101% !important;
+    overflow: visible !important;
+    table {
+      height: 100% !important;
+    }
   }
 }
