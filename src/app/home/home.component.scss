@@ -98,9 +98,15 @@ q {
   font-size: 100px !important;
 }
 
-:host ::ng-deep .p-1 {
-  // height: 100vh;
+.loading {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+:host ::ng-deep .p-1 {
   //fix the column being shrink after freeze
   .e-table {
     width: 100% !important;
@@ -144,5 +150,21 @@ q {
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  //fix frozen column can't load on scroll or when unfrozen
+  .e-frozencontent,
+  .e-movablecontent {
+    height: 101% !important;
+    overflow: visible !important;
+    table {
+      height: 100% !important;
+    }
+  }
+  .e-gridcontent .e-content {
+    .e-table {
+      // height: 101% !important;// TODO : gây bug row bị quá to khi filter ít dữ liệu
+      //TODO : recheck this
+    }
   }
 }

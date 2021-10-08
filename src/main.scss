@@ -47,6 +47,19 @@
   line-height: 25px;
 }
 
+#_gridcontrol_cmenu {
+  #pastesibling,
+  #pasteschild {
+    display: none;
+  }
+}
+#_gridcontrol_cmenu.showPasteOption {
+  #pastesibling,
+  #pasteschild {
+    display: block;
+  }
+}
+
 html {
   overflow: hidden;
 }
