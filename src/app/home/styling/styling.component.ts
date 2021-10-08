@@ -19,8 +19,10 @@ export class StylingComponent implements OnInit {
 
   columnType: string = '';
   columnValue: string = '';
+  columnMinWidth: any = 0;
   fontSize: string = '';
   color: string = '';
+  backgroundColor: string = '';
   alignValue: any = '';
   textWrapValue: string = '';
 
@@ -31,6 +33,8 @@ export class StylingComponent implements OnInit {
     this.color = this.column?.color;
     this.fontSize = this.column?.fontSize;
     this.textWrapValue = this.column?.textWrap;
+    this.columnMinWidth = this.column?.minWidth;
+    this.backgroundColor = this.column?.backgroundColor;
   }
 
   close() {
@@ -45,6 +49,8 @@ export class StylingComponent implements OnInit {
       color: this.color,
       fontSize: this.fontSize,
       textWrap: this.textWrapValue,
+      minWidth: this.columnMinWidth,
+      backgroundColor: this.backgroundColor,
     });
   }
 

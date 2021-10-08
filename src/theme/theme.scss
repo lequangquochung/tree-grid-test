@@ -11,11 +11,13 @@
     --whiteSpace#{$i}: nowrap;
     --marginColumn#{$i}: -7px;
     --heightColumn#{$i}: 25px;
+    --backgroundColor#{$i}: #fff;
   }
 }
 
 @for $i from 1 through 200 {
   .e-grid .e-headercell.header-column-font#{$i} {
+    background-color: var(--backgroundColor#{$i}) !important;
     .e-headertext {
       font-size: var(--fontSize#{$i}) !important;
       color: var(--color#{$i}) !important;

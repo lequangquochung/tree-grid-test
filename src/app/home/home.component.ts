@@ -296,6 +296,9 @@ export class HomeComponent implements OnInit {
       if (res.alignValue) {
         this.dataColumn[index].textAlign = res.alignValue;
       }
+      if (res.minWidth) {
+        this.dataColumn[index].minWidth = parseInt(res.minWidth);
+      }
       if (res.columnType) {
         this.dataColumn[index].type = res.columnType;
       }
@@ -305,6 +308,10 @@ export class HomeComponent implements OnInit {
       if (res.color) {
         this.dataColumn[index].color = res.color;
         document.documentElement.style.setProperty(`--color${index + 1}`, res.color);
+      }
+      if (res.backgroundColor) {
+        this.dataColumn[index].backgroundColor = res.backgroundColor;
+        document.documentElement.style.setProperty(`--backgroundColor${index + 1}`, res.backgroundColor);
       }
       if (res.fontSize) {
         this.dataColumn[index].fontSize = res.fontSize;
@@ -326,6 +333,7 @@ export class HomeComponent implements OnInit {
         }
       }
       this.columns = [...this.dataColumn];
+
       modalRef.close();
     });
   }
@@ -344,10 +352,12 @@ export class HomeComponent implements OnInit {
               editType: res.event.column.columnType.includes('date') ? 'datetimepickeredit' : 'string',
               textAlign: 'Left',
               width: 150,
+              minWidth: 150,
               type: res.event.column.columnType || 'string',
               fontSize: 14,
               color: '#757575',
               customAttributes: { class: `header-column-font${this.dataColumn.length + 1}` },
+              backgroundColor: '#fff',
             });
             this.columns = [...this.dataColumn];
             break;
