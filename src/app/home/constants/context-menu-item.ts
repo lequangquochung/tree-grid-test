@@ -28,8 +28,8 @@ export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any
 
   { text: 'Copy', target: contextTarget.row, id: 'copyrows' },
   { text: 'Cut', target: contextTarget.row, id: 'cut' },
-  { text: 'Paste as sibling', target: '.e-rowdragdropcell', id: 'pastesibling' },
-  { text: 'Paste as child', target: '.e-rowdragdropcell', id: 'pasteschild' },
+  { text: 'Paste as sibling', target: contextTarget.row, id: 'pastesibling' },
+  { text: 'Paste as child', target: contextTarget.row, id: 'pasteschild' },
   // { text: 'Turn off multi select mode', target: '.e-rowdragdropcell', id: 'multiselect' },
 
   // 'Copy',

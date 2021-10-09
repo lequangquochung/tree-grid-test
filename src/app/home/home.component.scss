@@ -112,10 +112,6 @@ q {
     width: 100% !important;
   }
 
-  .e-gridcontent .e-content {
-    overflow-y: scroll;
-  }
-
   //fix can't see the resize line on the header
   .e-headercell {
     .e-rhandler.e-rcursor {
@@ -127,29 +123,6 @@ q {
   //fix freeze column can't see the resize line on the header
   .e-frozenheader .e-headercell .e-rhandler {
     right: 0 !important;
-  }
-
-  //fix frozen column can't load on scroll or when unfrozen
-  .e-frozencontent,
-  .e-movablecontent {
-    height: 101% !important;
-    overflow: visible !important;
-    table {
-      height: 100% !important;
-    }
-  }
-  .e-gridcontent .e-content {
-    .e-table {
-      height: 101% !important;
-    }
-  }
-
-  .loading {
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   //fix frozen column can't load on scroll or when unfrozen
