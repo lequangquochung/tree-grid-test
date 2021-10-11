@@ -3,7 +3,7 @@ import { ContextMenuItem } from '@syncfusion/ej2-treegrid';
 
 export enum contextTarget {
   column = '.e-headercell',
-  row = '.e-rowdragdropcell',
+  row = '.e-content',
 }
 
 export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any[] = [
@@ -20,11 +20,12 @@ export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any
 
   //----------------ROW_CONTEXT_MENU_ITEM-----------------------
 
-  // { text: 'Copy with headers', target: '.e-content', id: 'copywithheader' },
+  { text: 'Add Row', target: contextTarget.row, id: 'add-row', iconCss: 'e-icons e-plus' },
+  'Edit',
+  'Delete',
+  // { text: 'Edit Row', target: contextTarget.row, id: 'edit-row', iconCss: 'e-icons e-edit' },
+  // { text: 'Delete Row', target: contextTarget.row, id: 'delete-row' },
   // 'AddRow',
-  { text: 'Add Row', target: contextTarget.row, id: 'add-row' },
-  { text: 'Edit Row', target: contextTarget.row, id: 'edit-row' },
-  { text: 'Delete Row', target: contextTarget.row, id: 'delete-row' },
 
   { text: 'Copy', target: contextTarget.row, id: 'copyrows' },
   { text: 'Cut', target: contextTarget.row, id: 'cut' },
@@ -33,7 +34,6 @@ export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any
   // { text: 'Turn off multi select mode', target: '.e-rowdragdropcell', id: 'multiselect' },
 
   // 'Copy',
-  // 'Edit',
   // 'Delete',
   //  'Save',
   //  'Cancel',

@@ -1,0 +1,68 @@
+.modal-header {
+  p {
+    margin-bottom: 0;
+    margin-left: 0.5rem;
+    font-size: 1.3rem;
+  }
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+}
+
+.modal-footer {
+  button {
+    border: 0;
+    outline: none;
+
+    padding: 0.3rem 1rem;
+    border-radius: 5px;
+    background-color: transparent;
+
+    font-weight: 500;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+  }
+
+  button:hover {
+    background-color: #e6e6e6;
+  }
+
+  button:first-child {
+    color: #e3165b;
+  }
+}
+
+:host ::ng-deep {
+  .input-field:focus-within {
+    label {
+      color: #e3165b;
+    }
+  }
+  .input-field {
+    width: 80%;
+    margin-bottom: 2rem;
+
+    label {
+      display: block;
+      width: fit-content;
+      font-size: 0.8rem;
+    }
+  }
+
+  .input-field-required {
+    label {
+      position: relative;
+    }
+
+    label::after {
+      content: "*";
+      position: absolute;
+      color: red;
+      left: 110%;
+    }
+  }
+}

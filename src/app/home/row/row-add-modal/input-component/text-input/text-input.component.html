@@ -1,0 +1,10 @@
+<label for="">{{ columnInfo.headerText }}</label>
+<input
+  [type]="inputType"
+  class="e-input"
+  [id]="columnInfo.headerText"
+  [disabled]="columnInfo.allowEditing ? false : true"
+  [value]="formControl.value"
+  (change)="valueOnChange($event)"
+  (focusout)="handleFocusOut($event)"
+/>

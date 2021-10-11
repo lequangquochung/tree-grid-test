@@ -19,6 +19,8 @@ export const DATA_COLUMNS = [
     headerText: 'Task ID',
     textAlign: 'Left',
     type: 'string',
+    allowEditing: false,
+
     minWidth: 150,
     fontSize: 14,
     color: '#757575',

@@ -23,6 +23,9 @@ import { HomeComponent } from './home.component';
 import { SettingsComponent } from './settings/settings.component';
 import { StylingComponent } from './styling/styling.component';
 import { DropDownListModule } from '@syncfusion/ej2-angular-dropdowns';
+import { RowAddModalComponent } from './row/row-add-modal/row-add-modal.component';
+import { DatePickerModule } from '@syncfusion/ej2-angular-calendars';
+import { RowInputComponent } from './row/row-add-modal/input-component/text-input/text-input.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -34,8 +37,16 @@ import { DropDownListModule } from '@syncfusion/ej2-angular-dropdowns';
     NgToggleModule,
     DropDownListModule,
     ColorPickerModule,
+    DatePickerModule,
   ],
-  declarations: [HomeComponent, ComlumnComponent, SettingsComponent, StylingComponent],
+  declarations: [
+    HomeComponent,
+    ComlumnComponent,
+    SettingsComponent,
+    StylingComponent,
+    RowAddModalComponent,
+    RowInputComponent,
+  ],
   providers: [
     ContextMenuService,
     SortService,

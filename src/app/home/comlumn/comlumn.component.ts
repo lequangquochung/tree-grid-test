@@ -10,7 +10,7 @@ export class ComlumnComponent implements OnInit {
   @Input() type: any | undefined;
   @Input() column: any | undefined;
   @Output() columnEmitter = new EventEmitter<any>();
-  columnTypeData: any = ['string', 'number', 'boolean', 'date', 'datetime'];
+  columnTypeData: any = ['string', 'number', 'date'];
   constructor(private modalService: NgbModal) {}
   columnName: string = '';
   columnType: string = 'string';

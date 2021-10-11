@@ -17,6 +17,7 @@ import { ComlumnComponent } from './comlumn/comlumn.component';
 import { contextTarget, CONTEXT_MENU_ITEM } from './constants/context-menu-item';
 import { DATA_COLUMNS } from './constants/data-columns';
 import { sampleData } from './home.data';
+import { RowAddModalComponent } from './row/row-add-modal/row-add-modal.component';
 import { SettingsComponent } from './settings/settings.component';
 import { StylingComponent } from './styling/styling.component';
 import { DataUtils } from './utils/data.utils';
@@ -39,7 +40,7 @@ export class HomeComponent implements OnInit {
   public contextMenuItems: any[] = [...CONTEXT_MENU_ITEM];
 
   public data = <any>[];
-  public dataWithoutNested: object[] = [];
+  public dataWithoutNested: any[] = [];
 
   // selectedRow: any[] = [];
   private isCutMode = false;
@@ -63,7 +64,7 @@ export class HomeComponent implements OnInit {
 
   constructor(public modalService: NgbModal) {
     this.filterSettings = { type: 'FilterBar', hierarchyMode: 'Parent', mode: 'Immediate' };
-    this.editSettings = { allowEditing: true, mode: 'Row' };
+    this.editSettings = { allowDeleting: true, allowEditing: true, allowEditOnDblClick: false, mode: 'Row' };
 
     //infinite scroll setting
     this.pageSettings = { pageSize: 50 };
@@ -144,7 +145,31 @@ export class HomeComponent implements OnInit {
   }
 
   rowContextClick(args: any) {
-    if (args?.item?.id == 'copyrows' || args?.item?.id == 'cut') {
+    const contextId = args.item.id;
+    if (contextId == 'add-row') {
+      this.openAddRowModal();
+    }
+
+    if (contextId == 'edit-row') {
+      // this.editingRowElement.querySelectorAll('td:not(.e-hide)').forEach((element : any )=> {
+      //   element.style.display = 'table-cell'
+      // })
+      // this.editingRowElement = args.rowInfo.row;
+      // console.log();
+      // let factory = this.resolver.resolveComponentFactory(RowEditComponent);
+      // let newNode = document.createElement('div');
+      // newNode.id = 'row-editor';
+      // args.rowInfo.row.appendChild(newNode);
+      // // document.getElementById('container')?;
+      // const ref = factory.create(this.injector, [], newNode);
+      // this.app.attachView(ref.hostView);
+      // args.rowInfo.row.querySelectorAll('td:not(.e-hide)').forEach((element: any) => {
+      //   console.log(element.className);
+      //   element.style.display = 'none';
+      // });
+    }
+
+    if (contextId == 'copyrows' || contextId == 'cut') {
       const selectedrecords: any[] = this.grid?.getSelectedRecords();
       if (selectedrecords.length == 0) {
         return;
@@ -338,6 +363,28 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  openAddRowModal() {
+    const maxID = this.dataWithoutNested.reduce(function (prev: any, current: any) {
+      if (+current.taskID > +prev.taskID) {
+        return current;
+      } else {
+        return prev;
+      }
+    }).taskID;
+    const modalRef = this.modalService.open(RowAddModalComponent);
+    modalRef.componentInstance.taskID = maxID + 1;
+    modalRef.componentInstance.columnSetting = this.columns;
+    modalRef.componentInstance.closeModal.subscribe((res: any) => {
+      if (res) {
+        console.log(res);
+        this.data.push(res);
+        this.dataWithoutNested.push(res);
+      }
+      modalRef.close();
+      this.grid.refresh();
+    });
+  }
+
   openModal(type: string, column?: any): void {
     const modalRef = this.modalService.open(ComlumnComponent);
     modalRef.componentInstance.type = type;
@@ -459,8 +506,8 @@ export class HomeComponent implements OnInit {
 
   actionComplete(args: any): void {
     if (args.requestType === 'beginEdit' || args.requestType === 'add') {
-      const dialog = args.dialog;
-      dialog.header = args.requestType === 'beginEdit' ? 'Edit Record of ' + args.rowData['taskID'] : 'New Record';
+      // const dialog = args.dialog;
+      // dialog.header = args.requestType === 'beginEdit' ? 'Edit Record of ' + args.rowData['taskID'] : 'New Record';
     }
   }
 
