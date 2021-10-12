@@ -38,7 +38,12 @@ export class RowInputComponent implements OnInit {
     this.formControl.setValue(value);
   }
 
-  handleFocusOut(event: any) {
-    this.formControl.touched = true;
+  onInput(event: any) {
+    if (this.inputType == 'number') {
+      if (Number.isNaN(event.key)) {
+        return false;
+      }
+    }
+    return true;
   }
 }

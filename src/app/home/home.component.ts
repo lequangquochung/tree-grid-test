@@ -107,9 +107,11 @@ export class HomeComponent implements OnInit {
   };
 
   columnMenuClick(args: any): void {
-    if (args.item.id === 'edit') {
+    if (args.item.id === contextMenuID.editColumn) {
       this.openModal(args.item.id, { field: args.column.field, text: args.column.headerText });
-    } else if (args.item.id === 'delete') {
+    }
+
+    if (args.item.id === contextMenuID.deleteColumn) {
       this.dataColumn = this.dataColumn.filter((column: any) => column.field !== args.column.field);
       this.columns = this.dataColumn;
       this.grid?.refresh();
@@ -218,6 +220,7 @@ export class HomeComponent implements OnInit {
 
       if (DataUtils.isChildOf(dataForPaste, pasteTarget)) {
         alert(`you can't paste to it's own child`);
+        this.grid.refresh();
         return;
       }
 
@@ -226,11 +229,13 @@ export class HomeComponent implements OnInit {
       });
       this.grid.refresh();
     }
+    this.isLoading = true;
     const lastScrollPosition = this.getLastScrollPosition();
     this.pasteRow(dataForPaste, pasteTarget, pasteType);
     this.selectedRowForCopy = [];
     this.grid.refresh();
     setTimeout(() => {
+      this.isLoading = false;
       this.isShowPasteOption = false;
       this.dataWithoutNested = [...DataUtils.getFullRecordWithoutNested(this.data)];
       this.scrollBackToLastPosition(lastScrollPosition, args.rowInfo.rowIndex);
@@ -450,8 +455,8 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  createNewIDForRecord(insertItems: any[]) {
-    let maxId = DataUtils.getMaxId(this.dataWithoutNested);
+  createNewIDForRecord(insertItems: any[], maxId?: any) {
+    maxId = maxId ? maxId : DataUtils.getMaxId(this.dataWithoutNested);
     insertItems = insertItems.map((data: any) => {
       maxId++;
       const newData = {
@@ -461,7 +466,7 @@ export class HomeComponent implements OnInit {
       };
 
       if (data.subtasks) {
-        newData.subtasks = this.createNewIDForRecord(data.subtasks);
+        newData.subtasks = this.createNewIDForRecord(data.subtasks, maxId);
       }
       return newData;
     });

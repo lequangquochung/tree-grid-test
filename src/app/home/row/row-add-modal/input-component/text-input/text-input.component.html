@@ -6,5 +6,5 @@
   [disabled]="columnInfo.allowEditing ? false : true"
   [value]="formControl.value"
   (change)="valueOnChange($event)"
-  (focusout)="handleFocusOut($event)"
+  (keypress)="onInput($event)"
 />
