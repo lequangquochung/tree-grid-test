@@ -1,7 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GridComponent, RowDataBoundEventArgs } from '@syncfusion/ej2-angular-grids';
-import { EditSettingsModel, SortSettingsModel, ToolbarItems } from '@syncfusion/ej2-angular-treegrid';
+import {
+  EditSettingsModel,
+  SortSettingsModel,
+  ToolbarItems,
+  TreeGridComponent,
+} from '@syncfusion/ej2-angular-treegrid';
 import { MenuEventArgs } from '@syncfusion/ej2-navigations';
 import {
   Freeze,
@@ -13,7 +18,6 @@ import {
   Selection,
   TreeGrid,
 } from '@syncfusion/ej2-treegrid';
-import { findIndex } from 'rxjs/operators';
 import { ComlumnComponent } from './comlumn/comlumn.component';
 import { contextMenuID, contextTarget, CONTEXT_MENU_ITEM } from './constants/context-menu-item';
 import { DATA_COLUMNS } from './constants/data-columns';
@@ -29,7 +33,7 @@ import { DataUtils } from './utils/data.utils';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  @ViewChild('grid') declare grid: GridComponent;
+  @ViewChild('grid') declare grid: TreeGridComponent;
   declare quote: string;
   public isLoading = false;
   private declare loadedRecordCount: number;
@@ -64,6 +68,8 @@ export class HomeComponent implements OnInit {
   public declare frozenColumns: number;
   public declare multiSelect: any;
 
+  public columnChecked: any[] = [];
+
   constructor(public modalService: NgbModal) {
     this.filterSettings = { type: 'FilterBar', hierarchyMode: 'Parent', mode: 'Immediate' };
     this.editSettings = { allowDeleting: true, allowEditing: true, allowEditOnDblClick: false, mode: 'Row' };
@@ -97,6 +103,14 @@ export class HomeComponent implements OnInit {
 
     this.data = sampleData;
     this.dataWithoutNested = [...DataUtils.getFullRecordWithoutNested(this.data)];
+
+    // this.sortSettings = {
+    //   columns: [
+    //     { field: 'startDate', direction: 'Descending' },
+    //     { field: 'taskName', direction: 'Descending' },
+    //   ],
+    //   allowUnsort: true
+    // }
   }
 
   public uniqueIdRule: (args: { [key: string]: string }) => boolean = (args: { [key: string]: string }) => {
@@ -295,10 +309,11 @@ export class HomeComponent implements OnInit {
       this.gridBodyHeight = this.toggleFilter ? window.innerHeight - 100 : window.innerHeight - 60;
     }
 
-    if (contextID === contextMenuID.multipleSort) {
-      this.toggleMultiSorting = !this.toggleMultiSorting;
-      _contextMenuItems[_contextMenuIndex].text = `Mutiple Sorting ${this.toggleMultiSorting ? `Off` : `On`}`;
-      this.contextMenuItems = [..._contextMenuItems];
+    if (args.item.id === contextMenuID.multipleSort) {
+      this.openModal(args.item.id, this.columns, this.columnChecked);
+      // this.toggleMultiSorting = !this.toggleMultiSorting;
+      // _contextMenuItems[_contextMenuIndex].text = `Mutiple Sorting ${this.toggleMultiSorting ? `Off` : `On`}`;
+      // this.contextMenuItems = [..._contextMenuItems];
     }
   }
 
@@ -400,10 +415,11 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  openModal(type: string, column?: any): void {
+  openModal(type: string, column?: any, columnChecked?: any): void {
     const modalRef = this.modalService.open(ComlumnComponent);
     modalRef.componentInstance.type = type;
     modalRef.componentInstance.column = column;
+    modalRef.componentInstance.columnChecked = columnChecked;
     modalRef.componentInstance.columnEmitter.subscribe((res: any) => {
       if (res.event) {
         switch (res.event.type) {
@@ -432,6 +448,22 @@ export class HomeComponent implements OnInit {
             const column: any = this?.grid?.getColumnByField(res.event.column.field);
             column.headerText = res.event.column.text;
             this?.grid?.refreshColumns();
+            break;
+          case 'mutiple-sorting':
+            this.columnChecked = res.event.column;
+            console.log(res.event);
+            let arr: any = [];
+
+            if (this.columnChecked.length > 0) {
+              this.columnChecked.forEach((item: any) => {
+                if (item.isChecked) {
+                  this.grid.sortByColumn(item.name, 'Ascending', true);
+                } else {
+                  this.grid.removeSortColumn(item.name);
+                }
+              });
+            }
+
             break;
           default:
             break;
