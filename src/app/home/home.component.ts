@@ -42,7 +42,6 @@ export class HomeComponent implements OnInit {
 
   public data: any[] = [];
   public dataWithoutNested: any[] = [];
-  declare maxId: number;
 
   // selectedRow: any[] = [];
   private isCutMode = false;
@@ -81,22 +80,6 @@ export class HomeComponent implements OnInit {
     this.multiSelect = { type: 'Multiple' };
 
     this.columns = [...this.dataColumn];
-  }
-
-  toolbarClick(args: MenuEventArgs) {
-    switch (args?.item?.id) {
-      case 'openModalSetting':
-        this.openModalSetting();
-        break;
-      case 'addColumnAction':
-        this.openModal('add');
-        break;
-      case 'toggleFilter':
-        this.toggleFilter = !this.toggleFilter;
-        break;
-      default:
-        return;
-    }
   }
 
   ngOnInit() {
@@ -393,16 +376,16 @@ export class HomeComponent implements OnInit {
   }
 
   openAddRowModal(args: any, isPasteAsChild: boolean) {
-    this.maxId = this.maxId ? this.maxId : DataUtils.getMaxId(this.dataWithoutNested);
+    const maxId = DataUtils.getMaxId(this.dataWithoutNested);
     const modalRef = this.modalService.open(RowAddModalComponent);
-    modalRef.componentInstance.taskID = this.maxId + 1;
+    modalRef.componentInstance.taskID = maxId + 1;
     modalRef.componentInstance.columnSetting = this.columns;
     modalRef.componentInstance.closeModal.subscribe((res: any) => {
       if (res) {
         if (isPasteAsChild) {
           this.pasteRow([res], args.rowInfo.rowData, contextMenuID.pasteChild);
         } else {
-          this.data.push(res);
+          this.data.unshift(res);
         }
 
         this.dataWithoutNested.push(res);
@@ -420,7 +403,7 @@ export class HomeComponent implements OnInit {
       if (res.event) {
         switch (res.event.type) {
           case 'add':
-            this.dataColumn.push({
+            const newColumn = {
               field: `${res.event.column.text.trim()}${this.dataColumn.length}`,
               headerText: res.event.column.text,
               editType: res.event.column.columnType.includes('date') ? 'datetimepickeredit' : 'string',
@@ -432,7 +415,12 @@ export class HomeComponent implements OnInit {
               color: '#757575',
               customAttributes: { class: `header-column-font${this.dataColumn.length + 1}` },
               backgroundColor: '#fff',
-            });
+            };
+            if (res.event.column.columnType.includes('date')) {
+              newColumn['format'] = 'yMd';
+            }
+            this.dataColumn.push(newColumn);
+
             this.columns = [...this.dataColumn];
             break;
           case 'edit':
@@ -463,13 +451,13 @@ export class HomeComponent implements OnInit {
   }
 
   createNewIDForRecord(insertItems: any[]) {
-    this.maxId = this.maxId ? this.maxId : DataUtils.getMaxId(this.dataWithoutNested);
+    let maxId = DataUtils.getMaxId(this.dataWithoutNested);
     insertItems = insertItems.map((data: any) => {
-      this.maxId++;
+      maxId++;
       const newData = {
         ...data,
-        taskID: this.maxId,
-        taskCode: this.maxId,
+        taskID: maxId,
+        taskCode: maxId,
       };
 
       if (data.subtasks) {
