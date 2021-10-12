@@ -9,14 +9,14 @@ export enum contextTarget {
 export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any[] = [
   //----------------COLUMN_CONTEXT_MENU_ITEM-----------------------
 
-  { text: 'Show/Hide Column', target: contextTarget.column, id: 'show-hide-column' },
-  { text: 'Add', target: contextTarget.column, id: 'add' },
-  { text: 'Edit', target: contextTarget.column, id: 'edit' },
-  { text: 'Delete', target: contextTarget.column, id: 'delete' },
-  { text: 'Multiple sorting off', target: contextTarget.column, id: 'mutiple-sorting' },
-  { text: 'Freeze', target: contextTarget.column, id: 'freeze' },
-  { text: 'Filter Off', target: contextTarget.column, id: 'filter' },
   { text: 'Styling', target: contextTarget.column, id: 'styling' },
+  { text: 'New', target: contextTarget.column, id: 'add' },
+  { text: 'Delete', target: contextTarget.column, id: 'delete' },
+  { text: 'Edit', target: contextTarget.column, id: 'edit' },
+  { text: 'Freeze', target: contextTarget.column, id: 'freeze' },
+  { text: 'Show/Hide Column', target: contextTarget.column, id: 'show-hide-column' },
+  { text: 'Filter Off', target: contextTarget.column, id: 'filter' },
+  { text: 'Multiple sort', target: contextTarget.column, id: 'mutiple-sorting' },
 
   //----------------ROW_CONTEXT_MENU_ITEM-----------------------
 

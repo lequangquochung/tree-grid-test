@@ -13,6 +13,7 @@ import {
   Selection,
   TreeGrid,
 } from '@syncfusion/ej2-treegrid';
+import { findIndex } from 'rxjs/operators';
 import { ComlumnComponent } from './comlumn/comlumn.component';
 import { contextTarget, CONTEXT_MENU_ITEM } from './constants/context-menu-item';
 import { DATA_COLUMNS } from './constants/data-columns';
@@ -39,8 +40,9 @@ export class HomeComponent implements OnInit {
   public dataColumn: any = DATA_COLUMNS;
   public contextMenuItems: any[] = [...CONTEXT_MENU_ITEM];
 
-  public data = <any>[];
+  public data: any[] = [];
   public dataWithoutNested: any[] = [];
+  declare maxId: number;
 
   // selectedRow: any[] = [];
   private isCutMode = false;
@@ -114,6 +116,12 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  contextMenuOpen(args: any) {
+    if (args.rowInfo.cellIndex) {
+      args.cancel = true;
+    }
+  }
+
   contextMenuClick(args: any): void {
     const target = args.item.target;
     switch (target) {
@@ -122,8 +130,6 @@ export class HomeComponent implements OnInit {
         break;
       case contextTarget.row:
         this.rowContextClick(args);
-        break;
-      default:
         break;
     }
   }
@@ -180,33 +186,54 @@ export class HomeComponent implements OnInit {
       this?.grid?.refreshColumns();
       this.showPasteOption();
     }
-    if (args?.item?.id === 'pasteschild' || args?.item?.id === 'pastesibling') {
-      this.selectedRowForCopy = [];
-      this.showPasteOption(false);
-      this.grid.refreshColumns();
-      //   const selectedrecords: object[] = this.grid?.getSelectedRecords() || [];
-      //   const selectedItem: any = selectedrecords[0];
+    if (contextId === 'pasteschild' || contextId === 'pastesibling') {
+      const pasteTarget = args.rowInfo.rowData;
+      let dataForPaste: any[] = [];
 
-      //   if (!selectedItem) {
-      //     alert('Please select a row to paste');
-      //     return;
-      //   }
-      //   const isCopy = this.selectedRowForCopy.length ? true : false;
-      //   let dataForPaste = isCopy ? this.selectedRowForCopy : this.selectedRow;
+      this.selectedRowForCopy.every((row) => {
+        if (DataUtils.isChildOf(dataForPaste, row)) {
+          return true;
+        }
+        const data: any = {
+          level: row.level,
+        };
+        this.columns.forEach((col) => {
+          data[col.field] = row[col.field];
+        });
+        data['subtasks'] = this.dataWithoutNested.filter((each) => each.parentID == data.taskID);
+        dataForPaste.push(data);
 
-      //   dataForPaste = this.createNewIDForRecord(dataForPaste);
-      //   let newData = this.pasteRow(this.data, selectedItem, dataForPaste, args?.item?.id);
-      //   if (!isCopy) {
-      //     // remove cutted item
-      //     newData = this.removeCuttedItem(newData, this.selectedRow);
-      //   }
-      //   // reset copy and cut item
-      //   this.selectedRowForCopy = [];
-      //   this.selectedRow = [];
+        return true;
+      });
 
-      //   // reset data
-      //   this.data = [...newData];
-      //   // this?.grid?.refreshColumns();
+      if (!this.isCutMode) {
+        dataForPaste = this.createNewIDForRecord(dataForPaste);
+        DataUtils.setParentForRecord(dataForPaste);
+      } else {
+        if (dataForPaste.findIndex((d) => d.taskID == pasteTarget.taskID) >= 0) {
+          this.selectedRowForCopy = [];
+          this.showPasteOption(false);
+          this.grid.refresh();
+          return;
+        }
+
+        if (DataUtils.isChildOf(dataForPaste, pasteTarget)) {
+          alert(`you can't paste to it's own child`);
+          return;
+        }
+
+        dataForPaste.forEach((data) => {
+          this.data = DataUtils.removeRecord(this.data, data);
+        });
+        this.grid.refresh();
+      }
+      setTimeout(() => {
+        this.pasteRow(dataForPaste, pasteTarget, contextId);
+        this.selectedRowForCopy = [];
+        this.grid.refresh();
+        this.showPasteOption(false);
+        this.dataWithoutNested = [...DataUtils.getFullRecordWithoutNested(this.data)];
+      }, 300);
     }
   }
 
@@ -364,15 +391,17 @@ export class HomeComponent implements OnInit {
   }
 
   openAddRowModal() {
-    const maxID = this.dataWithoutNested.reduce(function (prev: any, current: any) {
-      if (+current.taskID > +prev.taskID) {
-        return current;
-      } else {
-        return prev;
-      }
-    }).taskID;
+    this.maxId = this.maxId
+      ? this.maxId
+      : this.dataWithoutNested.reduce(function (prev: any, current: any) {
+          if (+current.taskID > +prev.taskID) {
+            return current;
+          } else {
+            return prev;
+          }
+        }).taskID;
     const modalRef = this.modalService.open(RowAddModalComponent);
-    modalRef.componentInstance.taskID = maxID + 1;
+    modalRef.componentInstance.taskID = this.maxId + 1;
     modalRef.componentInstance.columnSetting = this.columns;
     modalRef.componentInstance.closeModal.subscribe((res: any) => {
       if (res) {
@@ -435,54 +464,78 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  // pasteRow(data: any, item: any, insertRecords: object[], pasteType: string) {
-  //   for (let i = 0; i < data.length; i++) {
-  //     if (data[i].taskID === item.taskID) {
-  //       switch (pasteType) {
-  //         case 'pastesibling':
-  //           for (let j = 0; j < insertRecords.length; j++) {
-  //             data.splice(i + 1, 0, insertRecords[j]);
-  //           }
-  //           break;
-  //         case 'pasteschild':
-  //           insertRecords = insertRecords.map((record: any) => {
-  //             record.parentItem = item;
-  //             return record;
-  //           });
-  //           data[i].subtasks =
-  //             data[i].subtasks && data[i].subtasks.length ? data[i].subtasks.concat(insertRecords) : insertRecords;
-  //           break;
-  //         default:
-  //           break;
-  //       }
-  //       return data;
-  //     }
-  //     if (data[i].subtasks) {
-  //       const found = this.pasteRow(data[i].subtasks, item, insertRecords, pasteType);
-  //       if (found) return data;
-  //     }
-  //   }
-  //   return false;
-  // }
+  createNewIDForRecord(insertItems: object[]) {
+    this.maxId = this.maxId
+      ? this.maxId
+      : this.dataWithoutNested.reduce(function (prev: any, current: any) {
+          if (+current.taskID > +prev.taskID) {
+            return current;
+          } else {
+            return prev;
+          }
+        }).taskID;
 
-  // createNewIDForRecord(insertItems: object[]) {
-  //   insertItems = insertItems.map((data: any) => {
-  //     let newID = Math.floor(Math.random() * 100000000);
-  //     while (this.dataWithoutNested.find((record: any) => record.taskID === newID)) {
-  //       newID = Math.floor(Math.random() * 100000000);
-  //     }
-  //     const newData = {
-  //       ...data,
-  //       taskID: newID,
-  //     };
+    insertItems = insertItems.map((data: any) => {
+      this.maxId++;
+      const newData = {
+        ...data,
+        taskID: this.maxId,
+        taskCode: this.maxId,
+      };
 
-  //     if (data.subtasks) {
-  //       newData.subtasks = this.createNewIDForRecord(data.subtasks);
-  //     }
-  //     return newData;
-  //   });
-  //   return insertItems;
-  // }
+      if (data.subtasks) {
+        newData.subtasks = this.createNewIDForRecord(data.subtasks);
+      }
+      return newData;
+    });
+    return insertItems;
+  }
+
+  pasteRow(insertRecords: any[], pasteTarget: any, pasteType: string) {
+    if (pasteType == 'pastesibling') {
+      if (pasteTarget.parentID) {
+        const parentRecord: any = DataUtils.getParentOf(this.data, pasteTarget.parentID);
+        const pasteIndex = parentRecord.subtasks.findIndex((d: any) => d.taskID == pasteTarget.taskID);
+        this.setLevelForPasting(insertRecords, pasteTarget.level);
+        // console.log(insertRecords)
+        insertRecords.forEach((each) => {
+          parentRecord.subtasks.splice(pasteIndex + 1, 0, each);
+        });
+      } else {
+        const pasteIndex = this.data.findIndex((d) => d.taskID == pasteTarget.taskID);
+        insertRecords.forEach((each) => {
+          this.data.splice(pasteIndex + 1, 0, each);
+        });
+      }
+    }
+
+    if (pasteType == 'pasteschild') {
+      this.setLevelForPasting(insertRecords, pasteTarget.level + 1);
+      if (pasteTarget.parentID) {
+        const targetRecord: any = DataUtils.getParentOf(this.data, pasteTarget.parentID).subtasks.find(
+          (each: any) => each.taskID == pasteTarget.taskID
+        );
+        targetRecord.subtasks = targetRecord.subtasks ? targetRecord.subtasks : [];
+        insertRecords.forEach((each) => {
+          targetRecord.subtasks.push(each);
+        });
+      } else {
+        const pasteIndex = this.data.findIndex((d) => d.taskID == pasteTarget.taskID);
+        insertRecords.forEach((each) => {
+          this.data.splice(pasteIndex + 1, 0, each);
+        });
+      }
+    }
+  }
+
+  setLevelForPasting(insertRecords: any[], pasteLevel: number) {
+    insertRecords.forEach((rec) => {
+      rec['level'] = pasteLevel;
+      if (rec.subtasks && rec.subtasks.length) {
+        this.setLevelForPasting(rec.subtasks, pasteLevel + 1);
+      }
+    });
+  }
 
   // removeCuttedItem(data: object[], insertRecords: object[]): any {
   //   data = data.map((record: any) => {
@@ -506,8 +559,6 @@ export class HomeComponent implements OnInit {
 
   actionComplete(args: any): void {
     if (args.requestType === 'beginEdit' || args.requestType === 'add') {
-      // const dialog = args.dialog;
-      // dialog.header = args.requestType === 'beginEdit' ? 'Edit Record of ' + args.rowData['taskID'] : 'New Record';
     }
   }
 
