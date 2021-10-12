@@ -46,15 +46,15 @@ export class DataUtils {
     return founded;
   }
 
-  static findRecord(data: any[], target: any): any {
+  static findRecord(data: any[], targetID: any): any {
     let result;
     data.every((row) => {
-      if (row.taskID == target.taskID) {
+      if (row.taskID == targetID) {
         result = row;
         return false;
       }
       if (row.subtasks && row.subtasks.length) {
-        let childResult = this.getParentOf(row.subtasks, target);
+        let childResult = this.getParentOf(row.subtasks, targetID);
         if (childResult) {
           result = childResult;
           return false;

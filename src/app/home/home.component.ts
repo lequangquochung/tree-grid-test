@@ -426,14 +426,12 @@ export class HomeComponent implements OnInit {
     modalRef.componentInstance.editingTask = editingTask;
     modalRef.componentInstance.closeModal.subscribe((res: any) => {
       if (res) {
-        const editingTarget = DataUtils.findRecord(this.data, res);
+        const editingTarget = DataUtils.findRecord(this.data, res.taskID);
         if (editingTarget) {
           Object.keys(res).forEach((key) => {
             editingTarget[key] = res[key];
           });
         }
-
-        // args.rowInfo.rowData = {editing,...res}
       }
       modalRef.close();
       this.grid.refresh();
@@ -552,16 +550,17 @@ export class HomeComponent implements OnInit {
 
     if (pasteType == contextMenuID.pasteChild) {
       this.setLevelForPasting(insertRecords, pasteTarget.level + 1);
+      console.log(insertRecords);
       if (pasteTarget.parentID) {
         const targetRecord: any = DataUtils.getParentOf(this.data, pasteTarget.parentID).subtasks.find(
           (each: any) => each.taskID == pasteTarget.taskID
         );
-        targetRecord.subtasks = targetRecord.subtasks ? targetRecord.subtasks : [];
+        targetRecord['subtasks'] = targetRecord.subtasks ? targetRecord.subtasks : [];
         insertTarget = targetRecord.subtasks;
       } else {
         const target = this.data[this.data.findIndex((d) => d.taskID == pasteTarget.taskID)];
-        const targetSubtasks = target.subtasks ? target.subtasks : [];
-        insertTarget = targetSubtasks;
+        target['subtasks'] = target.subtasks ? target.subtasks : [];
+        insertTarget = target.subtasks;
       }
 
       insertRecords.forEach((each) => {
