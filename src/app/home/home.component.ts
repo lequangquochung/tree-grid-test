@@ -46,6 +46,7 @@ export class HomeComponent implements OnInit {
 
   // selectedRow: any[] = [];
   private isCutMode = false;
+  private isShowPasteOption = false;
   private selectedRowForCopy: any[] = [];
 
   public declare pageSettings: any;
@@ -120,6 +121,11 @@ export class HomeComponent implements OnInit {
     if (args.rowInfo.cellIndex) {
       args.cancel = true;
     }
+    if (this.isShowPasteOption) {
+      args.element?.classList.add('showPasteOption');
+    } else {
+      args.element?.classList.remove('showPasteOption');
+    }
   }
 
   contextMenuClick(args: any): void {
@@ -176,6 +182,8 @@ export class HomeComponent implements OnInit {
     }
 
     if (contextId == 'copyrows' || contextId == 'cut') {
+      const lastScrollPosition = this.getLastScrollPosition();
+      this.isLoading = true;
       const selectedrecords: any[] = this.grid?.getSelectedRecords();
       if (selectedrecords.length == 0) {
         return;
@@ -184,75 +192,68 @@ export class HomeComponent implements OnInit {
       this.selectedRowForCopy = [...selectedrecords];
 
       this?.grid?.refreshColumns();
-      this.showPasteOption();
+      setTimeout(() => {
+        this.isLoading = false;
+        this.scrollBackToLastPosition(lastScrollPosition);
+        this.isShowPasteOption = true;
+      }, 300);
     }
     if (contextId === 'pasteschild' || contextId === 'pastesibling') {
-      const pasteTarget = args.rowInfo.rowData;
-      let dataForPaste: any[] = [];
-
-      this.selectedRowForCopy.every((row) => {
-        if (DataUtils.isChildOf(dataForPaste, row)) {
-          return true;
-        }
-        const data: any = {
-          level: row.level,
-        };
-        this.columns.forEach((col) => {
-          data[col.field] = row[col.field];
-        });
-        data['subtasks'] = this.dataWithoutNested.filter((each) => each.parentID == data.taskID);
-        dataForPaste.push(data);
-
-        return true;
-      });
-
-      if (!this.isCutMode) {
-        dataForPaste = this.createNewIDForRecord(dataForPaste);
-        DataUtils.setParentForRecord(dataForPaste);
-      } else {
-        if (dataForPaste.findIndex((d) => d.taskID == pasteTarget.taskID) >= 0) {
-          this.selectedRowForCopy = [];
-          this.showPasteOption(false);
-          this.grid.refresh();
-          return;
-        }
-
-        if (DataUtils.isChildOf(dataForPaste, pasteTarget)) {
-          alert(`you can't paste to it's own child`);
-          return;
-        }
-
-        dataForPaste.forEach((data) => {
-          this.data = DataUtils.removeRecord(this.data, data);
-        });
-        this.grid.refresh();
-      }
-      setTimeout(() => {
-        this.pasteRow(dataForPaste, pasteTarget, contextId);
-        this.selectedRowForCopy = [];
-        this.grid.refresh();
-        this.showPasteOption(false);
-        this.dataWithoutNested = [...DataUtils.getFullRecordWithoutNested(this.data)];
-      }, 300);
+      this.pasteRecord(args, contextId);
     }
   }
 
-  showPasteOption(isShow = true) {
-    const contextMenuElement = document.getElementById('_gridcontrol_cmenu');
-    if (isShow) {
-      contextMenuElement?.classList.add('showPasteOption');
+  pasteRecord(args: any, pasteType: string) {
+    const pasteTarget = args.rowInfo.rowData;
+    let dataForPaste: any[] = [];
+
+    this.selectedRowForCopy.every((row) => {
+      if (DataUtils.isChildOf(dataForPaste, row)) {
+        return true;
+      }
+      const data: any = {};
+      this.columns.forEach((col) => {
+        data[col.field] = row[col.field];
+      });
+      data['subtasks'] = this.dataWithoutNested.filter((each) => each.parentID == data.taskID);
+      dataForPaste.push(data);
+
+      return true;
+    });
+
+    if (!this.isCutMode) {
+      dataForPaste = this.createNewIDForRecord(dataForPaste);
+      DataUtils.setParentForRecord(dataForPaste);
     } else {
-      contextMenuElement?.classList.remove('showPasteOption');
+      if (dataForPaste.findIndex((d) => d.taskID == pasteTarget.taskID) >= 0) {
+        this.selectedRowForCopy = [];
+        this.isShowPasteOption = false;
+        this.grid.refresh();
+        return;
+      }
+
+      if (DataUtils.isChildOf(dataForPaste, pasteTarget)) {
+        alert(`you can't paste to it's own child`);
+        return;
+      }
+
+      dataForPaste.forEach((data) => {
+        this.data = DataUtils.removeRecord(this.data, data);
+      });
+      this.grid.refresh();
     }
+    setTimeout(() => {
+      this.pasteRow(dataForPaste, pasteTarget, pasteType);
+      this.selectedRowForCopy = [];
+      this.grid.refresh();
+      this.isShowPasteOption = false;
+      this.dataWithoutNested = [...DataUtils.getFullRecordWithoutNested(this.data)];
+    }, 300);
   }
 
   columnContextClick(args: any) {
     const _contextMenuItems = [...this.contextMenuItems];
     const _contextMenuIndex = _contextMenuItems.findIndex((item: any) => item.id === args.item.id);
-
-    if (args?.item?.id === 'show-hide-column') {
-      this.grid?.columnChooserModule.openColumnChooser(); // give X and Y axis
-    }
 
     if (args?.item?.id === 'show-hide-column') {
       this.grid?.columnChooserModule.openColumnChooser(); // give X and Y axis
@@ -284,7 +285,9 @@ export class HomeComponent implements OnInit {
     }
 
     if (args.item.id === 'freeze') {
+      const lastScrollPosition = this.getLastScrollPosition();
       this.freezeColumn(args);
+      this.scrollBackToLastPosition(lastScrollPosition);
     }
 
     if (args.item.id === 'styling') {
@@ -308,7 +311,6 @@ export class HomeComponent implements OnInit {
   }
 
   freezeColumn(args: any) {
-    const lastScrollPosition = this.grid.element.querySelector('.e-gridcontent .e-content')?.scrollTop;
     this.isLoading = true;
     let freezeColumnIndex = this.dataColumn.findIndex((column: any) => column.field === args.column.field) + 1;
     //reset collumn re ordering
@@ -332,10 +334,6 @@ export class HomeComponent implements OnInit {
 
     setTimeout(() => {
       this.isLoading = false;
-      setTimeout(() => {
-        // @ts-ignore
-        this.grid.element.querySelector('.e-gridcontent .e-content')?.scrollTop = lastScrollPosition;
-      }, 600);
     }, 300);
   }
 
@@ -391,15 +389,7 @@ export class HomeComponent implements OnInit {
   }
 
   openAddRowModal() {
-    this.maxId = this.maxId
-      ? this.maxId
-      : this.dataWithoutNested.reduce(function (prev: any, current: any) {
-          if (+current.taskID > +prev.taskID) {
-            return current;
-          } else {
-            return prev;
-          }
-        }).taskID;
+    this.maxId = this.maxId ? this.maxId : DataUtils.getMaxId(this.dataWithoutNested);
     const modalRef = this.modalService.open(RowAddModalComponent);
     modalRef.componentInstance.taskID = this.maxId + 1;
     modalRef.componentInstance.columnSetting = this.columns;
@@ -464,17 +454,8 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  createNewIDForRecord(insertItems: object[]) {
-    this.maxId = this.maxId
-      ? this.maxId
-      : this.dataWithoutNested.reduce(function (prev: any, current: any) {
-          if (+current.taskID > +prev.taskID) {
-            return current;
-          } else {
-            return prev;
-          }
-        }).taskID;
-
+  createNewIDForRecord(insertItems: any[]) {
+    this.maxId = this.maxId ? this.maxId : DataUtils.getMaxId(this.dataWithoutNested);
     insertItems = insertItems.map((data: any) => {
       this.maxId++;
       const newData = {
@@ -492,21 +473,25 @@ export class HomeComponent implements OnInit {
   }
 
   pasteRow(insertRecords: any[], pasteTarget: any, pasteType: string) {
+    let insertTarget: any;
+    let pasteIndex: any;
     if (pasteType == 'pastesibling') {
       if (pasteTarget.parentID) {
         const parentRecord: any = DataUtils.getParentOf(this.data, pasteTarget.parentID);
-        const pasteIndex = parentRecord.subtasks.findIndex((d: any) => d.taskID == pasteTarget.taskID);
+        pasteIndex = parentRecord.subtasks.findIndex((d: any) => d.taskID == pasteTarget.taskID);
+        insertTarget = parentRecord.subtasks;
         this.setLevelForPasting(insertRecords, pasteTarget.level);
-        // console.log(insertRecords)
-        insertRecords.forEach((each) => {
-          parentRecord.subtasks.splice(pasteIndex + 1, 0, each);
-        });
       } else {
-        const pasteIndex = this.data.findIndex((d) => d.taskID == pasteTarget.taskID);
-        insertRecords.forEach((each) => {
-          this.data.splice(pasteIndex + 1, 0, each);
-        });
+        pasteIndex = this.data.findIndex((d) => d.taskID == pasteTarget.taskID);
+        insertTarget = this.data;
       }
+
+      insertRecords
+        .slice()
+        .reverse()
+        .forEach((each) => {
+          insertTarget.splice(pasteIndex + 1, 0, each);
+        });
     }
 
     if (pasteType == 'pasteschild') {
@@ -516,15 +501,19 @@ export class HomeComponent implements OnInit {
           (each: any) => each.taskID == pasteTarget.taskID
         );
         targetRecord.subtasks = targetRecord.subtasks ? targetRecord.subtasks : [];
-        insertRecords.forEach((each) => {
-          targetRecord.subtasks.push(each);
-        });
+        insertTarget = targetRecord.subtasks;
       } else {
-        const pasteIndex = this.data.findIndex((d) => d.taskID == pasteTarget.taskID);
-        insertRecords.forEach((each) => {
-          this.data.splice(pasteIndex + 1, 0, each);
-        });
+        const target = this.data[this.data.findIndex((d) => d.taskID == pasteTarget.taskID)];
+        const targetSubtasks = target.subtasks ? target.subtasks : [];
+        insertTarget = targetSubtasks;
       }
+
+      insertRecords
+        .slice()
+        .reverse()
+        .forEach((each) => {
+          insertTarget.unshift(each);
+        });
     }
   }
 
@@ -536,18 +525,6 @@ export class HomeComponent implements OnInit {
       }
     });
   }
-
-  // removeCuttedItem(data: object[], insertRecords: object[]): any {
-  //   data = data.map((record: any) => {
-  //     const item: any = insertRecords.find((item: any) => item.taskID === record.taskID);
-  //     if (!item && record.subtasks) {
-  //       record.subtasks = this.removeCuttedItem(record.subtasks, insertRecords);
-  //     }
-  //     if (!item) return record;
-  //   });
-  //   data = data.filter((item) => item);
-  //   return data;
-  // }
 
   rowBound(args: RowDataBoundEventArgs) {
     const taskID: any = args?.data?.['taskID'];
@@ -563,7 +540,6 @@ export class HomeComponent implements OnInit {
   }
 
   actionBegin(args: any): void {
-    // console.log(args.requestType)
     if (args.requestType === 'beginEdit' || args.requestType === 'add') {
     }
 
@@ -574,5 +550,16 @@ export class HomeComponent implements OnInit {
 
       this.infiniteOptions = { initialBlocks: this.loadedRecordCount / this.pageSettings.pageSize };
     }
+  }
+
+  getLastScrollPosition(): any {
+    return this.grid.element.querySelector('.e-gridcontent .e-content')?.scrollTop;
+  }
+
+  scrollBackToLastPosition(lastScrollPosition: any) {
+    setTimeout(() => {
+      // @ts-ignore
+      this.grid.element.querySelector('.e-gridcontent .e-content')?.scrollTop = lastScrollPosition;
+    }, 500);
   }
 }

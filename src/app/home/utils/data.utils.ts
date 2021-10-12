@@ -1,4 +1,14 @@
 export class DataUtils {
+  static getMaxId(dataWithoutNested: any[]) {
+    return dataWithoutNested.reduce(function (prev: any, current: any) {
+      if (+current.taskID > +prev.taskID) {
+        return current;
+      } else {
+        return prev;
+      }
+    }).taskID;
+  }
+
   static getParentOf(data: any[], parentID: number): any {
     let result;
     data.every((row) => {
