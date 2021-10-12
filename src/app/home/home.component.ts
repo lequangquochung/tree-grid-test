@@ -22,7 +22,7 @@ import { ComlumnComponent } from './comlumn/comlumn.component';
 import { contextMenuID, contextTarget, CONTEXT_MENU_ITEM } from './constants/context-menu-item';
 import { DATA_COLUMNS } from './constants/data-columns';
 import { sampleData } from './home.data';
-import { RowAddModalComponent } from './row/row-add-modal/row-add-modal.component';
+import { RowInputModalComponent } from './row/row-input-modal/row-input-modal.component';
 import { SettingsComponent } from './settings/settings.component';
 import { StylingComponent } from './styling/styling.component';
 import { DataUtils } from './utils/data.utils';
@@ -72,7 +72,7 @@ export class HomeComponent implements OnInit {
 
   constructor(public modalService: NgbModal) {
     this.filterSettings = { type: 'FilterBar', hierarchyMode: 'Parent', mode: 'Immediate' };
-    this.editSettings = { allowDeleting: true, allowEditing: true, allowEditOnDblClick: false, mode: 'Row' };
+    // this.editSettings = { allowDeleting: true, allowEditing: true, allowEditOnDblClick: false, mode: 'Row' };
 
     //infinite scroll setting
     this.pageSettings = { pageSize: 50 };
@@ -169,6 +169,10 @@ export class HomeComponent implements OnInit {
 
     if (contextId == contextMenuID.addChildRow) {
       this.openAddRowModal(args, true);
+    }
+
+    if (contextId == contextMenuID.editRow) {
+      this.openEditRowModal(args);
     }
 
     if (contextId == contextMenuID.deleteRow) {
@@ -397,7 +401,7 @@ export class HomeComponent implements OnInit {
 
   openAddRowModal(args: any, isPasteAsChild: boolean) {
     const maxId = DataUtils.getMaxId(this.dataWithoutNested);
-    const modalRef = this.modalService.open(RowAddModalComponent);
+    const modalRef = this.modalService.open(RowInputModalComponent);
     modalRef.componentInstance.taskID = maxId + 1;
     modalRef.componentInstance.columnSetting = this.columns;
     modalRef.componentInstance.closeModal.subscribe((res: any) => {
@@ -409,6 +413,25 @@ export class HomeComponent implements OnInit {
         }
 
         this.dataWithoutNested.push(res);
+      }
+      modalRef.close();
+      this.grid.refresh();
+    });
+  }
+
+  openEditRowModal(args: any) {
+    const editingTask = args.rowInfo.rowData;
+    const modalRef = this.modalService.open(RowInputModalComponent);
+    modalRef.componentInstance.columnSetting = this.columns;
+    modalRef.componentInstance.editingTask = editingTask;
+    modalRef.componentInstance.closeModal.subscribe((res: any) => {
+      if (res) {
+        const editingTarget = DataUtils.findRecord(this.data, res.taskID);
+        if (editingTarget) {
+          Object.keys(res).forEach((key) => {
+            editingTarget[key] = res[key];
+          });
+        }
       }
       modalRef.close();
       this.grid.refresh();
@@ -527,16 +550,17 @@ export class HomeComponent implements OnInit {
 
     if (pasteType == contextMenuID.pasteChild) {
       this.setLevelForPasting(insertRecords, pasteTarget.level + 1);
+      console.log(insertRecords);
       if (pasteTarget.parentID) {
         const targetRecord: any = DataUtils.getParentOf(this.data, pasteTarget.parentID).subtasks.find(
           (each: any) => each.taskID == pasteTarget.taskID
         );
-        targetRecord.subtasks = targetRecord.subtasks ? targetRecord.subtasks : [];
+        targetRecord['subtasks'] = targetRecord.subtasks ? targetRecord.subtasks : [];
         insertTarget = targetRecord.subtasks;
       } else {
         const target = this.data[this.data.findIndex((d) => d.taskID == pasteTarget.taskID)];
-        const targetSubtasks = target.subtasks ? target.subtasks : [];
-        insertTarget = targetSubtasks;
+        target['subtasks'] = target.subtasks ? target.subtasks : [];
+        insertTarget = target.subtasks;
       }
 
       insertRecords.forEach((each) => {

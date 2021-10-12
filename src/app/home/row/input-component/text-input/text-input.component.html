@@ -1,0 +1,21 @@
+<label for="">{{ columnInfo.headerText }}</label>
+<input
+  *ngIf="inputType !== 'date'"
+  [type]="inputType"
+  class="e-input"
+  [id]="columnInfo.headerText"
+  [disabled]="columnInfo.allowEditing ? false : true"
+  [value]="formControl.value"
+  (change)="valueOnChange($event)"
+  (keypress)="onInput($event)"
+/>
+<input
+  *ngIf="inputType === 'date'"
+  [type]="inputType"
+  class="e-input"
+  [id]="columnInfo.headerText"
+  [disabled]="columnInfo.allowEditing ? false : true"
+  [value]="dateToString(this.formControl.value)"
+  (change)="valueOnChange($event)"
+  (keypress)="onInput($event)"
+/>

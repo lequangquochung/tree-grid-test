@@ -1,0 +1,13 @@
+<div class="row-add-modal">
+  <div class="modal-header">
+    <p>{{ modalTitle }}</p>
+  </div>
+  <div class="modal-body"></div>
+  <div class="modal-footer">
+    <p *ngIf="showInputError">
+      The entered data does not match the data type, please review the Column Type to check the data type
+    </p>
+    <button (click)="save()">Save</button>
+    <button (click)="close()">Cancel</button>
+  </div>
+</div>
