@@ -93,22 +93,27 @@ export class ComlumnComponent implements OnInit {
     }
   }
 
-  getColumns(arr: any[], key: any): string[] {
-    let array: string[] = [];
+  getColumns(arr: any[], key: any): any {
+    let array: any[] = [];
     Object.keys(arr).forEach(function eachKey(index) {
       let isVisible = arr[index]['visible'] === false ? false : true;
 
       if (isVisible) {
-        let name = arr[index][key];
-        array.push(name);
+        let param = {
+          name: arr[index][key],
+          headerText: arr[index]['headerText'],
+        };
+        array.push(param);
       }
     });
     this.cols = array.map((col) => {
       return {
-        colName: col,
+        colName: col.name,
         isChecked: false,
+        header: col.headerText,
       };
     });
+    // console.log(this.cols);
     return this.cols;
   }
 
