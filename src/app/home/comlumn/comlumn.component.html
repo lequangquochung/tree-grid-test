@@ -64,20 +64,23 @@
   <div class="modal-body">
     <!-- TODO: form multilsort -->
     <form novalidate>
-      <div *ngFor="let col of cols">
-        <input
-          [checked]="col.isChecked"
-          class="form-check-input"
-          type="checkbox"
-          name="{{ col.colName }}"
-          [value]="col.colName"
-          (change)="onCheckboxChange($event)"
-        />
-        <label class="form-check-label">
-          {{ col.colName }}
-        </label>
+      <div class="input-block">
+        <div *ngFor="let col of cols">
+          <input
+            [checked]="col.isChecked"
+            class="form-check-input"
+            type="checkbox"
+            name="{{ col.colName }}"
+            [value]="col.colName"
+            (change)="onCheckboxChange($event)"
+          />
+          <label class="form-check-label">
+            {{ col.header }}
+          </label>
+        </div>
       </div>
-      <button (click)="mutipleSorting()" class="e-control e-btn e-lib e-primary e-flat">Save</button>
+
+      <button (click)="mutipleSorting()" class="e-control e-btn e-lib e-primary e-flat btn-save">Save</button>
       <button (click)="close()" type="button" class="e-control e-btn e-lib e-flat">Cancel</button>
     </form>
   </div>
