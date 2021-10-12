@@ -10,9 +10,9 @@ export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any
   //----------------COLUMN_CONTEXT_MENU_ITEM-----------------------
 
   { text: 'Styling', target: contextTarget.column, id: 'styling' },
-  { text: 'New', target: contextTarget.column, id: 'add' },
-  { text: 'Delete', target: contextTarget.column, id: 'delete' },
-  { text: 'Edit', target: contextTarget.column, id: 'edit' },
+  { text: 'Add Column', target: contextTarget.column, id: 'add' },
+  { text: 'Delete Column', target: contextTarget.column, id: 'delete' },
+  { text: 'Edit Column', target: contextTarget.column, id: 'edit' },
   { text: 'Freeze', target: contextTarget.column, id: 'freeze' },
   { text: 'Show/Hide Column', target: contextTarget.column, id: 'show-hide-column' },
   { text: 'Filter Off', target: contextTarget.column, id: 'filter' },

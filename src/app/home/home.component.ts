@@ -118,6 +118,12 @@ export class HomeComponent implements OnInit {
   }
 
   contextMenuOpen(args: any) {
+    if (this.grid.getSelectedRowIndexes().length <= 1) {
+      if (this.grid.getSelectedRowIndexes()[0] != args.rowInfo.rowIndex) {
+        this.grid.selectRow(args.rowInfo.rowIndex, true);
+      }
+    }
+
     if (args.rowInfo.cellIndex) {
       args.cancel = true;
     }
@@ -163,22 +169,6 @@ export class HomeComponent implements OnInit {
     }
 
     if (contextId == 'edit-row') {
-      // this.editingRowElement.querySelectorAll('td:not(.e-hide)').forEach((element : any )=> {
-      //   element.style.display = 'table-cell'
-      // })
-      // this.editingRowElement = args.rowInfo.row;
-      // console.log();
-      // let factory = this.resolver.resolveComponentFactory(RowEditComponent);
-      // let newNode = document.createElement('div');
-      // newNode.id = 'row-editor';
-      // args.rowInfo.row.appendChild(newNode);
-      // // document.getElementById('container')?;
-      // const ref = factory.create(this.injector, [], newNode);
-      // this.app.attachView(ref.hostView);
-      // args.rowInfo.row.querySelectorAll('td:not(.e-hide)').forEach((element: any) => {
-      //   console.log(element.className);
-      //   element.style.display = 'none';
-      // });
     }
 
     if (contextId == 'copyrows' || contextId == 'cut') {
@@ -196,7 +186,7 @@ export class HomeComponent implements OnInit {
         this.isLoading = false;
         this.scrollBackToLastPosition(lastScrollPosition);
         this.isShowPasteOption = true;
-      }, 300);
+      });
     }
     if (contextId === 'pasteschild' || contextId === 'pastesibling') {
       this.pasteRecord(args, contextId);
@@ -242,13 +232,15 @@ export class HomeComponent implements OnInit {
       });
       this.grid.refresh();
     }
+    const lastScrollPosition = this.getLastScrollPosition();
+    this.pasteRow(dataForPaste, pasteTarget, pasteType);
+    this.selectedRowForCopy = [];
+    this.grid.refresh();
     setTimeout(() => {
-      this.pasteRow(dataForPaste, pasteTarget, pasteType);
-      this.selectedRowForCopy = [];
-      this.grid.refresh();
       this.isShowPasteOption = false;
       this.dataWithoutNested = [...DataUtils.getFullRecordWithoutNested(this.data)];
-    }, 300);
+      this.scrollBackToLastPosition(lastScrollPosition, args.rowInfo.rowIndex);
+    }, 400);
   }
 
   columnContextClick(args: any) {
@@ -334,7 +326,7 @@ export class HomeComponent implements OnInit {
 
     setTimeout(() => {
       this.isLoading = false;
-    }, 300);
+    });
   }
 
   editColumnStyle(args: any) {
@@ -473,8 +465,9 @@ export class HomeComponent implements OnInit {
   }
 
   pasteRow(insertRecords: any[], pasteTarget: any, pasteType: string) {
-    let insertTarget: any;
+    let insertTarget: any[];
     let pasteIndex: any;
+    insertRecords = insertRecords.slice().reverse();
     if (pasteType == 'pastesibling') {
       if (pasteTarget.parentID) {
         const parentRecord: any = DataUtils.getParentOf(this.data, pasteTarget.parentID);
@@ -486,12 +479,9 @@ export class HomeComponent implements OnInit {
         insertTarget = this.data;
       }
 
-      insertRecords
-        .slice()
-        .reverse()
-        .forEach((each) => {
-          insertTarget.splice(pasteIndex + 1, 0, each);
-        });
+      insertRecords.forEach((each) => {
+        insertTarget.splice(pasteIndex + 1, 0, each);
+      });
     }
 
     if (pasteType == 'pasteschild') {
@@ -508,12 +498,9 @@ export class HomeComponent implements OnInit {
         insertTarget = targetSubtasks;
       }
 
-      insertRecords
-        .slice()
-        .reverse()
-        .forEach((each) => {
-          insertTarget.unshift(each);
-        });
+      insertRecords.forEach((each) => {
+        insertTarget.unshift(each);
+      });
     }
   }
 
@@ -556,10 +543,13 @@ export class HomeComponent implements OnInit {
     return this.grid.element.querySelector('.e-gridcontent .e-content')?.scrollTop;
   }
 
-  scrollBackToLastPosition(lastScrollPosition: any) {
+  scrollBackToLastPosition(lastScrollPosition: any, selectedRowIndex?: number) {
     setTimeout(() => {
       // @ts-ignore
       this.grid.element.querySelector('.e-gridcontent .e-content')?.scrollTop = lastScrollPosition;
+      if (selectedRowIndex) {
+        this.grid.selectRow(selectedRowIndex, true);
+      }
     }, 500);
   }
 }
