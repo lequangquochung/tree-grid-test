@@ -19,7 +19,7 @@ import {
   TreeGrid,
 } from '@syncfusion/ej2-treegrid';
 import { ComlumnComponent } from './comlumn/comlumn.component';
-import { contextTarget, CONTEXT_MENU_ITEM } from './constants/context-menu-item';
+import { contextMenuID, contextTarget, CONTEXT_MENU_ITEM } from './constants/context-menu-item';
 import { DATA_COLUMNS } from './constants/data-columns';
 import { sampleData } from './home.data';
 import { RowAddModalComponent } from './row/row-add-modal/row-add-modal.component';
@@ -44,11 +44,12 @@ export class HomeComponent implements OnInit {
   public dataColumn: any = DATA_COLUMNS;
   public contextMenuItems: any[] = [...CONTEXT_MENU_ITEM];
 
-  public data = <any>[];
+  public data: any[] = [];
   public dataWithoutNested: any[] = [];
 
   // selectedRow: any[] = [];
   private isCutMode = false;
+  private isShowPasteOption = false;
   private selectedRowForCopy: any[] = [];
 
   public declare pageSettings: any;
@@ -120,12 +121,31 @@ export class HomeComponent implements OnInit {
   };
 
   columnMenuClick(args: any): void {
-    if (args.item.id === 'edit') {
+    if (args.item.id === contextMenuID.editColumn) {
       this.openModal(args.item.id, { field: args.column.field, text: args.column.headerText });
-    } else if (args.item.id === 'delete') {
+    }
+
+    if (args.item.id === contextMenuID.deleteColumn) {
       this.dataColumn = this.dataColumn.filter((column: any) => column.field !== args.column.field);
       this.columns = this.dataColumn;
       this.grid?.refresh();
+    }
+  }
+
+  contextMenuOpen(args: any) {
+    if (this.grid.getSelectedRowIndexes().length <= 1) {
+      if (this.grid.getSelectedRowIndexes()[0] != args.rowInfo.rowIndex) {
+        this.grid.selectRow(args.rowInfo.rowIndex, true);
+      }
+    }
+
+    if (args.rowInfo.cellIndex) {
+      args.cancel = true;
+    }
+    if (this.isShowPasteOption) {
+      args.element?.classList.add('showPasteOption');
+    } else {
+      args.element?.classList.remove('showPasteOption');
     }
   }
 
@@ -138,123 +158,122 @@ export class HomeComponent implements OnInit {
       case contextTarget.row:
         this.rowContextClick(args);
         break;
-      default:
-        break;
-    }
-  }
-
-  toolbarClick(args: MenuEventArgs) {
-    switch (args?.item?.id) {
-      case 'openModalSetting':
-        this.openModalSetting();
-        break;
-      case 'addColumnAction':
-        this.openModal('add');
-        break;
-      case 'toggleFilter':
-        this.toggleFilter = !this.toggleFilter;
-        break;
-      default:
-        return;
     }
   }
 
   rowContextClick(args: any) {
     const contextId = args.item.id;
-    if (contextId == 'add-row') {
-      this.openAddRowModal();
+    if (contextId == contextMenuID.addRow) {
+      this.openAddRowModal(args, false);
     }
 
-    if (contextId == 'edit-row') {
-      // this.editingRowElement.querySelectorAll('td:not(.e-hide)').forEach((element : any )=> {
-      //   element.style.display = 'table-cell'
-      // })
-      // this.editingRowElement = args.rowInfo.row;
-      // console.log();
-      // let factory = this.resolver.resolveComponentFactory(RowEditComponent);
-      // let newNode = document.createElement('div');
-      // newNode.id = 'row-editor';
-      // args.rowInfo.row.appendChild(newNode);
-      // // document.getElementById('container')?;
-      // const ref = factory.create(this.injector, [], newNode);
-      // this.app.attachView(ref.hostView);
-      // args.rowInfo.row.querySelectorAll('td:not(.e-hide)').forEach((element: any) => {
-      //   console.log(element.className);
-      //   element.style.display = 'none';
-      // });
+    if (contextId == contextMenuID.addChildRow) {
+      this.openAddRowModal(args, true);
     }
 
-    if (contextId == 'copyrows' || contextId == 'cut') {
+    if (contextId == contextMenuID.deleteRow) {
+      this.isLoading = true;
+      this.grid.getSelectedRecords().forEach((data) => {
+        this.data = DataUtils.removeRecord(this.data, data);
+        this.dataWithoutNested = DataUtils.removeRecord(this.data, data);
+      });
+      setTimeout(() => {
+        this.isLoading = false;
+      });
+    }
+
+    if (contextId == contextMenuID.copyRows || contextId == contextMenuID.cutRows) {
+      const lastScrollPosition = this.getLastScrollPosition();
+      this.isLoading = true;
       const selectedrecords: any[] = this.grid?.getSelectedRecords();
       if (selectedrecords.length == 0) {
         return;
       }
-      this.isCutMode = args?.item?.id == 'cut';
+      this.isCutMode = contextId == contextMenuID.cutRows;
       this.selectedRowForCopy = [...selectedrecords];
-
       this?.grid?.refreshColumns();
-      this.showPasteOption();
+      setTimeout(() => {
+        this.isLoading = false;
+        this.scrollBackToLastPosition(lastScrollPosition);
+        this.isShowPasteOption = true;
+      });
     }
-    if (args?.item?.id === 'pasteschild' || args?.item?.id === 'pastesibling') {
-      this.selectedRowForCopy = [];
-      this.showPasteOption(false);
-      this.grid.refreshColumns();
-      //   const selectedrecords: object[] = this.grid?.getSelectedRecords() || [];
-      //   const selectedItem: any = selectedrecords[0];
-
-      //   if (!selectedItem) {
-      //     alert('Please select a row to paste');
-      //     return;
-      //   }
-      //   const isCopy = this.selectedRowForCopy.length ? true : false;
-      //   let dataForPaste = isCopy ? this.selectedRowForCopy : this.selectedRow;
-
-      //   dataForPaste = this.createNewIDForRecord(dataForPaste);
-      //   let newData = this.pasteRow(this.data, selectedItem, dataForPaste, args?.item?.id);
-      //   if (!isCopy) {
-      //     // remove cutted item
-      //     newData = this.removeCuttedItem(newData, this.selectedRow);
-      //   }
-      //   // reset copy and cut item
-      //   this.selectedRowForCopy = [];
-      //   this.selectedRow = [];
-
-      //   // reset data
-      //   this.data = [...newData];
-      //   // this?.grid?.refreshColumns();
+    if (contextId === contextMenuID.pasteSibling || contextId === contextMenuID.pasteChild) {
+      this.pasteRecord(args, contextId);
     }
   }
 
-  showPasteOption(isShow = true) {
-    const contextMenuElement = document.getElementById('_gridcontrol_cmenu');
-    if (isShow) {
-      contextMenuElement?.classList.add('showPasteOption');
+  pasteRecord(args: any, pasteType: string) {
+    const pasteTarget = args.rowInfo.rowData;
+    let dataForPaste: any[] = [];
+
+    this.selectedRowForCopy.every((row) => {
+      if (DataUtils.isChildOf(dataForPaste, row)) {
+        return true;
+      }
+      const data: any = {};
+      this.columns.forEach((col) => {
+        data[col.field] = row[col.field];
+      });
+      data['subtasks'] = this.dataWithoutNested.filter((each) => each.parentID == data.taskID);
+      dataForPaste.push(data);
+
+      return true;
+    });
+
+    if (!this.isCutMode) {
+      dataForPaste = this.createNewIDForRecord(dataForPaste);
+      DataUtils.setParentForRecord(dataForPaste);
     } else {
-      contextMenuElement?.classList.remove('showPasteOption');
+      if (dataForPaste.findIndex((d) => d.taskID == pasteTarget.taskID) >= 0) {
+        this.selectedRowForCopy = [];
+        this.isShowPasteOption = false;
+        this.grid.refresh();
+        return;
+      }
+
+      if (DataUtils.isChildOf(dataForPaste, pasteTarget)) {
+        alert(`you can't paste to it's own child`);
+        this.grid.refresh();
+        return;
+      }
+
+      dataForPaste.forEach((data) => {
+        this.data = DataUtils.removeRecord(this.data, data);
+      });
+      this.grid.refresh();
     }
+    this.isLoading = true;
+    const lastScrollPosition = this.getLastScrollPosition();
+    this.pasteRow(dataForPaste, pasteTarget, pasteType);
+    this.selectedRowForCopy = [];
+    this.grid.refresh();
+    setTimeout(() => {
+      this.isLoading = false;
+      this.isShowPasteOption = false;
+      this.dataWithoutNested = [...DataUtils.getFullRecordWithoutNested(this.data)];
+      this.scrollBackToLastPosition(lastScrollPosition, args.rowInfo.rowIndex);
+    }, 400);
   }
 
   columnContextClick(args: any) {
+    const contextID = args?.item?.id;
     const _contextMenuItems = [...this.contextMenuItems];
     const _contextMenuIndex = _contextMenuItems.findIndex((item: any) => item.id === args.item.id);
 
-    if (args?.item?.id === 'show-hide-column') {
+    if (contextID === contextMenuID.toggleShowColumn) {
       this.grid?.columnChooserModule.openColumnChooser(); // give X and Y axis
     }
 
-    if (args?.item?.id === 'show-hide-column') {
-      this.grid?.columnChooserModule.openColumnChooser(); // give X and Y axis
-    }
-
-    if (args.item.id === 'add') {
+    if (contextID === contextMenuID.addColumn) {
       this.openModal(args.item.id);
     }
 
-    if (args.item.id === 'edit') {
+    if (contextID === contextMenuID.editColumn) {
       this.openModal(args.item.id, { field: args.column.field, text: args.column.headerText });
     }
 
-    if (args.item.id === 'delete') {
+    if (contextID === contextMenuID.deleteColumn) {
       if (this.frozenColumns > 0) {
         this.grid.clearSelection();
         this.infiniteOptions = { initialBlocks: 1 };
@@ -271,15 +290,17 @@ export class HomeComponent implements OnInit {
       this.grid?.clearSorting();
     }
 
-    if (args.item.id === 'freeze') {
+    if (contextID === contextMenuID.freezeColumn) {
+      const lastScrollPosition = this.getLastScrollPosition();
       this.freezeColumn(args);
+      this.scrollBackToLastPosition(lastScrollPosition);
     }
 
-    if (args.item.id === 'styling') {
+    if (contextID === contextMenuID.stylingColumn) {
       this.editColumnStyle(args);
     }
 
-    if (args.item.id === 'filter') {
+    if (contextID === contextMenuID.togleFilter) {
       this.toggleFilter = !this.toggleFilter;
       _contextMenuItems[_contextMenuIndex].text = `Filter ${this.toggleFilter ? `Off` : `On`}`;
       this.contextMenuItems = [..._contextMenuItems];
@@ -288,7 +309,7 @@ export class HomeComponent implements OnInit {
       this.gridBodyHeight = this.toggleFilter ? window.innerHeight - 100 : window.innerHeight - 60;
     }
 
-    if (args.item.id === 'mutiple-sorting') {
+    if (args.item.id === contextMenuID.multipleSort) {
       this.openModal(args.item.id, this.columns, this.columnChecked);
       // this.toggleMultiSorting = !this.toggleMultiSorting;
       // _contextMenuItems[_contextMenuIndex].text = `Mutiple Sorting ${this.toggleMultiSorting ? `Off` : `On`}`;
@@ -297,7 +318,6 @@ export class HomeComponent implements OnInit {
   }
 
   freezeColumn(args: any) {
-    const lastScrollPosition = this.grid.element.querySelector('.e-gridcontent .e-content')?.scrollTop;
     this.isLoading = true;
     let freezeColumnIndex = this.dataColumn.findIndex((column: any) => column.field === args.column.field) + 1;
     //reset collumn re ordering
@@ -321,11 +341,7 @@ export class HomeComponent implements OnInit {
 
     setTimeout(() => {
       this.isLoading = false;
-      setTimeout(() => {
-        // @ts-ignore
-        this.grid.element.querySelector('.e-gridcontent .e-content')?.scrollTop = lastScrollPosition;
-      }, 600);
-    }, 300);
+    });
   }
 
   editColumnStyle(args: any) {
@@ -379,21 +395,19 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  openAddRowModal() {
-    const maxID = this.dataWithoutNested.reduce(function (prev: any, current: any) {
-      if (+current.taskID > +prev.taskID) {
-        return current;
-      } else {
-        return prev;
-      }
-    }).taskID;
+  openAddRowModal(args: any, isPasteAsChild: boolean) {
+    const maxId = DataUtils.getMaxId(this.dataWithoutNested);
     const modalRef = this.modalService.open(RowAddModalComponent);
-    modalRef.componentInstance.taskID = maxID + 1;
+    modalRef.componentInstance.taskID = maxId + 1;
     modalRef.componentInstance.columnSetting = this.columns;
     modalRef.componentInstance.closeModal.subscribe((res: any) => {
       if (res) {
-        console.log(res);
-        this.data.push(res);
+        if (isPasteAsChild) {
+          this.pasteRow([res], args.rowInfo.rowData, contextMenuID.pasteChild);
+        } else {
+          this.data.unshift(res);
+        }
+
         this.dataWithoutNested.push(res);
       }
       modalRef.close();
@@ -410,7 +424,7 @@ export class HomeComponent implements OnInit {
       if (res.event) {
         switch (res.event.type) {
           case 'add':
-            this.dataColumn.push({
+            const newColumn = {
               field: `${res.event.column.text.trim()}${this.dataColumn.length}`,
               headerText: res.event.column.text,
               editType: res.event.column.columnType.includes('date') ? 'datetimepickeredit' : 'string',
@@ -422,7 +436,12 @@ export class HomeComponent implements OnInit {
               color: '#757575',
               customAttributes: { class: `header-column-font${this.dataColumn.length + 1}` },
               backgroundColor: '#fff',
-            });
+            };
+            if (res.event.column.columnType.includes('date')) {
+              newColumn['format'] = 'yMd';
+            }
+            this.dataColumn.push(newColumn);
+
             this.columns = [...this.dataColumn];
             break;
           case 'edit':
@@ -468,66 +487,72 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  pasteRow(data: any, item: any, insertRecords: object[], pasteType: string) {
-    for (let i = 0; i < data.length; i++) {
-      if (data[i].taskID === item.taskID) {
-        switch (pasteType) {
-          case 'pastesibling':
-            for (let j = 0; j < insertRecords.length; j++) {
-              data.splice(i + 1, 0, insertRecords[j]);
-            }
-            break;
-          case 'pasteschild':
-            insertRecords = insertRecords.map((record: any) => {
-              record.parentItem = item;
-              return record;
-            });
-            data[i].subtasks =
-              data[i].subtasks && data[i].subtasks.length ? data[i].subtasks.concat(insertRecords) : insertRecords;
-            break;
-          default:
-            break;
-        }
-        return data;
+  createNewIDForRecord(insertItems: any[], maxId?: any) {
+    maxId = maxId ? maxId : DataUtils.getMaxId(this.dataWithoutNested);
+    insertItems = insertItems.map((data: any) => {
+      maxId++;
+      const newData = {
+        ...data,
+        taskID: maxId,
+        taskCode: maxId,
+      };
+
+      if (data.subtasks) {
+        newData.subtasks = this.createNewIDForRecord(data.subtasks, maxId);
       }
-      if (data[i].subtasks) {
-        const found = this.pasteRow(data[i].subtasks, item, insertRecords, pasteType);
-        if (found) return data;
-      }
-    }
-    return false;
+      return newData;
+    });
+    return insertItems;
   }
 
-  // createNewIDForRecord(insertItems: object[]) {
-  //   insertItems = insertItems.map((data: any) => {
-  //     let newID = Math.floor(Math.random() * 100000000);
-  //     while (this.dataWithoutNested.find((record: any) => record.taskID === newID)) {
-  //       newID = Math.floor(Math.random() * 100000000);
-  //     }
-  //     const newData = {
-  //       ...data,
-  //       taskID: newID,
-  //     };
+  pasteRow(insertRecords: any[], pasteTarget: any, pasteType: string) {
+    let insertTarget: any[];
+    let pasteIndex: any;
+    insertRecords = insertRecords.slice().reverse();
+    if (pasteType == contextMenuID.pasteSibling) {
+      if (pasteTarget.parentID) {
+        const parentRecord: any = DataUtils.getParentOf(this.data, pasteTarget.parentID);
+        pasteIndex = parentRecord.subtasks.findIndex((d: any) => d.taskID == pasteTarget.taskID);
+        insertTarget = parentRecord.subtasks;
+        this.setLevelForPasting(insertRecords, pasteTarget.level);
+      } else {
+        pasteIndex = this.data.findIndex((d) => d.taskID == pasteTarget.taskID);
+        insertTarget = this.data;
+      }
 
-  //     if (data.subtasks) {
-  //       newData.subtasks = this.createNewIDForRecord(data.subtasks);
-  //     }
-  //     return newData;
-  //   });
-  //   return insertItems;
-  // }
+      insertRecords.forEach((each) => {
+        insertTarget.splice(pasteIndex + 1, 0, each);
+      });
+    }
 
-  // removeCuttedItem(data: object[], insertRecords: object[]): any {
-  //   data = data.map((record: any) => {
-  //     const item: any = insertRecords.find((item: any) => item.taskID === record.taskID);
-  //     if (!item && record.subtasks) {
-  //       record.subtasks = this.removeCuttedItem(record.subtasks, insertRecords);
-  //     }
-  //     if (!item) return record;
-  //   });
-  //   data = data.filter((item) => item);
-  //   return data;
-  // }
+    if (pasteType == contextMenuID.pasteChild) {
+      this.setLevelForPasting(insertRecords, pasteTarget.level + 1);
+      if (pasteTarget.parentID) {
+        const targetRecord: any = DataUtils.getParentOf(this.data, pasteTarget.parentID).subtasks.find(
+          (each: any) => each.taskID == pasteTarget.taskID
+        );
+        targetRecord.subtasks = targetRecord.subtasks ? targetRecord.subtasks : [];
+        insertTarget = targetRecord.subtasks;
+      } else {
+        const target = this.data[this.data.findIndex((d) => d.taskID == pasteTarget.taskID)];
+        const targetSubtasks = target.subtasks ? target.subtasks : [];
+        insertTarget = targetSubtasks;
+      }
+
+      insertRecords.forEach((each) => {
+        insertTarget.unshift(each);
+      });
+    }
+  }
+
+  setLevelForPasting(insertRecords: any[], pasteLevel: number) {
+    insertRecords.forEach((rec) => {
+      rec['level'] = pasteLevel;
+      if (rec.subtasks && rec.subtasks.length) {
+        this.setLevelForPasting(rec.subtasks, pasteLevel + 1);
+      }
+    });
+  }
 
   rowBound(args: RowDataBoundEventArgs) {
     const taskID: any = args?.data?.['taskID'];
@@ -539,14 +564,10 @@ export class HomeComponent implements OnInit {
 
   actionComplete(args: any): void {
     if (args.requestType === 'beginEdit' || args.requestType === 'add') {
-      // const dialog = args.dialog;
-      // dialog.header = args.requestType === 'beginEdit' ? 'Edit Record of ' + args.rowData['taskID'] : 'New Record';
     }
   }
 
   actionBegin(args: any): void {
-    // console.log(args)
-
     if (args.requestType === 'beginEdit' || args.requestType === 'add') {
     }
 
@@ -557,5 +578,19 @@ export class HomeComponent implements OnInit {
 
       this.infiniteOptions = { initialBlocks: this.loadedRecordCount / this.pageSettings.pageSize };
     }
+  }
+
+  getLastScrollPosition(): any {
+    return this.grid.element.querySelector('.e-gridcontent .e-content')?.scrollTop;
+  }
+
+  scrollBackToLastPosition(lastScrollPosition: any, selectedRowIndex?: number) {
+    setTimeout(() => {
+      // @ts-ignore
+      this.grid.element.querySelector('.e-gridcontent .e-content')?.scrollTop = lastScrollPosition;
+      if (selectedRowIndex) {
+        this.grid.selectRow(selectedRowIndex, true);
+      }
+    }, 500);
   }
 }
