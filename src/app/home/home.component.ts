@@ -1,7 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GridComponent, RowDataBoundEventArgs } from '@syncfusion/ej2-angular-grids';
-import { EditSettingsModel, SortSettingsModel, ToolbarItems } from '@syncfusion/ej2-angular-treegrid';
+import {
+  EditSettingsModel,
+  SortSettingsModel,
+  ToolbarItems,
+  TreeGridComponent,
+} from '@syncfusion/ej2-angular-treegrid';
 import { MenuEventArgs } from '@syncfusion/ej2-navigations';
 import {
   Freeze,
@@ -28,7 +33,7 @@ import { DataUtils } from './utils/data.utils';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  @ViewChild('grid') declare grid: GridComponent;
+  @ViewChild('grid') declare grid: TreeGridComponent;
   declare quote: string;
   public isLoading = false;
   private declare loadedRecordCount: number;
@@ -61,6 +66,8 @@ export class HomeComponent implements OnInit {
   public declare toggleMultiSorting: Boolean;
   public declare frozenColumns: number;
   public declare multiSelect: any;
+
+  public columnChecked: any[] = [];
 
   constructor(public modalService: NgbModal) {
     this.filterSettings = { type: 'FilterBar', hierarchyMode: 'Parent', mode: 'Immediate' };
@@ -95,6 +102,14 @@ export class HomeComponent implements OnInit {
 
     this.data = sampleData;
     this.dataWithoutNested = [...DataUtils.getFullRecordWithoutNested(this.data)];
+
+    // this.sortSettings = {
+    //   columns: [
+    //     { field: 'startDate', direction: 'Descending' },
+    //     { field: 'taskName', direction: 'Descending' },
+    //   ],
+    //   allowUnsort: true
+    // }
   }
 
   public uniqueIdRule: (args: { [key: string]: string }) => boolean = (args: { [key: string]: string }) => {
@@ -274,9 +289,10 @@ export class HomeComponent implements OnInit {
     }
 
     if (args.item.id === 'mutiple-sorting') {
-      this.toggleMultiSorting = !this.toggleMultiSorting;
-      _contextMenuItems[_contextMenuIndex].text = `Mutiple Sorting ${this.toggleMultiSorting ? `Off` : `On`}`;
-      this.contextMenuItems = [..._contextMenuItems];
+      this.openModal(args.item.id, this.columns, this.columnChecked);
+      // this.toggleMultiSorting = !this.toggleMultiSorting;
+      // _contextMenuItems[_contextMenuIndex].text = `Mutiple Sorting ${this.toggleMultiSorting ? `Off` : `On`}`;
+      // this.contextMenuItems = [..._contextMenuItems];
     }
   }
 
@@ -385,10 +401,11 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  openModal(type: string, column?: any): void {
+  openModal(type: string, column?: any, columnChecked?: any): void {
     const modalRef = this.modalService.open(ComlumnComponent);
     modalRef.componentInstance.type = type;
     modalRef.componentInstance.column = column;
+    modalRef.componentInstance.columnChecked = columnChecked;
     modalRef.componentInstance.columnEmitter.subscribe((res: any) => {
       if (res.event) {
         switch (res.event.type) {
@@ -413,6 +430,22 @@ export class HomeComponent implements OnInit {
             column.headerText = res.event.column.text;
             this?.grid?.refreshColumns();
             break;
+          case 'mutiple-sorting':
+            this.columnChecked = res.event.column;
+            console.log(res.event);
+            let arr: any = [];
+
+            if (this.columnChecked.length > 0) {
+              this.columnChecked.forEach((item: any) => {
+                if (item.isChecked) {
+                  this.grid.sortByColumn(item.name, 'Ascending', true);
+                } else {
+                  this.grid.removeSortColumn(item.name);
+                }
+              });
+            }
+
+            break;
           default:
             break;
         }
@@ -435,35 +468,35 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  // pasteRow(data: any, item: any, insertRecords: object[], pasteType: string) {
-  //   for (let i = 0; i < data.length; i++) {
-  //     if (data[i].taskID === item.taskID) {
-  //       switch (pasteType) {
-  //         case 'pastesibling':
-  //           for (let j = 0; j < insertRecords.length; j++) {
-  //             data.splice(i + 1, 0, insertRecords[j]);
-  //           }
-  //           break;
-  //         case 'pasteschild':
-  //           insertRecords = insertRecords.map((record: any) => {
-  //             record.parentItem = item;
-  //             return record;
-  //           });
-  //           data[i].subtasks =
-  //             data[i].subtasks && data[i].subtasks.length ? data[i].subtasks.concat(insertRecords) : insertRecords;
-  //           break;
-  //         default:
-  //           break;
-  //       }
-  //       return data;
-  //     }
-  //     if (data[i].subtasks) {
-  //       const found = this.pasteRow(data[i].subtasks, item, insertRecords, pasteType);
-  //       if (found) return data;
-  //     }
-  //   }
-  //   return false;
-  // }
+  pasteRow(data: any, item: any, insertRecords: object[], pasteType: string) {
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].taskID === item.taskID) {
+        switch (pasteType) {
+          case 'pastesibling':
+            for (let j = 0; j < insertRecords.length; j++) {
+              data.splice(i + 1, 0, insertRecords[j]);
+            }
+            break;
+          case 'pasteschild':
+            insertRecords = insertRecords.map((record: any) => {
+              record.parentItem = item;
+              return record;
+            });
+            data[i].subtasks =
+              data[i].subtasks && data[i].subtasks.length ? data[i].subtasks.concat(insertRecords) : insertRecords;
+            break;
+          default:
+            break;
+        }
+        return data;
+      }
+      if (data[i].subtasks) {
+        const found = this.pasteRow(data[i].subtasks, item, insertRecords, pasteType);
+        if (found) return data;
+      }
+    }
+    return false;
+  }
 
   // createNewIDForRecord(insertItems: object[]) {
   //   insertItems = insertItems.map((data: any) => {
@@ -512,7 +545,8 @@ export class HomeComponent implements OnInit {
   }
 
   actionBegin(args: any): void {
-    // console.log(args.requestType)
+    // console.log(args)
+
     if (args.requestType === 'beginEdit' || args.requestType === 'add') {
     }
 
