@@ -173,7 +173,7 @@ export class HomeComponent implements OnInit {
       if (selectedrecords.length == 0) {
         return;
       }
-      this.isCutMode = args?.item?.id == 'cut';
+      this.isCutMode = contextId == contextMenuID.cutRows;
       this.selectedRowForCopy = [...selectedrecords];
       this?.grid?.refreshColumns();
       setTimeout(() => {
