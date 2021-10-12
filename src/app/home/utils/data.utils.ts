@@ -46,6 +46,25 @@ export class DataUtils {
     return founded;
   }
 
+  static findRecord(data: any[], target: any): any {
+    let result;
+    data.every((row) => {
+      if (row.taskID == target.taskID) {
+        result = row;
+        return false;
+      }
+      if (row.subtasks && row.subtasks.length) {
+        let childResult = this.getParentOf(row.subtasks, target);
+        if (childResult) {
+          result = childResult;
+          return false;
+        }
+      }
+      return true;
+    });
+    return result;
+  }
+
   static removeRecord(data: any[], target: any) {
     return data.filter((record) => {
       if (record.subtasks && record.subtasks.length) {

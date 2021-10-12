@@ -14,6 +14,11 @@
 }
 
 .modal-footer {
+  p {
+    color: red;
+    font-size: 0.75rem;
+  }
+
   button {
     border: 0;
     outline: none;

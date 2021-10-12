@@ -9,18 +9,21 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { RowInputComponent } from './input-component/text-input/text-input.component';
+import { RowInputComponent } from '../input-component/text-input/text-input.component';
 
 @Component({
   selector: 'app-row-add-modal',
-  templateUrl: './row-add-modal.component.html',
-  styleUrls: ['./row-add-modal.component.scss'],
+  templateUrl: './row-input-modal.component.html',
+  styleUrls: ['./row-input-modal.component.scss'],
 })
-export class RowAddModalComponent implements OnInit {
+export class RowInputModalComponent implements OnInit {
   @Input() declare taskID: number;
+  @Input() declare editingTask: any;
   @Input() declare columnSetting: any[];
   @Output() closeModal = new EventEmitter<any>();
 
+  declare modalTitle: string;
+  declare showInputError: boolean;
   declare rowInputForm: FormGroup;
   declare formField: any;
 
@@ -31,6 +34,8 @@ export class RowAddModalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.modalTitle = this.editingTask ? 'Edit Record' : 'Add New Record';
+    this.showInputError = false;
     this.formField = {};
 
     this.generateFormGroup();
@@ -42,12 +47,15 @@ export class RowAddModalComponent implements OnInit {
 
     this.columnSetting.forEach((col: any) => {
       let value = null;
-      if (col.field == 'taskID' || col.field == 'taskCode') {
-        value = this.taskID;
+      if (this.editingTask) {
+        value = this.editingTask[col.field];
+      } else {
+        if (col.field == 'taskID' || col.field == 'taskCode') {
+          value = this.taskID;
+        }
       }
       this.formField[col.field] = [value, Validators.required];
     });
-
     this.rowInputForm = formBuilder.group(this.formField);
   }
 
@@ -67,15 +75,15 @@ export class RowAddModalComponent implements OnInit {
         const ref = colInputComponent.create(this.injector, [], newNode);
         ref.instance.columnInfo = { ...col };
         ref.instance.formControl = this.rowInputForm.controls[col.field];
-
         ref.changeDetectorRef.detectChanges();
       }
     });
   }
 
   save(): void {
+    this.showInputError = false;
     if (this.rowInputForm.invalid) {
-      alert('please fill all required fields');
+      this.showInputError = true;
       return;
     }
     this.closeModal.emit(this.rowInputForm.value);
