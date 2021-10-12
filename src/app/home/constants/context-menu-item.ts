@@ -6,35 +6,45 @@ export enum contextTarget {
   row = '.e-content',
 }
 
+export enum contextMenuID {
+  stylingColumn = 'styling',
+  addColumn = 'add',
+  deleteColumn = 'delete',
+  editColumn = 'edit',
+  freezeColumn = 'freeze',
+  toggleShowColumn = 'show-hide-column',
+  togleFilter = 'filter',
+  multipleSort = 'mutiple-sorting',
+
+  addRow = 'add-row',
+  addChildRow = 'add-child-row',
+  deleteRow = 'delete-row',
+  copyRows = 'copyrows',
+  cutRows = 'cutrows',
+  pasteSibling = 'pastesibling',
+  pasteChild = 'pasteschild',
+}
+
 export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any[] = [
   //----------------COLUMN_CONTEXT_MENU_ITEM-----------------------
 
-  { text: 'Styling', target: contextTarget.column, id: 'styling' },
-  { text: 'Add Column', target: contextTarget.column, id: 'add' },
-  { text: 'Delete Column', target: contextTarget.column, id: 'delete' },
-  { text: 'Edit Column', target: contextTarget.column, id: 'edit' },
-  { text: 'Freeze', target: contextTarget.column, id: 'freeze' },
-  { text: 'Show/Hide Column', target: contextTarget.column, id: 'show-hide-column' },
-  { text: 'Filter Off', target: contextTarget.column, id: 'filter' },
-  { text: 'Multiple sort', target: contextTarget.column, id: 'mutiple-sorting' },
+  { text: 'Styling', target: contextTarget.column, id: contextMenuID.stylingColumn },
+  { text: 'Add Column', target: contextTarget.column, id: contextMenuID.addColumn },
+  { text: 'Delete Column', target: contextTarget.column, id: contextMenuID.deleteColumn },
+  { text: 'Edit Column', target: contextTarget.column, id: contextMenuID.editColumn },
+  { text: 'Freeze', target: contextTarget.column, id: contextMenuID.freezeColumn },
+  { text: 'Show/Hide Column', target: contextTarget.column, id: contextMenuID.toggleShowColumn },
+  { text: 'Filter Off', target: contextTarget.column, id: contextMenuID.togleFilter },
+  { text: 'Multiple sort', target: contextTarget.column, id: contextMenuID.multipleSort },
 
   //----------------ROW_CONTEXT_MENU_ITEM-----------------------
 
-  { text: 'Add Row', target: contextTarget.row, id: 'add-row', iconCss: 'e-icons e-plus' },
+  { text: 'Add Row', target: contextTarget.row, id: contextMenuID.addRow, iconCss: 'e-icons e-plus' },
+  { text: 'Add Child', target: contextTarget.row, id: contextMenuID.addChildRow, iconCss: 'e-icons e-plus' },
   'Edit',
-  'Delete',
-  // { text: 'Edit Row', target: contextTarget.row, id: 'edit-row', iconCss: 'e-icons e-edit' },
-  // { text: 'Delete Row', target: contextTarget.row, id: 'delete-row' },
-  // 'AddRow',
-
-  { text: 'Copy', target: contextTarget.row, id: 'copyrows' },
-  { text: 'Cut', target: contextTarget.row, id: 'cut' },
-  { text: 'Paste as sibling', target: contextTarget.row, id: 'pastesibling' },
-  { text: 'Paste as child', target: contextTarget.row, id: 'pasteschild' },
-  // { text: 'Turn off multi select mode', target: '.e-rowdragdropcell', id: 'multiselect' },
-
-  // 'Copy',
-  // 'Delete',
-  //  'Save',
-  //  'Cancel',
+  { text: 'Delete Row', target: contextTarget.row, id: contextMenuID.deleteRow, iconCss: 'e-icons e-trash' },
+  { text: 'Copy', target: contextTarget.row, id: contextMenuID.copyRows },
+  { text: 'Cut', target: contextTarget.row, id: contextMenuID.cutRows },
+  { text: 'Paste as sibling', target: contextTarget.row, id: contextMenuID.pasteSibling },
+  { text: 'Paste as child', target: contextTarget.row, id: contextMenuID.pasteChild },
 ];

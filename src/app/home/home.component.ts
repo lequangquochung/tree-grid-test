@@ -15,7 +15,7 @@ import {
 } from '@syncfusion/ej2-treegrid';
 import { findIndex } from 'rxjs/operators';
 import { ComlumnComponent } from './comlumn/comlumn.component';
-import { contextTarget, CONTEXT_MENU_ITEM } from './constants/context-menu-item';
+import { contextMenuID, contextTarget, CONTEXT_MENU_ITEM } from './constants/context-menu-item';
 import { DATA_COLUMNS } from './constants/data-columns';
 import { sampleData } from './home.data';
 import { RowAddModalComponent } from './row/row-add-modal/row-add-modal.component';
@@ -83,6 +83,22 @@ export class HomeComponent implements OnInit {
     this.columns = [...this.dataColumn];
   }
 
+  toolbarClick(args: MenuEventArgs) {
+    switch (args?.item?.id) {
+      case 'openModalSetting':
+        this.openModalSetting();
+        break;
+      case 'addColumnAction':
+        this.openModal('add');
+        break;
+      case 'toggleFilter':
+        this.toggleFilter = !this.toggleFilter;
+        break;
+      default:
+        return;
+    }
+  }
+
   ngOnInit() {
     // Allow Drag / Drop to change order row
     TreeGrid.Inject(RowDD, Selection);
@@ -146,32 +162,28 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  toolbarClick(args: MenuEventArgs) {
-    switch (args?.item?.id) {
-      case 'openModalSetting':
-        this.openModalSetting();
-        break;
-      case 'addColumnAction':
-        this.openModal('add');
-        break;
-      case 'toggleFilter':
-        this.toggleFilter = !this.toggleFilter;
-        break;
-      default:
-        return;
-    }
-  }
-
   rowContextClick(args: any) {
     const contextId = args.item.id;
-    if (contextId == 'add-row') {
-      this.openAddRowModal();
+    if (contextId == contextMenuID.addRow) {
+      this.openAddRowModal(args, false);
     }
 
-    if (contextId == 'edit-row') {
+    if (contextId == contextMenuID.addChildRow) {
+      this.openAddRowModal(args, true);
     }
 
-    if (contextId == 'copyrows' || contextId == 'cut') {
+    if (contextId == contextMenuID.deleteRow) {
+      this.isLoading = true;
+      this.grid.getSelectedRecords().forEach((data) => {
+        this.data = DataUtils.removeRecord(this.data, data);
+        this.dataWithoutNested = DataUtils.removeRecord(this.data, data);
+      });
+      setTimeout(() => {
+        this.isLoading = false;
+      });
+    }
+
+    if (contextId == contextMenuID.copyRows || contextId == contextMenuID.cutRows) {
       const lastScrollPosition = this.getLastScrollPosition();
       this.isLoading = true;
       const selectedrecords: any[] = this.grid?.getSelectedRecords();
@@ -180,7 +192,6 @@ export class HomeComponent implements OnInit {
       }
       this.isCutMode = args?.item?.id == 'cut';
       this.selectedRowForCopy = [...selectedrecords];
-
       this?.grid?.refreshColumns();
       setTimeout(() => {
         this.isLoading = false;
@@ -188,7 +199,7 @@ export class HomeComponent implements OnInit {
         this.isShowPasteOption = true;
       });
     }
-    if (contextId === 'pasteschild' || contextId === 'pastesibling') {
+    if (contextId === contextMenuID.pasteSibling || contextId === contextMenuID.pasteChild) {
       this.pasteRecord(args, contextId);
     }
   }
@@ -244,22 +255,23 @@ export class HomeComponent implements OnInit {
   }
 
   columnContextClick(args: any) {
+    const contextID = args?.item?.id;
     const _contextMenuItems = [...this.contextMenuItems];
     const _contextMenuIndex = _contextMenuItems.findIndex((item: any) => item.id === args.item.id);
 
-    if (args?.item?.id === 'show-hide-column') {
+    if (contextID === contextMenuID.toggleShowColumn) {
       this.grid?.columnChooserModule.openColumnChooser(); // give X and Y axis
     }
 
-    if (args.item.id === 'add') {
+    if (contextID === contextMenuID.addColumn) {
       this.openModal(args.item.id);
     }
 
-    if (args.item.id === 'edit') {
+    if (contextID === contextMenuID.editColumn) {
       this.openModal(args.item.id, { field: args.column.field, text: args.column.headerText });
     }
 
-    if (args.item.id === 'delete') {
+    if (contextID === contextMenuID.deleteColumn) {
       if (this.frozenColumns > 0) {
         this.grid.clearSelection();
         this.infiniteOptions = { initialBlocks: 1 };
@@ -276,17 +288,17 @@ export class HomeComponent implements OnInit {
       this.grid?.clearSorting();
     }
 
-    if (args.item.id === 'freeze') {
+    if (contextID === contextMenuID.freezeColumn) {
       const lastScrollPosition = this.getLastScrollPosition();
       this.freezeColumn(args);
       this.scrollBackToLastPosition(lastScrollPosition);
     }
 
-    if (args.item.id === 'styling') {
+    if (contextID === contextMenuID.stylingColumn) {
       this.editColumnStyle(args);
     }
 
-    if (args.item.id === 'filter') {
+    if (contextID === contextMenuID.togleFilter) {
       this.toggleFilter = !this.toggleFilter;
       _contextMenuItems[_contextMenuIndex].text = `Filter ${this.toggleFilter ? `Off` : `On`}`;
       this.contextMenuItems = [..._contextMenuItems];
@@ -295,7 +307,7 @@ export class HomeComponent implements OnInit {
       this.gridBodyHeight = this.toggleFilter ? window.innerHeight - 100 : window.innerHeight - 60;
     }
 
-    if (args.item.id === 'mutiple-sorting') {
+    if (contextID === contextMenuID.multipleSort) {
       this.toggleMultiSorting = !this.toggleMultiSorting;
       _contextMenuItems[_contextMenuIndex].text = `Mutiple Sorting ${this.toggleMultiSorting ? `Off` : `On`}`;
       this.contextMenuItems = [..._contextMenuItems];
@@ -380,15 +392,19 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  openAddRowModal() {
+  openAddRowModal(args: any, isPasteAsChild: boolean) {
     this.maxId = this.maxId ? this.maxId : DataUtils.getMaxId(this.dataWithoutNested);
     const modalRef = this.modalService.open(RowAddModalComponent);
     modalRef.componentInstance.taskID = this.maxId + 1;
     modalRef.componentInstance.columnSetting = this.columns;
     modalRef.componentInstance.closeModal.subscribe((res: any) => {
       if (res) {
-        console.log(res);
-        this.data.push(res);
+        if (isPasteAsChild) {
+          this.pasteRow([res], args.rowInfo.rowData, contextMenuID.pasteChild);
+        } else {
+          this.data.push(res);
+        }
+
         this.dataWithoutNested.push(res);
       }
       modalRef.close();
@@ -468,7 +484,7 @@ export class HomeComponent implements OnInit {
     let insertTarget: any[];
     let pasteIndex: any;
     insertRecords = insertRecords.slice().reverse();
-    if (pasteType == 'pastesibling') {
+    if (pasteType == contextMenuID.pasteSibling) {
       if (pasteTarget.parentID) {
         const parentRecord: any = DataUtils.getParentOf(this.data, pasteTarget.parentID);
         pasteIndex = parentRecord.subtasks.findIndex((d: any) => d.taskID == pasteTarget.taskID);
@@ -484,7 +500,7 @@ export class HomeComponent implements OnInit {
       });
     }
 
-    if (pasteType == 'pasteschild') {
+    if (pasteType == contextMenuID.pasteChild) {
       this.setLevelForPasting(insertRecords, pasteTarget.level + 1);
       if (pasteTarget.parentID) {
         const targetRecord: any = DataUtils.getParentOf(this.data, pasteTarget.parentID).subtasks.find(
