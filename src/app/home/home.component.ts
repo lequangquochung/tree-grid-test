@@ -210,6 +210,7 @@ export class HomeComponent implements OnInit {
   pasteRecord(args: any, pasteType: string) {
     const pasteTarget = args.rowInfo.rowData;
     let dataForPaste: any[] = [];
+    let indexAfterCut = this.selectedRowForCopy.length;
 
     this.selectedRowForCopy.every((row) => {
       if (DataUtils.isChildOf(dataForPaste, row)) {
@@ -238,25 +239,29 @@ export class HomeComponent implements OnInit {
 
       if (DataUtils.isChildOf(dataForPaste, pasteTarget)) {
         alert(`you can't paste to it's own child`);
-        this.grid.refresh();
+        // this.grid.refresh();
         return;
       }
 
       dataForPaste.forEach((data) => {
         this.data = DataUtils.removeRecord(this.data, data);
       });
-      this.grid.refresh();
+      // this.grid.refresh();
     }
     this.isLoading = true;
     const lastScrollPosition = this.getLastScrollPosition();
     this.pasteRow(dataForPaste, pasteTarget, pasteType);
     this.selectedRowForCopy = [];
-    this.grid.refresh();
+    // this.grid.refresh();
     setTimeout(() => {
       this.isLoading = false;
       this.isShowPasteOption = false;
       this.dataWithoutNested = [...DataUtils.getFullRecordWithoutNested(this.data)];
-      this.scrollBackToLastPosition(lastScrollPosition, args.rowInfo.rowIndex);
+      if (this.isCutMode) {
+        this.scrollBackToLastPosition(lastScrollPosition, args.rowInfo.rowIndex - indexAfterCut);
+      } else {
+        this.scrollBackToLastPosition(lastScrollPosition, args.rowInfo.rowIndex);
+      }
     }, 400);
   }
 
