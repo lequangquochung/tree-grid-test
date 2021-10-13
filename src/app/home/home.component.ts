@@ -409,9 +409,8 @@ export class HomeComponent implements OnInit {
         if (isPasteAsChild) {
           this.pasteRow([res], args.rowInfo.rowData, contextMenuID.pasteChild);
         } else {
-          this.data.unshift(res);
+          this.pasteRow([res], args.rowInfo.rowData, contextMenuID.pasteSibling);
         }
-
         this.dataWithoutNested.push(res);
       }
       modalRef.close();
@@ -583,7 +582,7 @@ export class HomeComponent implements OnInit {
     const taskID: any = args?.data?.['taskID'];
     if (this.selectedRowForCopy.findIndex((item) => item.taskID === taskID) >= 0) {
       // @ts-ignore
-      args?.row?.style?.background = this.isCutMode ? '#f8d7da' : '#d1ecf1';
+      args?.row?.style?.background = '#f8d7da';
     }
   }
 

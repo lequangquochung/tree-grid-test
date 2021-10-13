@@ -47,6 +47,6 @@ export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any
   { text: 'Delete Row', target: contextTarget.row, id: contextMenuID.deleteRow, iconCss: 'e-icons e-trash' },
   { text: 'Copy', target: contextTarget.row, id: contextMenuID.copyRows },
   { text: 'Cut', target: contextTarget.row, id: contextMenuID.cutRows },
-  { text: 'Paste as sibling', target: contextTarget.row, id: contextMenuID.pasteSibling },
+  { text: 'Paste next', target: contextTarget.row, id: contextMenuID.pasteSibling },
   { text: 'Paste as child', target: contextTarget.row, id: contextMenuID.pasteChild },
 ];
