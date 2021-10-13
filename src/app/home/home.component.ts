@@ -409,9 +409,8 @@ export class HomeComponent implements OnInit {
         if (isPasteAsChild) {
           this.pasteRow([res], args.rowInfo.rowData, contextMenuID.pasteChild);
         } else {
-          this.data.unshift(res);
+          this.pasteRow([res], args.rowInfo.rowData, contextMenuID.pasteSibling);
         }
-
         this.dataWithoutNested.push(res);
       }
       modalRef.close();
