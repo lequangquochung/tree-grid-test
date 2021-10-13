@@ -29,12 +29,12 @@ export enum contextMenuID {
 export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any[] = [
   //----------------COLUMN_CONTEXT_MENU_ITEM-----------------------
 
-  { text: 'Styling', target: contextTarget.column, id: contextMenuID.stylingColumn },
-  { text: 'Add Column', target: contextTarget.column, id: contextMenuID.addColumn },
+  { text: 'Style', target: contextTarget.column, id: contextMenuID.stylingColumn },
+  { text: 'New Column', target: contextTarget.column, id: contextMenuID.addColumn },
   { text: 'Delete Column', target: contextTarget.column, id: contextMenuID.deleteColumn },
   { text: 'Edit Column', target: contextTarget.column, id: contextMenuID.editColumn },
-  { text: 'Freeze', target: contextTarget.column, id: contextMenuID.freezeColumn },
   { text: 'Show/Hide Column', target: contextTarget.column, id: contextMenuID.toggleShowColumn },
+  { text: 'Freeze', target: contextTarget.column, id: contextMenuID.freezeColumn },
   { text: 'Filter Off', target: contextTarget.column, id: contextMenuID.togleFilter },
   { text: 'Multiple sort', target: contextTarget.column, id: contextMenuID.multipleSort },
 
