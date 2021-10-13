@@ -311,7 +311,7 @@ export class HomeComponent implements OnInit {
 
     if (contextID === contextMenuID.togleFilter) {
       this.toggleFilter = !this.toggleFilter;
-      _contextMenuItems[_contextMenuIndex].text = `Filter ${this.toggleFilter ? `Off` : `On`}`;
+      _contextMenuItems[_contextMenuIndex].text = `Filter Columns ${this.toggleFilter ? `Off` : `On`}`;
       this.contextMenuItems = [..._contextMenuItems];
 
       //change grid content height when togle filter
