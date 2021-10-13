@@ -40,11 +40,11 @@ export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any
 
   //----------------ROW_CONTEXT_MENU_ITEM-----------------------
 
-  { text: 'Add Row', target: contextTarget.row, id: contextMenuID.addRow, iconCss: 'e-icons e-plus' },
+  { text: 'Add Next', target: contextTarget.row, id: contextMenuID.addRow, iconCss: 'e-icons e-plus' },
   { text: 'Add Child', target: contextTarget.row, id: contextMenuID.addChildRow, iconCss: 'e-icons e-plus' },
+  { text: 'Delete Row', target: contextTarget.row, id: contextMenuID.deleteRow, iconCss: 'e-icons e-trash' },
   { text: 'Edit Row', target: contextTarget.row, id: contextMenuID.editRow, iconCss: 'e-icons e-edit' },
   // 'Edit',
-  { text: 'Delete Row', target: contextTarget.row, id: contextMenuID.deleteRow, iconCss: 'e-icons e-trash' },
   { text: 'Copy', target: contextTarget.row, id: contextMenuID.copyRows },
   { text: 'Cut', target: contextTarget.row, id: contextMenuID.cutRows },
   { text: 'Paste next', target: contextTarget.row, id: contextMenuID.pasteSibling },
