@@ -510,18 +510,19 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  createNewIDForRecord(insertItems: any[], maxId?: any) {
-    maxId = maxId ? maxId : DataUtils.getMaxId(this.dataWithoutNested);
+  declare copyMaxID: number;
+  createNewIDForRecord(insertItems: any[]) {
+    this.copyMaxID = this.copyMaxID ? this.copyMaxID : DataUtils.getMaxId(this.dataWithoutNested);
     insertItems = insertItems.map((data: any) => {
-      maxId++;
+      this.copyMaxID++;
       const newData = {
         ...data,
-        taskID: maxId,
-        taskCode: maxId,
+        taskID: this.copyMaxID,
+        taskCode: this.copyMaxID,
       };
 
       if (data.subtasks) {
-        newData.subtasks = this.createNewIDForRecord(data.subtasks, maxId);
+        newData.subtasks = this.createNewIDForRecord(data.subtasks);
       }
       return newData;
     });
