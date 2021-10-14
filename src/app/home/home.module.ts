@@ -26,6 +26,8 @@ import { DropDownListModule } from '@syncfusion/ej2-angular-dropdowns';
 import { DatePickerModule } from '@syncfusion/ej2-angular-calendars';
 import { RowInputComponent } from './row/input-component/text-input/text-input.component';
 import { RowInputModalComponent } from './row/row-input-modal/row-input-modal.component';
+import { DropdownInputComponent } from './row/input-component/dropdown-input/dropdown-input.component';
+import { BooleanInputComponent } from './row/input-component/boolean-input/boolean-input.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -46,6 +48,8 @@ import { RowInputModalComponent } from './row/row-input-modal/row-input-modal.co
     StylingComponent,
     RowInputModalComponent,
     RowInputComponent,
+    DropdownInputComponent,
+    BooleanInputComponent,
   ],
   providers: [
     ContextMenuService,

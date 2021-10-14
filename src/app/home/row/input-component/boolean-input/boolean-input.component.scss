@@ -1,0 +1,13 @@
+.boolean-input-field {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+
+  label::after {
+    display: none;
+  }
+
+  input {
+    margin-left: 1rem;
+  }
+}

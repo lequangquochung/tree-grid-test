@@ -120,18 +120,6 @@ export class HomeComponent implements OnInit {
     return existedIds.filter((taskID: any) => taskID == args.value)?.length === 0;
   };
 
-  columnMenuClick(args: any): void {
-    if (args.item.id === contextMenuID.editColumn) {
-      this.openModal(args.item.id, { field: args.column.field, text: args.column.headerText });
-    }
-
-    if (args.item.id === contextMenuID.deleteColumn) {
-      this.dataColumn = this.dataColumn.filter((column: any) => column.field !== args.column.field);
-      this.columns = this.dataColumn;
-      this.grid?.refresh();
-    }
-  }
-
   contextMenuOpen(args: any) {
     if (this.grid.getSelectedRowIndexes().length <= 1) {
       if (this.grid.getSelectedRowIndexes()[0] != args.rowInfo.rowIndex) {
@@ -279,7 +267,13 @@ export class HomeComponent implements OnInit {
     }
 
     if (contextID === contextMenuID.editColumn) {
-      this.openModal(args.item.id, { field: args.column.field, text: args.column.headerText });
+      const targetColumn = args.column;
+      this.openModal(args.item.id, {
+        field: targetColumn.field,
+        text: targetColumn.headerText,
+        columnType: targetColumn.type,
+        dropDownItem: targetColumn.dropDownItem,
+      });
     }
 
     if (contextID === contextMenuID.deleteColumn) {
@@ -419,6 +413,7 @@ export class HomeComponent implements OnInit {
         this.dataWithoutNested.push(res);
       }
       modalRef.close();
+      this.dataWithoutNested = [...DataUtils.getFullRecordWithoutNested(this.data)];
       this.grid.refresh();
     });
   }
@@ -465,8 +460,12 @@ export class HomeComponent implements OnInit {
               backgroundColor: '#fff',
             };
             if (res.event.column.columnType.includes('date')) {
-              newColumn['format'] = 'yMd';
+              newColumn['format'] = 'dd/MM/yyyy';
             }
+            if (res.event.column.columnType.includes('dropdown')) {
+              newColumn['dropDownItem'] = res.event.column.dropDownItem;
+            }
+
             this.dataColumn.push(newColumn);
 
             this.columns = [...this.dataColumn];
@@ -474,6 +473,7 @@ export class HomeComponent implements OnInit {
           case 'edit':
             const column: any = this?.grid?.getColumnByField(res.event.column.field);
             column.headerText = res.event.column.text;
+            column.dropDownItem = res.event.column.dropDownItem;
             this?.grid?.refreshColumns();
             break;
           case 'mutiple-sorting':
@@ -555,7 +555,6 @@ export class HomeComponent implements OnInit {
 
     if (pasteType == contextMenuID.pasteChild) {
       this.setLevelForPasting(insertRecords, pasteTarget.level + 1);
-      console.log(insertRecords);
       if (pasteTarget.parentID) {
         const targetRecord: any = DataUtils.getParentOf(this.data, pasteTarget.parentID).subtasks.find(
           (each: any) => each.taskID == pasteTarget.taskID

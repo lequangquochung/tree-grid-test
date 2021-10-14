@@ -135,6 +135,7 @@ export const sampleData: Object[] = [
     priority: 'Normal',
     approved: false,
     duration: 11,
+    durations: 'test1',
     subtasks: [
       {
         taskID: 13,

@@ -1,21 +1,19 @@
-<label for="">{{ columnInfo.headerText }}</label>
+<label class="input-field-label" for="">{{ columnInfo.headerText }}</label>
 <input
-  *ngIf="inputType !== 'date'"
   [type]="inputType"
   class="e-input"
   [id]="columnInfo.headerText"
   [disabled]="columnInfo.allowEditing ? false : true"
-  [value]="formControl.value"
+  [value]="inputType === 'date' ? dateToString(formControl.value) : formControl.value"
   (change)="valueOnChange($event)"
   (keypress)="onInput($event)"
 />
-<input
-  *ngIf="inputType === 'date'"
+
+<!-- <input
+  *ngIf="inputType === 'checkbox'"
   [type]="inputType"
   class="e-input"
   [id]="columnInfo.headerText"
-  [disabled]="columnInfo.allowEditing ? false : true"
-  [value]="dateToString(this.formControl.value)"
+  [checked]="this.formControl.value"
   (change)="valueOnChange($event)"
-  (keypress)="onInput($event)"
-/>
+/> -->

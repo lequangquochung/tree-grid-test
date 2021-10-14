@@ -1,0 +1,9 @@
+<div class="boolean-input-field">
+  <label for="">{{ columnInfo.headerText }}</label>
+  <input
+    type="checkbox"
+    [id]="columnInfo.headerText"
+    [checked]="formControl.value"
+    (change)="checkboxOnChange($event)"
+  />
+</div>

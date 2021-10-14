@@ -1,0 +1,8 @@
+<label class="input-field-label" for="">{{ columnInfo.headerText }}</label>
+<ejs-dropdownlist
+  id="ddlelement"
+  placeholder="Choose {{ columnInfo.headerText }}"
+  [dataSource]="columnInfo.dropDownItem"
+  [value]="formControl.value"
+  (change)="dropDownItemChanged($event)"
+></ejs-dropdownlist>
