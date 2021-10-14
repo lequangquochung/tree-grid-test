@@ -1,10 +1,19 @@
 <label class="input-field-label" for="">{{ columnInfo.headerText }}</label>
 <input
+  *ngIf="inputType !== 'date'"
   [type]="inputType"
   class="e-input"
   [id]="columnInfo.headerText"
   [disabled]="columnInfo.allowEditing ? false : true"
-  [value]="inputType === 'date' ? dateToString(formControl.value) : formControl.value"
+  [value]="formControl.value"
   (change)="valueOnChange($event)"
   (keypress)="onInput($event)"
 />
+
+<ejs-datepicker
+  *ngIf="inputType === 'date'"
+  [value]="formControl.value"
+  [format]="'MM/dd/yyyy'"
+  (valueChange)="datePickerOnChange($event)"
+>
+</ejs-datepicker>
