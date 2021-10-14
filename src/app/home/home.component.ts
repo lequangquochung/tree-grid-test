@@ -50,6 +50,7 @@ export class HomeComponent implements OnInit {
   // selectedRow: any[] = [];
   private isCutMode = false;
   private isShowPasteOption = false;
+  private isDropMode = true;
   private selectedRowForCopy: any[] = [];
 
   public declare pageSettings: any;
@@ -89,6 +90,11 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (this.isTouchScreendevice()) {
+      // alert("I am a touch screen device");
+      this.isDropMode = false;
+    }
+    console.log(this.isDropMode);
     // Allow Drag / Drop to change order row
     TreeGrid.Inject(RowDD, Selection);
 
@@ -103,14 +109,6 @@ export class HomeComponent implements OnInit {
 
     this.data = sampleData;
     this.dataWithoutNested = [...DataUtils.getFullRecordWithoutNested(this.data)];
-
-    // this.sortSettings = {
-    //   columns: [
-    //     { field: 'startDate', direction: 'Descending' },
-    //     { field: 'taskName', direction: 'Descending' },
-    //   ],
-    //   allowUnsort: true
-    // }
   }
 
   public uniqueIdRule: (args: { [key: string]: string }) => boolean = (args: { [key: string]: string }) => {
@@ -135,6 +133,16 @@ export class HomeComponent implements OnInit {
     } else {
       args.element?.classList.remove('showPasteOption');
     }
+
+    if (!this.isDropMode) {
+      args.element?.classList.add('showDragDropOption');
+    } else {
+      args.element?.classList.remove('showDragDropOption');
+    }
+  }
+  // check touch screen
+  isTouchScreendevice() {
+    return 'ontouchstart' in window || navigator.maxTouchPoints;
   }
 
   contextMenuClick(args: any): void {

@@ -60,6 +60,20 @@
   }
 }
 
+#_gridcontrol_cmenu {
+  #dragAndDrop,
+  #dragAndDrop {
+    display: none;
+  }
+}
+
+#_gridcontrol_cmenu.showDragDropOption {
+  #dragAndDrop,
+  #dragAndDrop {
+    display: block;
+  }
+}
+
 html {
   overflow: hidden;
 }
