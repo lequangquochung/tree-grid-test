@@ -26,14 +26,8 @@ export class RowInputComponent implements OnInit {
     }
   }
 
-  dateToString(date: Date) {
-    if (!date) {
-      return null;
-    }
-    let mm = date.getMonth() + 1; // getMonth() is zero-based
-    let dd = date.getDate();
-
-    return [date.getFullYear(), (mm > 9 ? '' : '0') + mm, (dd > 9 ? '' : '0') + dd].join('-');
+  datePickerOnChange(value: any) {
+    this.formControl.setValue(value);
   }
 
   valueOnChange(event: any): void {
@@ -44,9 +38,7 @@ export class RowInputComponent implements OnInit {
         return;
       }
     }
-    if (this.inputType == 'date') {
-      value = new Date(event.target.value);
-    }
+
     this.formControl.setValue(value);
   }
 
