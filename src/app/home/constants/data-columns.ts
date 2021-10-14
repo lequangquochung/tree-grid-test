@@ -32,7 +32,7 @@ export const DATA_COLUMNS = [
     field: 'taskName',
     headerText: 'Task Name',
     textAlign: 'Left',
-    type: 'text',
+    type: 'string',
     fontSize: 14,
     minWidth: 150,
     color: '#757575',
