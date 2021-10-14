@@ -9,7 +9,7 @@ export class StylingComponent implements OnInit {
   @Input() column: any | undefined;
   @Output() columnEmitter = new EventEmitter<any>();
   constructor(private modalService: NgbModal) {}
-  columnTypeData: any = ['string', 'number', 'date'];
+  columnTypeData: any = ['text', 'number', 'date'];
 
   alignType: any = ['Left', 'Center', 'Right'];
 

@@ -24,6 +24,7 @@ export enum contextMenuID {
   cutRows = 'cutrows',
   pasteSibling = 'pastesibling',
   pasteChild = 'pasteschild',
+  dragAndDrop = 'dragAndDrop',
 }
 
 export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any[] = [
@@ -49,4 +50,5 @@ export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any
   { text: 'Cut', target: contextTarget.row, id: contextMenuID.cutRows },
   { text: 'Paste next', target: contextTarget.row, id: contextMenuID.pasteSibling },
   { text: 'Paste as child', target: contextTarget.row, id: contextMenuID.pasteChild },
+  { text: 'Drag and drop', target: contextTarget.row, id: contextMenuID.dragAndDrop },
 ];

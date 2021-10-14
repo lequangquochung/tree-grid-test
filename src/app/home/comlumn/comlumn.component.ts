@@ -23,8 +23,8 @@ export class ComlumnComponent implements OnInit {
 
   columnName: string = '';
   columnTitle: string = '';
-  columnType: string = 'string';
-  columnTypeData: any = ['string', 'number', 'date', 'boolean', 'dropdown'];
+  columnType: string = 'text';
+  columnTypeData: any = ['text', 'number', 'date', 'boolean', 'dropdown'];
 
   dropdownItem: any[] = [];
 
@@ -50,7 +50,6 @@ export class ComlumnComponent implements OnInit {
       this.columnTitle = 'Multil Sorting';
       this.getColumns(this.column, 'field');
       this.columnChecked.forEach((each: any) => {
-        console.log(each);
         this.cols.find((col) => col.colName == each.name).isChecked = each.isChecked;
       });
 
@@ -76,7 +75,7 @@ export class ComlumnComponent implements OnInit {
   }
 
   dropDownItemChange(event: any, id: number) {
-    this.dropdownItem.find((item) => item.id == id).name = event.target.value;
+    this.dropdownItem.find((item) => item.id == id).name = event.target.value.trim();
   }
 
   deleteDropDownItem(id: number) {
@@ -98,16 +97,24 @@ export class ComlumnComponent implements OnInit {
         return;
       }
 
-      let isDuplicateItem = false;
+      let isDropdownItemError = false;
 
       this.dropdownItem.every((each) => {
-        if (this.dropdownItem.filter((i) => i.id != each.id).findIndex((i) => i.name == each.name) >= 0) {
-          isDuplicateItem = true;
+        if (each.name == '') {
+          this.dropDownItemError = `dropdown item can't be empty`;
+          isDropdownItemError = true;
+          return false;
         }
+
+        if (this.dropdownItem.filter((i) => i.id != each.id).findIndex((i) => i.name == each.name) >= 0) {
+          this.dropDownItemError = 'duplicate dropdown item';
+          isDropdownItemError = true;
+          return false;
+        }
+        return true;
       });
 
-      if (isDuplicateItem) {
-        this.dropDownItemError = 'duplicate dropdown item';
+      if (isDropdownItemError) {
         return;
       }
 
@@ -163,7 +170,6 @@ export class ComlumnComponent implements OnInit {
         header: col.headerText,
       };
     });
-    // console.log(this.cols);
     return this.cols;
   }
 
