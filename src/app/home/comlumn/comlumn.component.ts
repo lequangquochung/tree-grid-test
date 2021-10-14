@@ -76,7 +76,15 @@ export class ComlumnComponent implements OnInit {
   }
 
   addDropdownItem() {
-    this.dropdownItem.push({ name: 'new item', id: getUid('') });
+    const addedDropDownItem = { name: 'new item', id: getUid('') };
+    this.dropdownItem.push(addedDropDownItem);
+    if (this.type == 'edit') {
+      const matchedOldItem = this.oldDropDownItem.find((item) => item.name == addedDropDownItem.name);
+      if (matchedOldItem) {
+        matchedOldItem['changed'] = false;
+        matchedOldItem['deleted'] = false;
+      }
+    }
   }
 
   dropDownItemChange(event: any, id: number) {
@@ -84,8 +92,17 @@ export class ComlumnComponent implements OnInit {
     editTargerItem.name = event.target.value.trim();
     if (this.type == 'edit') {
       const editTargetOldItem = this.oldDropDownItem.find((item) => item.id == id);
-      editTargetOldItem['changed'] = editTargerItem.name != editTargetOldItem.name;
-      editTargetOldItem['itemNewValue'] = event.target.value.trim();
+      if (editTargetOldItem) {
+        editTargetOldItem['changed'] = editTargerItem.name != editTargetOldItem.name;
+        editTargetOldItem['itemNewValue'] = event.target.value.trim();
+        return;
+      }
+
+      const matchedOldItem = this.oldDropDownItem.find((item) => item.name == editTargerItem.name);
+      if (matchedOldItem) {
+        matchedOldItem['changed'] = false;
+        matchedOldItem['deleted'] = false;
+      }
     }
   }
 
