@@ -468,7 +468,7 @@ export class HomeComponent implements OnInit {
               backgroundColor: '#fff',
             };
             if (res.event.column.columnType.includes('date')) {
-              newColumn['format'] = 'dd/MM/yyyy';
+              newColumn['format'] = 'MM/dd/yyyy';
             }
             if (res.event.column.columnType.includes('dropdown')) {
               newColumn['dropDownItem'] = res.event.column.dropDownItem;

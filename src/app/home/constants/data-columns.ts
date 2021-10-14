@@ -44,7 +44,7 @@ export const DATA_COLUMNS = [
     field: 'startDate',
     headerText: 'Start Date',
     textAlign: 'Left',
-    format: 'dd/MM/yyyy',
+    format: 'MM/dd/yyyy',
     editType: 'datetimepickeredit',
     type: 'date',
     fontSize: 14,
