@@ -27,6 +27,7 @@ export class ComlumnComponent implements OnInit {
   columnTypeData: any = ['text', 'number', 'date', 'boolean', 'dropdown'];
 
   dropdownItem: any[] = [];
+  declare oldDropDownItem: any[];
 
   constructor(private modalService: NgbModal) {}
 
@@ -40,9 +41,13 @@ export class ComlumnComponent implements OnInit {
     if (this.type === 'edit') {
       this.columnName = this.column?.text;
       this.columnType = this.column.columnType;
+
       if (this.columnType == 'dropdown') {
+        this.oldDropDownItem = [];
         this.column.dropDownItem.forEach((each: any) => {
-          this.dropdownItem.push({ name: each, id: getUid('') });
+          const dropDownItem = { name: each, id: getUid('') };
+          this.dropdownItem.push({ ...dropDownItem });
+          this.oldDropDownItem.push({ ...dropDownItem });
         });
       }
     } else if (this.type === 'mutiple-sorting') {
@@ -75,11 +80,21 @@ export class ComlumnComponent implements OnInit {
   }
 
   dropDownItemChange(event: any, id: number) {
-    this.dropdownItem.find((item) => item.id == id).name = event.target.value.trim();
+    const editTargerItem = this.dropdownItem.find((item) => item.id == id);
+    editTargerItem.name = event.target.value.trim();
+    if (this.type == 'edit') {
+      const editTargetOldItem = this.oldDropDownItem.find((item) => item.id == id);
+      editTargetOldItem['changed'] = editTargerItem.name != editTargetOldItem.name;
+      editTargetOldItem['itemNewValue'] = event.target.value.trim();
+    }
   }
 
   deleteDropDownItem(id: number) {
     this.dropdownItem = this.dropdownItem.filter((item) => item.id != id);
+    if (this.type == 'edit') {
+      const editTargetOldItem = this.oldDropDownItem.find((item) => item.id == id);
+      editTargetOldItem['deleted'] = true;
+    }
   }
 
   declare dropDownItemError: string;
@@ -119,6 +134,7 @@ export class ComlumnComponent implements OnInit {
       }
 
       const dropDownItem = this.dropdownItem.map((each) => each.name);
+      columnTarget['oldDropDownItem'] = this.oldDropDownItem;
       columnTarget['dropDownItem'] = dropDownItem;
     }
 
