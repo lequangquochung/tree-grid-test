@@ -406,26 +406,27 @@ export class HomeComponent implements OnInit {
     modalRef.componentInstance.columnChecked = columnChecked;
     modalRef.componentInstance.columnEmitter.subscribe((res: any) => {
       if (res.event) {
+        const resColumn = res.event.column;
         switch (res.event.type) {
           case 'add':
             const newColumn = {
-              field: `${res.event.column.text.trim()}${this.dataColumn.length}`,
-              headerText: res.event.column.text,
-              editType: res.event.column.columnType.includes('date') ? 'datetimepickeredit' : 'string',
+              field: `${resColumn.text.trim()}${this.dataColumn.length}`,
+              headerText: resColumn.text,
+              editType: resColumn.columnType.includes('date') ? 'datetimepickeredit' : 'string',
               textAlign: 'Left',
               width: 150,
               minWidth: 150,
-              type: res.event.column.columnType || 'text',
+              type: resColumn.columnType || 'text',
               fontSize: 14,
               color: '#757575',
               customAttributes: { class: `header-column-font${this.dataColumn.length + 1}` },
               backgroundColor: '#fff',
             };
-            if (res.event.column.columnType.includes('date')) {
+            if (resColumn.columnType.includes('date')) {
               newColumn['format'] = 'MM/dd/yyyy';
             }
-            if (res.event.column.columnType.includes('dropdown')) {
-              newColumn['dropDownItem'] = res.event.column.dropDownItem;
+            if (resColumn.columnType.includes('dropdown')) {
+              newColumn['dropDownItem'] = resColumn.dropDownItem;
             }
 
             this.dataColumn.push(newColumn);
@@ -433,13 +434,16 @@ export class HomeComponent implements OnInit {
             this.columns = [...this.dataColumn];
             break;
           case 'edit':
-            const column: any = this?.grid?.getColumnByField(res.event.column.field);
-            column.headerText = res.event.column.text;
-            column.dropDownItem = res.event.column.dropDownItem;
+            const column: any = this?.grid?.getColumnByField(resColumn.field);
+            column.headerText = resColumn.text;
+            if (resColumn.columnType == 'dropdown') {
+              column.dropDownItem = resColumn.dropDownItem;
+              this.changeDataWithDropDownItemChange(resColumn.oldDropDownItem, resColumn.field);
+            }
             this?.grid?.refreshColumns();
             break;
           case 'mutiple-sorting':
-            this.columnChecked = res.event.column;
+            this.columnChecked = resColumn;
             console.log(res.event);
             let arr: any = [];
 
@@ -452,7 +456,6 @@ export class HomeComponent implements OnInit {
                 }
               });
             }
-
             break;
           default:
             break;
@@ -460,6 +463,48 @@ export class HomeComponent implements OnInit {
         modalRef.close();
       } else modalRef.close();
     });
+  }
+
+  changeDataWithDropDownItemChange(oldDropDownItems: any[], field: string) {
+    console.log(field);
+    let isDropDownItemModified = false;
+    oldDropDownItems.every((item) => {
+      if (item.changed || item.deleted) {
+        isDropDownItemModified = true;
+        return false;
+      }
+      return true;
+    });
+
+    if (!isDropDownItemModified) {
+      return;
+    }
+
+    const serialDropdownValueChanger = (data: any[], field: string, oldDropDownItem: any) => {
+      if (oldDropDownItem.changed || oldDropDownItem.deleted) {
+        data.forEach((record) => {
+          if (record[field] == oldDropDownItem.name) {
+            if (oldDropDownItem.changed) {
+              record[field] = oldDropDownItem.itemNewValue;
+            }
+            if (oldDropDownItem.deleted) {
+              record[field] = null;
+            }
+            console.log(record);
+          }
+          if (record.subtasks && record.subtasks.length) {
+            serialDropdownValueChanger(record.subtasks, field, oldDropDownItem);
+          }
+        });
+      }
+    };
+
+    oldDropDownItems.forEach((each) => {
+      console.log(each);
+      serialDropdownValueChanger(this.data, field, each);
+    });
+
+    this.grid.refresh();
   }
 
   openModalSetting() {
