@@ -428,7 +428,7 @@ export class HomeComponent implements OnInit {
             if (resColumn.columnType.includes('dropdown')) {
               newColumn['dropDownItem'] = resColumn.dropDownItem;
             }
-            this.dataColumn = [...this.columns].push(newColumn);
+            this.dataColumn = [...this.columns];
             this.dataColumn.push(newColumn);
 
             this.columns = [...this.dataColumn];
