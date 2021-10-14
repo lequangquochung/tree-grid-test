@@ -43,7 +43,7 @@
 
 :host ::ng-deep {
   .input-field:focus-within {
-    label {
+    .input-field-label {
       color: #e3165b;
     }
   }

@@ -7,7 +7,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 export class RowInputComponent implements OnInit {
   @Input() declare formControl: any;
   @Input() declare columnInfo: any;
-  // @Output() valueChange = new EventEmitter<any>();
 
   declare inputType: string;
 
@@ -31,9 +30,8 @@ export class RowInputComponent implements OnInit {
     if (!date) {
       return null;
     }
-
-    var mm = date.getMonth() + 1; // getMonth() is zero-based
-    var dd = date.getDate();
+    let mm = date.getMonth() + 1; // getMonth() is zero-based
+    let dd = date.getDate();
 
     return [date.getFullYear(), (mm > 9 ? '' : '0') + mm, (dd > 9 ? '' : '0') + dd].join('-');
   }

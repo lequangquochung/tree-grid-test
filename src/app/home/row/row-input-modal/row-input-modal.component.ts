@@ -9,6 +9,8 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { BooleanInputComponent } from '../input-component/boolean-input/boolean-input.component';
+import { DropdownInputComponent } from '../input-component/dropdown-input/dropdown-input.component';
 import { RowInputComponent } from '../input-component/text-input/text-input.component';
 
 @Component({
@@ -63,7 +65,7 @@ export class RowInputModalComponent implements OnInit {
     const modalBody = this.location.element.nativeElement.querySelector('.modal-body');
     this.columnSetting.forEach((col: any) => {
       if (col.visible) {
-        let colInputComponent = this.resolver.resolveComponentFactory(RowInputComponent);
+        let colInputComponent = this.switchResolverComponentFactory(col.type);
 
         let newNode = document.createElement('div');
         newNode.className = 'input-field';
@@ -78,6 +80,17 @@ export class RowInputModalComponent implements OnInit {
         ref.changeDetectorRef.detectChanges();
       }
     });
+  }
+
+  switchResolverComponentFactory(type: string) {
+    switch (type) {
+      case 'dropdown':
+        return this.resolver.resolveComponentFactory(DropdownInputComponent);
+      case 'boolean':
+        return this.resolver.resolveComponentFactory(BooleanInputComponent);
+      default:
+        return this.resolver.resolveComponentFactory(RowInputComponent);
+    }
   }
 
   save(): void {

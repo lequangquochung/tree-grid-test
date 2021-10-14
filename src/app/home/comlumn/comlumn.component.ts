@@ -2,6 +2,7 @@ import { map } from 'rxjs/operators';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { getUid } from '@syncfusion/ej2-grids';
 
 @Component({
   selector: 'app-comlumn',
@@ -12,31 +13,38 @@ export class ComlumnComponent implements OnInit {
   @Input() type: any | undefined;
   @Input() column: any | undefined;
   @Input() columnChecked: any | undefined;
+  @Output() columnEmitter = new EventEmitter<any>();
 
   declare form: FormGroup;
+
   cols: any[] = [];
   sortingType: boolean = false;
   rowSelected: any[] = [];
 
-  @Output() columnEmitter = new EventEmitter<any>();
-  columnTypeData: any = ['string', 'number', 'date'];
-  constructor(private modalService: NgbModal) {}
   columnName: string = '';
-  columnType: string = 'string';
   columnTitle: string = '';
+  columnType: string = 'string';
+  columnTypeData: any = ['string', 'number', 'date', 'boolean', 'dropdown'];
+
+  dropdownItem: any[] = [];
+
+  constructor(private modalService: NgbModal) {}
 
   ngOnInit(): void {
-    // console.log(this.column)
     const fb = new FormBuilder();
-
     this.form = fb.group({
       colArr: fb.array([]),
     });
-    console.log(this.columnChecked);
 
     this.columnTitle = this.type === 'add' ? 'Add' : 'Edit';
     if (this.type === 'edit') {
       this.columnName = this.column?.text;
+      this.columnType = this.column.columnType;
+      if (this.columnType == 'dropdown') {
+        this.column.dropDownItem.forEach((each: any) => {
+          this.dropdownItem.push({ name: each, id: getUid('') });
+        });
+      }
     } else if (this.type === 'mutiple-sorting') {
       this.sortingType = true;
       this.columnTitle = 'Multil Sorting';
@@ -58,17 +66,59 @@ export class ComlumnComponent implements OnInit {
 
   onChangeColumnType(args: any): void {
     this.columnType = args.value;
+    if (this.columnType == 'dropdown') {
+      this.dropdownItem = [];
+    }
   }
 
+  addDropdownItem() {
+    this.dropdownItem.push({ name: 'new item', id: getUid('') });
+  }
+
+  dropDownItemChange(event: any, id: number) {
+    this.dropdownItem.find((item) => item.id == id).name = event.target.value;
+  }
+
+  deleteDropDownItem(id: number) {
+    this.dropdownItem = this.dropdownItem.filter((item) => item.id != id);
+  }
+
+  declare dropDownItemError: string;
   saveColumn() {
+    this.dropDownItemError = '';
+    const columnTarget: any = {
+      ...this.column,
+      text: this.columnName,
+      columnType: this.columnType,
+    };
+
+    if (this.columnType == 'dropdown') {
+      if (this.dropdownItem.length == 0) {
+        this.dropDownItemError = 'must have at least 1 option for dropdown item';
+        return;
+      }
+
+      let isDuplicateItem = false;
+
+      this.dropdownItem.every((each) => {
+        if (this.dropdownItem.filter((i) => i.id != each.id).findIndex((i) => i.name == each.name) >= 0) {
+          isDuplicateItem = true;
+        }
+      });
+
+      if (isDuplicateItem) {
+        this.dropDownItemError = 'duplicate dropdown item';
+        return;
+      }
+
+      const dropDownItem = this.dropdownItem.map((each) => each.name);
+      columnTarget['dropDownItem'] = dropDownItem;
+    }
+
     this.columnEmitter.emit({
       event: {
         type: this.type,
-        column: {
-          ...this.column,
-          text: this.columnName,
-          columnType: this.columnType,
-        },
+        column: columnTarget,
       },
     });
   }

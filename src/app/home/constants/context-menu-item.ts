@@ -34,9 +34,9 @@ export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any
   { text: 'Delete Column', target: contextTarget.column, id: contextMenuID.deleteColumn },
   { text: 'Edit Column', target: contextTarget.column, id: contextMenuID.editColumn },
   { text: 'Show/Hide Column', target: contextTarget.column, id: contextMenuID.toggleShowColumn },
-  { text: 'Freeze', target: contextTarget.column, id: contextMenuID.freezeColumn },
-  { text: 'Filter Off', target: contextTarget.column, id: contextMenuID.togleFilter },
-  { text: 'Multiple sort', target: contextTarget.column, id: contextMenuID.multipleSort },
+  { text: 'Freeze Columns', target: contextTarget.column, id: contextMenuID.freezeColumn },
+  { text: 'Filter Columns Off', target: contextTarget.column, id: contextMenuID.togleFilter },
+  { text: 'Multi-sort Columns', target: contextTarget.column, id: contextMenuID.multipleSort },
 
   //----------------ROW_CONTEXT_MENU_ITEM-----------------------
 
