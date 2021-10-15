@@ -674,6 +674,8 @@ export class HomeComponent implements OnInit {
   }
 
   actionBegin(args: any): void {
+    console.log(args);
+
     if (args.requestType === 'beginEdit' || args.requestType === 'add') {
     }
 
