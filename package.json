@@ -39,6 +39,7 @@
     "@syncfusion/ej2-angular-inputs": "^19.3.44",
     "@syncfusion/ej2-angular-treegrid": "^19.2.60",
     "bootstrap": "^5.0.2",
+    "moment": "^2.29.1",
     "ngx-color-picker": "^11.0.0",
     "rxjs": "^6.6.3",
     "tslib": "^2.2.0",
