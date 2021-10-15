@@ -416,12 +416,17 @@ export class HomeComponent implements OnInit {
               textAlign: 'Left',
               width: 150,
               minWidth: 150,
-              type: resColumn.columnType || 'text',
+              type: resColumn.columnType,
               fontSize: 14,
               color: '#757575',
               customAttributes: { class: `header-column-font${this.dataColumn.length + 1}` },
               backgroundColor: '#fff',
             };
+
+            if (resColumn.columnType.includes('text')) {
+              newColumn.type = 'string';
+            }
+
             if (resColumn.columnType.includes('date')) {
               newColumn['format'] = 'MM/dd/yyyy';
             }
