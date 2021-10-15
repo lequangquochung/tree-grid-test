@@ -251,6 +251,7 @@ export class HomeComponent implements OnInit {
           return column;
         });
       }
+
       if (args.column.index === this.treeColumnIndex) {
         alert("Can't delete this column");
         return;
