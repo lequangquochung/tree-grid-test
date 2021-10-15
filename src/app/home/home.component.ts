@@ -70,7 +70,6 @@ export class HomeComponent implements OnInit {
   public declare multiSelect: any;
 
   public columnChecked: any[] = [];
-  public treeColumnIndex: number = 2;
 
   constructor(public modalService: NgbModal) {
     this.filterSettings = { type: 'FilterBar', hierarchyMode: 'Parent', mode: 'Immediate' };
@@ -251,14 +250,7 @@ export class HomeComponent implements OnInit {
           return column;
         });
       }
-      //FIXME  : check treeColumnIndex
-      if (args.column.index === this.treeColumnIndex) {
-        alert("Can't delete this column");
-        return;
-      }
-
       this.dataColumn = this.dataColumn.filter((column: any) => column.field !== args.column.field);
-
       this.columns = this.dataColumn;
       this.grid?.clearSorting();
     }
