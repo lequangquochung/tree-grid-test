@@ -252,7 +252,7 @@ export class HomeComponent implements OnInit {
         });
       }
 
-      if (args.column.index === this.treeColumnIndex) {
+      if (this.treeColumnIndex === args.column.index || 'taskCode' === args.column.field) {
         alert("Can't delete this column");
         return;
       }
