@@ -178,7 +178,7 @@ export class HomeComponent implements OnInit {
       this.isLoading = true;
       this.grid.getSelectedRecords().forEach((data) => {
         this.data = DataUtils.removeRecord(this.data, data);
-        this.dataWithoutNested = DataUtils.removeRecord(this.data, data);
+        this.dataWithoutNested = [...DataUtils.getFullRecordWithoutNested(this.data)];
       });
       setTimeout(() => {
         this.isLoading = false;
@@ -428,10 +428,11 @@ export class HomeComponent implements OnInit {
             if (resColumn.columnType.includes('dropdown')) {
               newColumn['dropDownItem'] = resColumn.dropDownItem;
             }
-
+            this.dataColumn = [...this.columns];
             this.dataColumn.push(newColumn);
 
             this.columns = [...this.dataColumn];
+
             break;
           case 'edit':
             const column: any = this?.grid?.getColumnByField(resColumn.field);
