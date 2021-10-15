@@ -250,6 +250,11 @@ export class HomeComponent implements OnInit {
           return column;
         });
       }
+      if (args.column.field == 'taskCode') {
+        alert(`you can't delete this column`);
+        return;
+      }
+
       this.dataColumn = this.dataColumn.filter((column: any) => column.field !== args.column.field);
       this.columns = this.dataColumn;
       this.grid?.clearSorting();

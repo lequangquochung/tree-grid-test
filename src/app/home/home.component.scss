@@ -125,15 +125,18 @@ q {
     right: 0 !important;
   }
 
-  //fix frozen column can't load on scroll or when unfrozen
-  .e-frozencontent,
-  .e-movablecontent {
-    height: 101% !important;
-    overflow: visible !important;
-    table {
-      height: 100% !important;
-    }
-  }
+  // @media screen and (min-width: 650px) {
+  //  fix frozen column can't load on scroll or when unfrozen
+  // .e-frozencontent,
+  // .e-movablecontent {
+  //   height: 101% !important;
+  //   overflow: visible !important;
+  //   table {
+  //     height: 100% !important;
+  //   }
+  // }
+  // }
+
   .e-gridcontent .e-content {
     .e-table {
       // height: 101% !important;// TODO : gây bug row bị quá to khi filter ít dữ liệu
