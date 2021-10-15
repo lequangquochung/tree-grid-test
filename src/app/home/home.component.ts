@@ -70,6 +70,7 @@ export class HomeComponent implements OnInit {
   public declare multiSelect: any;
 
   public columnChecked: any[] = [];
+  public treeColumnIndex: number = 2;
 
   constructor(public modalService: NgbModal) {
     this.filterSettings = { type: 'FilterBar', hierarchyMode: 'Parent', mode: 'Immediate' };
@@ -250,8 +251,9 @@ export class HomeComponent implements OnInit {
           return column;
         });
       }
-      if (args.column.field == 'taskCode') {
-        alert(`you can't delete this column`);
+
+      if (args.column.index === this.treeColumnIndex) {
+        alert("Can't delete this column");
         return;
       }
 
