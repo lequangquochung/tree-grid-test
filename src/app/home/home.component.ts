@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GridComponent, RowDataBoundEventArgs } from '@syncfusion/ej2-angular-grids';
 import {
@@ -32,7 +32,7 @@ import { DataUtils } from './utils/data.utils';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit {
   @ViewChild('grid') declare grid: TreeGridComponent;
   declare quote: string;
   public isLoading = false;
@@ -79,7 +79,6 @@ export class HomeComponent implements OnInit {
     //infinite scroll setting
     this.pageSettings = { pageSize: 50 };
     this.loadedRecordCount = this.pageSettings.pageSize;
-    this.gridBodyHeight = window.innerHeight - 100;
     this.infiniteOptions = { initialBlocks: 1 };
 
     this.frozenColumns = 0;
@@ -89,6 +88,18 @@ export class HomeComponent implements OnInit {
 
     this.columns = [...this.dataColumn];
   }
+  ngAfterViewInit(): void {
+    setInterval(() => {
+      this.tableElement = document.querySelector('.e-content .e-table');
+      if (this.tableElement.offsetHeight <= window.innerHeight) {
+        this.gridBodyHeight = this.tableElement.offsetHeight - 5;
+      } else {
+        this.gridBodyHeight = this.toggleFilter ? window.innerHeight - 100 : window.innerHeight - 60;
+      }
+    }, 1000);
+  }
+
+  declare tableElement: any;
 
   ngOnInit() {
     if (this.isTouchScreendevice()) {
@@ -278,7 +289,6 @@ export class HomeComponent implements OnInit {
       this.contextMenuItems = [..._contextMenuItems];
 
       //change grid content height when togle filter
-      this.gridBodyHeight = this.toggleFilter ? window.innerHeight - 100 : window.innerHeight - 60;
     }
 
     if (args.item.id === contextMenuID.multipleSort) {
@@ -318,7 +328,6 @@ export class HomeComponent implements OnInit {
 
   editColumnStyle(args: any) {
     let index = this.dataColumn.findIndex((column: any) => column.field === args.column.field);
-    console.log(args.column);
     const modalRef = this.modalService.open(StylingComponent);
     modalRef.componentInstance.column = this.dataColumn[index];
     modalRef.componentInstance.columnEmitter.subscribe((res: any) => {
@@ -457,7 +466,6 @@ export class HomeComponent implements OnInit {
             break;
           case 'mutiple-sorting':
             this.columnChecked = resColumn;
-            console.log(res.event);
             let arr: any = [];
 
             if (this.columnChecked.length > 0) {
@@ -479,7 +487,6 @@ export class HomeComponent implements OnInit {
   }
 
   changeDataWithDropDownItemChange(oldDropDownItems: any[], field: string) {
-    console.log(field);
     let isDropDownItemModified = false;
     oldDropDownItems.every((item) => {
       if (item.changed || item.deleted) {
@@ -503,7 +510,6 @@ export class HomeComponent implements OnInit {
             if (oldDropDownItem.deleted) {
               record[field] = null;
             }
-            console.log(record);
           }
           if (record.subtasks && record.subtasks.length) {
             serialDropdownValueChanger(record.subtasks, field, oldDropDownItem);
@@ -513,7 +519,6 @@ export class HomeComponent implements OnInit {
     };
 
     oldDropDownItems.forEach((each) => {
-      console.log(each);
       serialDropdownValueChanger(this.data, field, each);
     });
 
