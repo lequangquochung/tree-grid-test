@@ -93,6 +93,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
     setInterval(() => {
       this.tableElement = document.querySelector('.e-content .e-table');
       if (this.tableElement?.offsetHeight <= window.innerHeight) {
+        if (!this.isTouchScreendevice()) {
+          if (this.frozenColumns.length > 0) {
+            this.gridBodyHeight = this.tableElement.offsetHeight + 15;
+            return;
+          }
+        }
         this.gridBodyHeight = this.tableElement.offsetHeight - 5;
       } else {
         this.gridBodyHeight = this.toggleFilter ? window.innerHeight - 100 : window.innerHeight - 60;
@@ -136,7 +142,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
       }
     }
 
-    if (!this.isDropMode && args.rowInfo.cellIndex > 1) {
+    console.log(args);
+
+    if (!this.isDropMode && args.rowInfo.cellIndex >= 1) {
       args.cancel = true;
     }
 
