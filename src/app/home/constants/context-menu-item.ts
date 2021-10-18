@@ -37,7 +37,7 @@ export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any
   { text: 'Show/Hide Column', target: contextTarget.column, id: contextMenuID.toggleShowColumn },
   { text: 'Freeze Columns', target: contextTarget.column, id: contextMenuID.freezeColumn },
   { text: 'Filter Columns Off', target: contextTarget.column, id: contextMenuID.togleFilter },
-  { text: 'Multi-sort Columns', target: contextTarget.column, id: contextMenuID.multipleSort },
+  // { text: 'Multi-sort Columns', target: contextTarget.column, id: contextMenuID.multipleSort },
 
   //----------------ROW_CONTEXT_MENU_ITEM-----------------------
 

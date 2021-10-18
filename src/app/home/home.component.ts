@@ -292,9 +292,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     if (args.item.id === contextMenuID.multipleSort) {
       // this.openColumnModal(args.item.id, this.columns, this.columnChecked);
-      this.toggleMultiSorting = !this.toggleMultiSorting;
-      _contextMenuItems[_contextMenuIndex].text = `Mutiple Sorting ${this.toggleMultiSorting ? `Off` : `On`}`;
-      this.contextMenuItems = [..._contextMenuItems];
+      // this.toggleMultiSorting = !this.toggleMultiSorting;
+      // _contextMenuItems[_contextMenuIndex].text = `Mutiple Sorting ${this.toggleMultiSorting ? `Off` : `On`}`;
+      // this.contextMenuItems = [..._contextMenuItems];
     }
   }
 
