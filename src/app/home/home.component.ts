@@ -324,15 +324,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.dataColumn.filter((col) => this.frozenColumns.findIndex((f_col) => f_col.field == col.field) < 0)
     );
 
-    // if (this.frozenColumns.length > 0) {
-    //   this.columns[this.columns.length - 1].allowSorting = false;
-    // } else {
-    //   this.columns.forEach((col) => {
-    //     if (!col.allowSorting) {
-
-    //     }
-    //   });
-    // }
+    if (this.frozenColumns.length > 0) {
+      this.isDropMode = false;
+    } else {
+      this.isDropMode = true;
+    }
 
     setTimeout(() => {
       this.isLoading = false;

@@ -178,6 +178,9 @@ export class ComlumnComponent implements OnInit {
     }
 
     if (columnTarget.hasDefaultValue) {
+      if (this.columnType == 'boolean') {
+        this.defaultValue = this.defaultValue ? true : false;
+      }
       const formControlValidator = new FormControl(this.defaultValue, Validators.required);
       if (formControlValidator.invalid) {
         this.errorMsg =
