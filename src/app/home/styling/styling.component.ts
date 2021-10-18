@@ -6,6 +6,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./styling.component.scss'],
 })
 export class StylingComponent implements OnInit {
+  @Input() declare allowEditDataType: boolean;
   @Input() column: any | undefined;
   @Output() columnEmitter = new EventEmitter<any>();
   constructor(private modalService: NgbModal) {}
@@ -28,10 +29,7 @@ export class StylingComponent implements OnInit {
 
   ngOnInit(): void {
     this.alignValue = this.column?.textAlign;
-    this.columnType = this.column?.type;
-    if (this.columnType == 'string') {
-      this.columnType = 'text';
-    }
+    this.columnType = this.column?.type == 'string' ? 'text' : this.column.type;
     this.columnValue = this.column?.headerText;
     this.color = this.column?.color;
     this.fontSize = this.column?.fontSize;

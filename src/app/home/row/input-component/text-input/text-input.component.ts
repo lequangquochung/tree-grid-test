@@ -33,12 +33,11 @@ export class RowInputComponent implements OnInit {
   valueOnChange(event: any): void {
     let value = event.target.value;
     if (this.inputType == 'number') {
-      if (value < 0) {
+      if (value < 0 || isNaN(value)) {
         event.target.value = 0;
         return;
       }
     }
-
     this.formControl.setValue(value);
   }
 
