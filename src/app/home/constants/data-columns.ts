@@ -13,6 +13,7 @@ export const DATA_COLUMNS = [
     showInColumnChooser: false,
     customAttributes: { class: 'header-column-font1' },
     backgroundColor: '#fff',
+    allowEditing: false,
   },
   {
     field: 'taskCode',
@@ -39,6 +40,7 @@ export const DATA_COLUMNS = [
     textWrap: 'normal',
     customAttributes: { class: 'header-column-font3' },
     backgroundColor: '#fff',
+    allowEditing: true,
   },
   {
     field: 'startDate',
@@ -53,6 +55,7 @@ export const DATA_COLUMNS = [
     textWrap: 'normal',
     customAttributes: { class: 'header-column-font4' },
     backgroundColor: '#fff',
+    allowEditing: true,
   },
   {
     field: 'duration',

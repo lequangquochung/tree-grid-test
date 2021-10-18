@@ -1,4 +1,32 @@
 export class DataUtils {
+  static async insertDefaultValueToData(data: any[], field: string, defaultValue: any) {
+    data.forEach((record) => {
+      record[field] = defaultValue;
+      if (record.subtasks && record.subtasks.length) {
+        this.insertDefaultValueToData(record.subtasks, field, defaultValue);
+      }
+    });
+  }
+
+  static isColumnHasValue(data: any[], field: string) {
+    let result = false;
+    data.every((record) => {
+      if (record[field]) {
+        result = true;
+        return false;
+      }
+
+      if (record.subtasks && record.subtasks.length) {
+        result = this.isColumnHasValue(record.subtasks, field);
+        if (result) {
+          return false;
+        }
+      }
+      return true;
+    });
+    return result;
+  }
+
   static getMaxId(dataWithoutNested: any[]) {
     return dataWithoutNested.reduce(function (prev: any, current: any) {
       if (+current.taskID > +prev.taskID) {

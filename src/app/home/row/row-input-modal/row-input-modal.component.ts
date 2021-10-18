@@ -56,6 +56,9 @@ export class RowInputModalComponent implements OnInit {
           value = this.taskID;
         }
       }
+      if (!value && col.hasDefaultValue) {
+        value = col.defaultValue;
+      }
       this.formField[col.field] = [value, Validators.required];
     });
     this.rowInputForm = formBuilder.group(this.formField);

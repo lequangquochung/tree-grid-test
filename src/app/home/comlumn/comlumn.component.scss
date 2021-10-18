@@ -79,13 +79,6 @@
     }
   }
 
-  p {
-    margin: 0.5rem;
-
-    color: red;
-    font-size: 0.75rem;
-  }
-
   .dropdown-item-input-field {
     width: fit-content;
 
@@ -143,5 +136,24 @@
       color: red;
       border-color: red;
     }
+  }
+}
+
+label {
+  color: #adadad;
+  display: block;
+  width: fit-content;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+}
+
+.default-value-input {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.default-value-input:focus-within {
+  label {
+    color: #e3165b;
   }
 }

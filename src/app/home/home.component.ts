@@ -41,7 +41,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   public declare columns: any[];
 
   public columnMenuItems = <any>[];
-  public dataColumn: any = DATA_COLUMNS;
+  public dataColumn: any[] = DATA_COLUMNS;
   public contextMenuItems: any[] = [...CONTEXT_MENU_ITEM];
 
   public data: any[] = [];
@@ -49,6 +49,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   // selectedRow: any[] = [];
   private isCutMode = false;
+  declare copyMaxID: number;
   private isShowPasteOption = false;
   private isDropMode = true;
   private selectedRowForCopy: any[] = [];
@@ -66,11 +67,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
   public declare allowDragAndDrop: boolean;
   public declare toggleFilter: Boolean;
   public declare toggleMultiSorting: Boolean;
-  public declare frozenColumns: number;
+  public frozenColumns: any[] = [];
+
   public declare multiSelect: any;
 
   public columnChecked: any[] = [];
-  public treeColumnIndex: number = 2;
 
   constructor(public modalService: NgbModal) {
     this.filterSettings = { type: 'FilterBar', hierarchyMode: 'Parent', mode: 'Immediate' };
@@ -81,7 +82,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.loadedRecordCount = this.pageSettings.pageSize;
     this.infiniteOptions = { initialBlocks: 1 };
 
-    this.frozenColumns = 0;
+    // this.frozenColumnIndex = 0;
     this.toggleMultiSorting = true;
     this.toggleFilter = true;
     this.multiSelect = { type: 'Multiple' };
@@ -91,7 +92,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     setInterval(() => {
       this.tableElement = document.querySelector('.e-content .e-table');
-      if (this.tableElement.offsetHeight <= window.innerHeight) {
+      if (this.tableElement?.offsetHeight <= window.innerHeight) {
         this.gridBodyHeight = this.tableElement.offsetHeight - 5;
       } else {
         this.gridBodyHeight = this.toggleFilter ? window.innerHeight - 100 : window.innerHeight - 60;
@@ -237,39 +238,37 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
 
     if (contextID === contextMenuID.addColumn) {
-      this.openModal(args.item.id);
+      this.openColumnModal(contextMenuID.addColumn);
     }
 
     if (contextID === contextMenuID.editColumn) {
       const targetColumn = args.column;
-      this.openModal(args.item.id, {
+      this.openColumnModal(contextMenuID.editColumn, {
         field: targetColumn.field,
         text: targetColumn.headerText,
         columnType: targetColumn.type,
         dropDownItem: targetColumn.dropDownItem,
+        allowEditing: targetColumn.allowEditing,
+        hasDefaultValue: targetColumn.hasDefaultValue,
+        defaultValue: targetColumn.defaultValue,
       });
     }
 
     if (contextID === contextMenuID.deleteColumn) {
-      if (this.frozenColumns > 0) {
-        this.grid.clearSelection();
-        this.infiniteOptions = { initialBlocks: 1 };
-        this.loadedRecordCount = this.pageSettings.pageSize;
-
-        this.frozenColumns = 0;
-        this.columns = this.columns.map((column: any) => {
-          column.allowReordering = true;
-          return column;
-        });
-      }
-
-      if (this.treeColumnIndex === args.column.index || 'taskCode' === args.column.field) {
+      if (this.getTreeColumnIndex() === args.column.index || 'taskCode' === args.column.field) {
         alert("Can't delete this column");
         return;
       }
 
+      if (this.frozenColumns.length) {
+        this.grid.clearSelection();
+        this.infiniteOptions = { initialBlocks: 1 };
+        this.loadedRecordCount = this.pageSettings.pageSize;
+        this.freezeColumn(false);
+      }
+
       this.dataColumn = this.dataColumn.filter((column: any) => column.field !== args.column.field);
-      this.columns = this.dataColumn;
+      this.columns = [...this.dataColumn];
       this.grid?.clearSorting();
     }
 
@@ -292,34 +291,48 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
 
     if (args.item.id === contextMenuID.multipleSort) {
-      this.openModal(args.item.id, this.columns, this.columnChecked);
-      // this.toggleMultiSorting = !this.toggleMultiSorting;
-      // _contextMenuItems[_contextMenuIndex].text = `Mutiple Sorting ${this.toggleMultiSorting ? `Off` : `On`}`;
-      // this.contextMenuItems = [..._contextMenuItems];
+      // this.openColumnModal(args.item.id, this.columns, this.columnChecked);
+      this.toggleMultiSorting = !this.toggleMultiSorting;
+      _contextMenuItems[_contextMenuIndex].text = `Mutiple Sorting ${this.toggleMultiSorting ? `Off` : `On`}`;
+      this.contextMenuItems = [..._contextMenuItems];
     }
   }
 
-  freezeColumn(args: any) {
+  getTreeColumnIndex() {
+    return this.columns.findIndex((col) => col.field == 'taskName');
+  }
+
+  getFrozenColumnIndex() {
+    const frozenColumnLength = this.frozenColumns.length;
+    return frozenColumnLength > 0 ? frozenColumnLength + 1 : 0;
+  }
+
+  freezeColumn(args?: any) {
     this.isLoading = true;
-    let freezeColumnIndex = this.dataColumn.findIndex((column: any) => column.field === args.column.field) + 1;
-    //reset collumn re ordering
-    this.columns = this.columns.map((column: any) => {
-      column.allowReordering = true;
-      return column;
-    });
-
-    //block re ordering for all the columns on the leftside of chosen froze column
-    this.columns.forEach((column: any) => {
-      if (column.index < freezeColumnIndex) {
-        column.allowReordering = false;
+    if (args) {
+      const column = { ...this.dataColumn.find((col) => col.field == args.column.field), allowReordering: false };
+      const indexInFrozenColumn = this.frozenColumns.findIndex((col) => col.field == column.field);
+      if (indexInFrozenColumn >= 0) {
+        this.frozenColumns.splice(indexInFrozenColumn, 1);
+      } else {
+        this.frozenColumns.push(column);
       }
-    });
-
-    //reset frozen
-    if (this.frozenColumns > 0 && freezeColumnIndex == this.frozenColumns) {
-      freezeColumnIndex = 0;
+    } else {
+      this.frozenColumns = [];
     }
-    this.frozenColumns = freezeColumnIndex;
+    this.columns = this.frozenColumns.concat(
+      this.dataColumn.filter((col) => this.frozenColumns.findIndex((f_col) => f_col.field == col.field) < 0)
+    );
+
+    // if (this.frozenColumns.length > 0) {
+    //   this.columns[this.columns.length - 1].allowSorting = false;
+    // } else {
+    //   this.columns.forEach((col) => {
+    //     if (!col.allowSorting) {
+
+    //     }
+    //   });
+    // }
 
     setTimeout(() => {
       this.isLoading = false;
@@ -328,17 +341,20 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   editColumnStyle(args: any) {
     let index = this.dataColumn.findIndex((column: any) => column.field === args.column.field);
+
+    const allowEditDataType = !DataUtils.isColumnHasValue(this.data, args.column.field);
     const modalRef = this.modalService.open(StylingComponent);
     modalRef.componentInstance.column = this.dataColumn[index];
+    modalRef.componentInstance.allowEditDataType = allowEditDataType;
+
+    let dataTypeChange = false;
+
     modalRef.componentInstance.columnEmitter.subscribe((res: any) => {
       if (res.alignValue) {
         this.dataColumn[index].textAlign = res.alignValue;
       }
       if (res.minWidth) {
         this.dataColumn[index].minWidth = parseInt(res.minWidth);
-      }
-      if (res.columnType) {
-        this.dataColumn[index].type = res.columnType;
       }
       if (res.columnValue) {
         this.dataColumn[index].headerText = res.columnValue;
@@ -370,7 +386,28 @@ export class HomeComponent implements OnInit, AfterViewInit {
           document.documentElement.style.setProperty(`--heightColumn${index + 1}`, `25px`);
         }
       }
+      if (res.columnType) {
+        dataTypeChange = this.dataColumn[index].type == res.columnType ? false : true;
+        this.dataColumn[index].type = res.columnType;
+      }
+      if (dataTypeChange) {
+        this.dataColumn[index].dropDownItem = [];
+        this.dataColumn[index].hasDefaultValue = false;
+        this.dataColumn[index].defaultValue = null;
+      }
+
       this.columns = [...this.dataColumn];
+      if (dataTypeChange && this.dataColumn[index].type == 'dropdown') {
+        this.openColumnModal(contextMenuID.editColumn, {
+          field: this.dataColumn[index].field,
+          text: this.dataColumn[index].headerText,
+          columnType: this.dataColumn[index].type,
+          dropDownItem: this.dataColumn[index].dropDownItem,
+          allowEditing: this.dataColumn[index].allowEditing,
+          hasDefaultValue: this.dataColumn[index].hasDefaultValue,
+          defaultValue: this.dataColumn[index].defaultValue,
+        });
+      }
 
       modalRef.close();
     });
@@ -380,7 +417,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     const maxId = DataUtils.getMaxId(this.dataWithoutNested);
     const modalRef = this.modalService.open(RowInputModalComponent);
     modalRef.componentInstance.taskID = maxId + 1;
-    modalRef.componentInstance.columnSetting = this.columns;
+    modalRef.componentInstance.columnSetting = this.grid.getColumns();
     modalRef.componentInstance.closeModal.subscribe((res: any) => {
       if (res) {
         if (isPasteAsChild) {
@@ -399,7 +436,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   openEditRowModal(args: any) {
     const editingTask = args.rowInfo.rowData;
     const modalRef = this.modalService.open(RowInputModalComponent);
-    modalRef.componentInstance.columnSetting = this.columns;
+    modalRef.componentInstance.columnSetting = this.grid.getColumns();
     modalRef.componentInstance.editingTask = editingTask;
     modalRef.componentInstance.closeModal.subscribe((res: any) => {
       if (res) {
@@ -415,59 +452,24 @@ export class HomeComponent implements OnInit, AfterViewInit {
     });
   }
 
-  openModal(type: string, column?: any, columnChecked?: any): void {
+  openColumnModal(type: string, column?: any, columnChecked?: any): void {
     const modalRef = this.modalService.open(ComlumnComponent);
     modalRef.componentInstance.type = type;
     modalRef.componentInstance.column = column;
     modalRef.componentInstance.columnChecked = columnChecked;
     modalRef.componentInstance.columnEmitter.subscribe((res: any) => {
-      if (res.event) {
+      if (res) {
         const resColumn = res.event.column;
         switch (res.event.type) {
           case 'add':
-            const newColumn = {
-              field: `${resColumn.text.trim()}${this.dataColumn.length}`,
-              headerText: resColumn.text,
-              editType: resColumn.columnType.includes('date') ? 'datetimepickeredit' : 'string',
-              textAlign: 'Left',
-              width: 150,
-              minWidth: 150,
-              type: resColumn.columnType,
-              fontSize: 14,
-              color: '#757575',
-              customAttributes: { class: `header-column-font${this.dataColumn.length + 1}` },
-              backgroundColor: '#fff',
-            };
-
-            if (resColumn.columnType.includes('text')) {
-              newColumn.type = 'string';
-            }
-
-            if (resColumn.columnType.includes('date')) {
-              newColumn['format'] = 'MM/dd/yyyy';
-            }
-            if (resColumn.columnType.includes('dropdown')) {
-              newColumn['dropDownItem'] = resColumn.dropDownItem;
-            }
-            this.dataColumn = [...this.columns];
-            this.dataColumn.push(newColumn);
-
-            this.columns = [...this.dataColumn];
-
+            this.addColumn(resColumn);
             break;
           case 'edit':
-            const column: any = this?.grid?.getColumnByField(resColumn.field);
-            column.headerText = resColumn.text;
-            if (resColumn.columnType == 'dropdown') {
-              column.dropDownItem = resColumn.dropDownItem;
-              this.changeDataWithDropDownItemChange(resColumn.oldDropDownItem, resColumn.field);
-            }
-            this?.grid?.refreshColumns();
+            this.editColumn(resColumn);
             break;
           case 'mutiple-sorting':
             this.columnChecked = resColumn;
             let arr: any = [];
-
             if (this.columnChecked.length > 0) {
               this.columnChecked.forEach((item: any) => {
                 if (item.isChecked) {
@@ -478,11 +480,59 @@ export class HomeComponent implements OnInit, AfterViewInit {
               });
             }
             break;
-          default:
-            break;
         }
-        modalRef.close();
-      } else modalRef.close();
+      }
+      modalRef.close();
+    });
+  }
+
+  editColumn(resColumn: any) {
+    const column: any = this.dataColumn.find((col: any) => col.field == resColumn.field);
+    column.headerText = resColumn.text;
+    column.hasDefaultValue = resColumn.hasDefaultValue;
+    column.defaultValue = resColumn.defaultValue;
+    if (resColumn.columnType == 'dropdown') {
+      column.dropDownItem = resColumn.dropDownItem;
+      this.changeDataWithDropDownItemChange(resColumn.oldDropDownItem, resColumn.field);
+    }
+    this.isLoading = true;
+    setTimeout(() => {
+      this.columns = [...this.dataColumn];
+      this.isLoading = false;
+    }, 500);
+  }
+
+  async addColumn(resColumn: any) {
+    const newColumn: any = {
+      field: `${resColumn.text.trim()}${this.dataColumn.length}`,
+      headerText: resColumn.text,
+      type: resColumn.columnType,
+      textAlign: 'Left',
+      width: 150,
+      minWidth: 150,
+      fontSize: 14,
+      color: '#757575',
+      allowEditing: true,
+      customAttributes: { class: `header-column-font${this.dataColumn.length + 1}` },
+      backgroundColor: '#fff',
+      hasDefaultValue: resColumn.hasDefaultValue,
+      defaultValue: resColumn.defaultValue,
+    };
+
+    if (resColumn.columnType.includes('date')) {
+      newColumn['format'] = 'MM/dd/yyyy';
+    }
+    if (resColumn.columnType.includes('dropdown')) {
+      newColumn['dropDownItem'] = resColumn.dropDownItem;
+    }
+    this.isLoading = true;
+    await DataUtils.insertDefaultValueToData(this.data, newColumn.field, newColumn.defaultValue).then(() => {
+      this.dataColumn = [...this.columns];
+      this.dataColumn.push(newColumn);
+      this.columns = [...this.dataColumn];
+      setTimeout(() => {
+        this.isLoading = false;
+      }, 500);
     });
   }
 
@@ -525,21 +575,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.grid.refresh();
   }
 
-  openModalSetting() {
-    const modalRef = this.modalService.open(SettingsComponent);
-    modalRef.componentInstance.frozenColumnsInput = this.frozenColumns;
-    modalRef.componentInstance.toggleFilterInput = !!this.toggleFilter;
-    modalRef.componentInstance.dataColumnInput = this.dataColumn;
-    modalRef.componentInstance.settingEmitter.subscribe((res: any) => {
-      if (res) {
-        this.frozenColumns = res.frozenColumns;
-        this.toggleFilter = !!res.toggleFilter;
-      }
-      modalRef.close();
-    });
-  }
-
-  declare copyMaxID: number;
   createNewIDForRecord(insertItems: any[]) {
     this.copyMaxID = this.copyMaxID ? this.copyMaxID : DataUtils.getMaxId(this.dataWithoutNested);
     insertItems = insertItems.map((data: any) => {
