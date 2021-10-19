@@ -142,8 +142,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
       }
     }
 
-    console.log(args);
-
     if (!this.isDropMode && args.rowInfo.cellIndex >= 1) {
       args.cancel = true;
     }
@@ -317,6 +315,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   freezeColumn(args?: any) {
     this.isLoading = true;
+
+    this.columns.forEach((col) => {
+      this.dataColumn.find((d_col) => d_col.field == col.field).visible = col.visible;
+    });
+
     if (args) {
       const column = { ...this.dataColumn.find((col) => col.field == args.column.field), allowReordering: false };
       const indexInFrozenColumn = this.frozenColumns.findIndex((col) => col.field == column.field);
@@ -328,6 +331,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     } else {
       this.frozenColumns = [];
     }
+
     this.columns = this.frozenColumns.concat(
       this.dataColumn.filter((col) => this.frozenColumns.findIndex((f_col) => f_col.field == col.field) < 0)
     );
@@ -712,15 +716,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
   }
 
-  actionComplete(args: any): void {
-    if (args.requestType === 'beginEdit' || args.requestType === 'add') {
-    }
-  }
+  actionComplete(args: any): void {}
 
   actionBegin(args: any): void {
-    if (args.requestType === 'beginEdit' || args.requestType === 'add') {
-    }
-
     if (args.requestType == 'filtering' || args.requestType == 'infiniteScroll') {
       if (args.requestType == 'infiniteScroll') {
         this.loadedRecordCount += this.pageSettings.pageSize;
