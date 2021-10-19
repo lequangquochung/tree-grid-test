@@ -89,24 +89,27 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     this.columns = [...this.dataColumn];
   }
+
   ngAfterViewInit(): void {
     setInterval(() => {
-      this.tableElement = document.querySelector('.e-content .e-table');
-      if (this.tableElement?.offsetHeight <= window.innerHeight) {
-        if (!this.isTouchScreendevice()) {
-          if (this.frozenColumns.length > 0) {
-            this.gridBodyHeight = this.tableElement.offsetHeight + 15;
-            return;
-          }
-        }
-        this.gridBodyHeight = this.tableElement.offsetHeight - 5;
-      } else {
-        this.gridBodyHeight = this.toggleFilter ? window.innerHeight - 100 : window.innerHeight - 60;
-      }
+      this.calContentHeight();
     }, 1000);
   }
 
-  declare tableElement: any;
+  calContentHeight() {
+    const tableElement: any = document.querySelector('.e-content .e-table');
+    if (tableElement?.offsetHeight <= window.innerHeight) {
+      if (!this.isTouchScreendevice()) {
+        if (this.frozenColumns.length > 0) {
+          this.gridBodyHeight = tableElement?.offsetHeight + 15;
+          return;
+        }
+      }
+      this.gridBodyHeight = tableElement?.offsetHeight - 5;
+    } else {
+      this.gridBodyHeight = this.toggleFilter ? window.innerHeight - 100 : window.innerHeight - 60;
+    }
+  }
 
   ngOnInit() {
     if (this.isTouchScreendevice()) {
@@ -261,21 +264,22 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
 
     if (contextID === contextMenuID.deleteColumn) {
+      if (this.frozenColumns.findIndex((col) => col.field == args.column.field) >= 0) {
+        alert("Can't delete frozen column");
+        return;
+      }
+
       if (this.getTreeColumnIndex() === args.column.index || 'taskCode' === args.column.field) {
         alert("Can't delete this column");
         return;
       }
 
-      if (this.frozenColumns.length) {
-        this.grid.clearSelection();
-        this.infiniteOptions = { initialBlocks: 1 };
-        this.loadedRecordCount = this.pageSettings.pageSize;
-        this.freezeColumn(false);
-      }
-
+      const lastScrollPosition = this.getLastScrollPosition();
+      this.dataColumn = [...this.columns];
       this.dataColumn = this.dataColumn.filter((column: any) => column.field !== args.column.field);
       this.columns = [...this.dataColumn];
       this.grid?.clearSorting();
+      this.scrollBackToLastPosition(lastScrollPosition);
     }
 
     if (contextID === contextMenuID.freezeColumn) {
