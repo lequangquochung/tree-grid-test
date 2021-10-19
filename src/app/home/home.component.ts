@@ -321,7 +321,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
     });
 
     if (args) {
-      const column = { ...this.dataColumn.find((col) => col.field == args.column.field), allowReordering: false };
+      const column = {
+        ...this.dataColumn.find((col) => col.field == args.column.field),
+        allowReordering: false,
+        showInColumnChooser: false,
+      };
       const indexInFrozenColumn = this.frozenColumns.findIndex((col) => col.field == column.field);
       if (indexInFrozenColumn >= 0) {
         this.frozenColumns.splice(indexInFrozenColumn, 1);
