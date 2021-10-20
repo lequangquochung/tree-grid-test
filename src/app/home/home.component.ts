@@ -340,8 +340,20 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.frozenColumns = [];
     }
 
+    // if (this.frozenColumns.length > 0) {
+    //   this.frozenColumns.unshift({
+    //     type: 'checkbox',
+    //     width: 60,
+    //     visible: true,
+    //     showInColumnChooser: false,
+    //     isSelectRowCell: true,
+    //   });
+    // }
+
     this.columns = this.frozenColumns.concat(
-      this.dataColumn.filter((col) => this.frozenColumns.findIndex((f_col) => f_col.field == col.field) < 0)
+      this.dataColumn.filter(
+        (col) => this.frozenColumns.findIndex((f_col) => f_col.field == col.field) < 0 || col.isSelectRowCell
+      )
     );
 
     if (this.frozenColumns.length > 0) {

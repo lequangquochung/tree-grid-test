@@ -143,4 +143,8 @@ q {
       //TODO : recheck this
     }
   }
+
+  .e-filterbarcell:empty {
+    display: none;
+  }
 }
