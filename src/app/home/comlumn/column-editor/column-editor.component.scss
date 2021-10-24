@@ -1,0 +1,156 @@
+.modal-body {
+  height: 70vh;
+  overflow-y: scroll;
+}
+
+.modal-footer {
+  p {
+    color: red;
+    font-size: 0.75rem;
+  }
+
+  button {
+    border: 0;
+    outline: none;
+
+    padding: 0.3rem 1rem;
+    border-radius: 5px;
+    background-color: transparent;
+
+    font-weight: 500;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+  }
+
+  button:hover {
+    background-color: #e6e6e6;
+  }
+
+  button:first-child {
+    color: #e3165b;
+  }
+}
+
+label {
+  color: #adadad;
+  display: block;
+  width: fit-content;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+
+  position: relative;
+}
+
+.input-field {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  label:after {
+    position: absolute;
+    top: 0;
+    left: 105%;
+
+    content: "*";
+    color: red;
+  }
+
+  input {
+    font-weight: 400;
+  }
+}
+
+.input-field:focus-within {
+  label {
+    color: #e3165b;
+  }
+}
+
+.dropdown-item-input {
+  margin: 1rem 0 2rem 0;
+  > div {
+    display: flex;
+    flex-direction: column;
+    button {
+      width: 200px;
+      text-align: center;
+      font-size: 0.85rem;
+
+      outline: none;
+      margin-top: 0.5rem;
+
+      border: 1px dashed #919191;
+      border-radius: 5px;
+      padding: 0.1rem 1rem 0.2rem 0.5rem;
+      background-color: transparent;
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      border-color: #e3165b;
+    }
+  }
+
+  .dropdown-item-input-field {
+    width: fit-content;
+
+    padding: 0;
+    margin: 0.2rem 0rem;
+    overflow: hidden;
+
+    input {
+      width: 200px;
+      position: relative;
+
+      border: 1px dashed #919191;
+      border-radius: 5px;
+
+      outline: none;
+
+      font-size: 0.85rem;
+      padding-left: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    input:focus {
+      padding-left: 0rem;
+      // margin-left: 1rem;
+
+      border-radius: 0;
+      border: 0;
+      border-bottom: 1px solid #e3165b;
+    }
+
+    input:focus:hover {
+      cursor: text;
+    }
+
+    input:hover {
+      cursor: pointer;
+      border-color: #e3165b;
+    }
+    a {
+      cursor: pointer;
+
+      padding: 0 0.35rem;
+      margin-left: 0.5rem;
+      border: 1px solid #919191;
+      border-radius: 100%;
+
+      font-size: 0.75rem;
+      color: #919191;
+
+      background-color: transparent;
+      transition: all 0.2s ease;
+    }
+
+    a:hover {
+      color: red;
+      border-color: red;
+    }
+  }
+}
+
+.error-msg {
+  margin: 1rem;
+  font-size: 0.8rem;
+  color: red;
+}
