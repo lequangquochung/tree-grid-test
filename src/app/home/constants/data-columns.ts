@@ -1,4 +1,5 @@
 export const DATA_COLUMNS = [
+  { type: 'checkbox', showInColumnChooser: false, visible: false, isPrimaryKey: true },
   {
     field: 'taskID',
     headerText: 'Task ID1',
@@ -6,10 +7,6 @@ export const DATA_COLUMNS = [
     type: 'string',
     visible: false,
     isPrimaryKey: true,
-    fontSize: 14,
-    color: '#757575',
-    textWrap: 'normal',
-    minWidth: 150,
     showInColumnChooser: false,
     customAttributes: { class: 'header-column-font1' },
     backgroundColor: '#fff',
@@ -69,4 +66,14 @@ export const DATA_COLUMNS = [
     customAttributes: { class: 'header-column-font5' },
     backgroundColor: '#fff',
   },
+  // {
+  //   type: '',
+  //   displayAsCheckBox : true,
+  //   width: 60,
+  //   visible: false,
+  //   allowFiltering : false,
+  //   showInColumnChooser: false,
+  //   isSelectRowCell : true,
+  //   allowEditing: false,
+  // },
 ];
