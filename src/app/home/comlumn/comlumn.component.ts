@@ -39,44 +39,24 @@ export class ComlumnComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    const fb = new FormBuilder();
-    this.form = fb.group({
-      colArr: fb.array([]),
-    });
+    // const fb = new FormBuilder();
+    // this.form = fb.group({
+    //   colArr: fb.array([]),
+    // });
 
     this.columnTitle = this.type === 'add' ? 'Add' : 'Edit';
-    if (this.type === 'edit') {
-      console.log(this.column);
+    // if (this.type === 'mutiple-sorting') {
+    //   this.sortingType = true;
+    //   this.columnTitle = 'Multil Sorting';
+    //   this.getColumns(this.column, 'field');
+    //   this.columnChecked.forEach((each: any) => {
+    //     this.cols.find((col) => col.colName == each.name).isChecked = each.isChecked;
+    //   });
 
-      this.columnName = this.column?.text;
-      this.columnType = this.column.columnType == 'string' ? 'text' : this.column.columnType;
-      this.allowChangeDefaultValue = this.column.allowEditing;
-      this.hasDefaultValue = this.column.hasDefaultValue ? true : false;
-      if (this.hasDefaultValue) {
-        this.defaultValue = this.column.defaultValue;
-      }
-
-      if (this.columnType == 'dropdown') {
-        this.oldDropDownItem = [];
-        this.column.dropDownItem.forEach((each: any) => {
-          const dropDownItem = { name: each, id: getUid('') };
-          this.dropdownItem.push({ ...dropDownItem });
-          this.oldDropDownItem.push({ ...dropDownItem });
-        });
-        this.dropDownItemString = this.dropdownItem.map((each) => each.name);
-      }
-    } else if (this.type === 'mutiple-sorting') {
-      this.sortingType = true;
-      this.columnTitle = 'Multil Sorting';
-      this.getColumns(this.column, 'field');
-      this.columnChecked.forEach((each: any) => {
-        this.cols.find((col) => col.colName == each.name).isChecked = each.isChecked;
-      });
-
-      this.rowSelected = [...this.columnChecked];
-    } else {
-      this.sortingType = false;
-    }
+    //   this.rowSelected = [...this.columnChecked];
+    // } else {
+    //   this.sortingType = false;
+    // }
   }
 
   close() {
@@ -173,7 +153,6 @@ export class ComlumnComponent implements OnInit {
       }
 
       const dropDownItem = this.dropdownItem.map((each) => each.name);
-      columnTarget['oldDropDownItem'] = this.oldDropDownItem;
       columnTarget['dropDownItem'] = dropDownItem;
     }
 
@@ -183,8 +162,7 @@ export class ComlumnComponent implements OnInit {
       }
       const formControlValidator = new FormControl(this.defaultValue, Validators.required);
       if (formControlValidator.invalid) {
-        this.errorMsg =
-          '  The entered data does not match the data type, please review the Column Type to check the data type';
+        this.errorMsg = ' Please input default value for this column';
         return;
       }
       columnTarget.defaultValue = this.defaultValue;
@@ -225,44 +203,18 @@ export class ComlumnComponent implements OnInit {
   addDropdownItem() {
     const addedDropDownItem = { name: 'new item', id: getUid('') };
     this.dropdownItem.push(addedDropDownItem);
-    if (this.type == 'edit') {
-      const matchedOldItem = this.oldDropDownItem.find((item) => item.name == addedDropDownItem.name);
-      if (matchedOldItem) {
-        matchedOldItem['changed'] = false;
-        matchedOldItem['deleted'] = false;
-      }
-    }
     this.dropDownItemString = this.dropdownItem.map((each) => each.name);
   }
 
   dropDownItemChange(event: any, id: number) {
     const editTargerItem = this.dropdownItem.find((item) => item.id == id);
     editTargerItem.name = event.target.value.trim();
-    if (this.type == 'edit') {
-      const editTargetOldItem = this.oldDropDownItem.find((item) => item.id == id);
-      if (editTargetOldItem) {
-        editTargetOldItem['changed'] = editTargerItem.name != editTargetOldItem.name;
-        editTargetOldItem['itemNewValue'] = event.target.value.trim();
-        return;
-      }
-
-      const matchedOldItem = this.oldDropDownItem.find((item) => item.name == editTargerItem.name);
-      if (matchedOldItem) {
-        matchedOldItem['changed'] = false;
-        matchedOldItem['deleted'] = false;
-      }
-    }
-
     this.dropDownItemString = this.dropdownItem.map((each) => each.name);
   }
 
   deleteDropDownItem(id: number) {
+    this.defaultValue = null;
     this.dropdownItem = this.dropdownItem.filter((item) => item.id != id);
-    if (this.type == 'edit') {
-      const editTargetOldItem = this.oldDropDownItem.find((item) => item.id == id);
-      editTargetOldItem['deleted'] = true;
-    }
-
     this.dropDownItemString = this.dropdownItem.map((each) => each.name);
   }
 

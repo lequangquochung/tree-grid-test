@@ -7,7 +7,6 @@ import {
   ToolbarItems,
   TreeGridComponent,
 } from '@syncfusion/ej2-angular-treegrid';
-import { MenuEventArgs } from '@syncfusion/ej2-navigations';
 import {
   Freeze,
   InfiniteScrollSettingsModel,
@@ -18,6 +17,7 @@ import {
   Selection,
   TreeGrid,
 } from '@syncfusion/ej2-treegrid';
+import { ColumnEditorComponent } from './comlumn/column-editor/column-editor.component';
 import { ComlumnComponent } from './comlumn/comlumn.component';
 import { contextMenuID, contextTarget, CONTEXT_MENU_ITEM } from './constants/context-menu-item';
 import { DATA_COLUMNS } from './constants/data-columns';
@@ -75,7 +75,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   constructor(public modalService: NgbModal) {
     this.filterSettings = { type: 'FilterBar', hierarchyMode: 'Parent', mode: 'Immediate' };
-    // this.editSettings = { allowDeleting: true, allowEditing: true, allowEditOnDblClick: false, mode: 'Row' };
 
     //infinite scroll setting
     this.pageSettings = { pageSize: 50 };
@@ -165,6 +164,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       args.element?.classList.remove('showDragDropOption');
     }
   }
+
   // check touch screen
   isTouchScreendevice() {
     return 'ontouchstart' in window || navigator.maxTouchPoints;
@@ -251,16 +251,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
 
     if (contextID === contextMenuID.editColumn) {
-      const targetColumn = args.column;
-      this.openColumnModal(contextMenuID.editColumn, {
-        field: targetColumn.field,
-        text: targetColumn.headerText,
-        columnType: targetColumn.type,
-        dropDownItem: targetColumn.dropDownItem,
-        allowEditing: targetColumn.allowEditing,
-        hasDefaultValue: targetColumn.hasDefaultValue,
-        defaultValue: targetColumn.defaultValue,
-      });
+      this.openEditColumnModal(args.column);
     }
 
     if (contextID === contextMenuID.deleteColumn) {
@@ -288,10 +279,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.scrollBackToLastPosition(lastScrollPosition);
     }
 
-    if (contextID === contextMenuID.stylingColumn) {
-      this.editColumnStyle(args);
-    }
-
     if (contextID === contextMenuID.togleFilter) {
       this.toggleFilter = !this.toggleFilter;
       _contextMenuItems[_contextMenuIndex].text = `Filter Columns ${this.toggleFilter ? `Off` : `On`}`;
@@ -308,13 +295,64 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
   }
 
-  getTreeColumnIndex() {
-    return this.columns.findIndex((col) => col.field == 'taskName');
+  openEditColumnModal(column: any) {
+    const modalRef = this.modalService.open(ColumnEditorComponent);
+    const isColumnHasValue = DataUtils.isColumnHasValue(this.data, column.field);
+    modalRef.componentInstance.targetColumn = column;
+    modalRef.componentInstance.isColumnHasValue = isColumnHasValue;
+    modalRef.componentInstance.closeModal.subscribe((resColumn: any) => {
+      if (resColumn) {
+        const targetColumn = this.dataColumn.find((col) => col.field == column.field);
+        // const oldDataType = targetColumn.type;
+        Object.keys(resColumn).forEach((key) => {
+          targetColumn[key] = resColumn[key];
+        });
+
+        if (resColumn.type == 'dropdown') {
+          this.changeDataWithDropDownItemChange(resColumn.oldDropDownItem, column.field);
+        }
+
+        //freecolumn might cause error
+        this.columns = this.frozenColumns.concat(
+          this.dataColumn.filter(
+            (col) => this.frozenColumns.findIndex((f_col) => f_col.field == col.field) < 0 || col.isSelectRowCell
+          )
+        );
+
+        if (this.frozenColumns.length > 0) {
+          this.isDropMode = false;
+        } else {
+          this.isDropMode = true;
+        }
+
+        this.setColumnCssProperties(targetColumn);
+        this.isLoading = true;
+        this.grid.refresh();
+        setTimeout(() => {
+          this.isLoading = false;
+        }, 500);
+      }
+      modalRef.close();
+    });
   }
 
-  getFrozenColumnIndex() {
-    const frozenColumnLength = this.frozenColumns.length;
-    return frozenColumnLength > 0 ? frozenColumnLength + 1 : 0;
+  private setColumnCssProperties(column: any) {
+    let index = this.dataColumn.findIndex((col: any) => col.field === column.field);
+    document.documentElement.style.setProperty(`--color${index}`, column.color);
+    document.documentElement.style.setProperty(`--backgroundColor${index}`, column.backgroundColor);
+    document.documentElement.style.setProperty(`--fontSize${index}`, `${column.fontSize}px`);
+    document.documentElement.style.setProperty(`--textWrap${index}`, column.textWrap);
+    if (column.textWrap === 'break-word') {
+      document.documentElement.style.setProperty(`--textOverFlow${index}`, `inherit`);
+      document.documentElement.style.setProperty(`--whiteSpace${index}`, `inherit`);
+      document.documentElement.style.setProperty(`--marginColumn${index}`, `inherit`);
+      document.documentElement.style.setProperty(`--heightColumn${index}`, `auto`);
+    } else {
+      document.documentElement.style.setProperty(`--textOverFlow${index}`, `ellipsis`);
+      document.documentElement.style.setProperty(`--whiteSpace${index}`, `nowrap`);
+      document.documentElement.style.setProperty(`--marginColumn${index}`, `-7px`);
+      document.documentElement.style.setProperty(`--heightColumn${index}`, `25px`);
+    }
   }
 
   freezeColumn(args?: any) {
@@ -340,16 +378,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.frozenColumns = [];
     }
 
-    // if (this.frozenColumns.length > 0) {
-    //   this.frozenColumns.unshift({
-    //     type: 'checkbox',
-    //     width: 60,
-    //     visible: true,
-    //     showInColumnChooser: false,
-    //     isSelectRowCell: true,
-    //   });
-    // }
-
     this.columns = this.frozenColumns.concat(
       this.dataColumn.filter(
         (col) => this.frozenColumns.findIndex((f_col) => f_col.field == col.field) < 0 || col.isSelectRowCell
@@ -364,80 +392,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     setTimeout(() => {
       this.isLoading = false;
-    });
-  }
-
-  editColumnStyle(args: any) {
-    let index = this.dataColumn.findIndex((column: any) => column.field === args.column.field);
-
-    const allowEditDataType = !DataUtils.isColumnHasValue(this.data, args.column.field);
-    const modalRef = this.modalService.open(StylingComponent);
-    modalRef.componentInstance.column = this.dataColumn[index];
-    modalRef.componentInstance.allowEditDataType = allowEditDataType;
-
-    let dataTypeChange = false;
-
-    modalRef.componentInstance.columnEmitter.subscribe((res: any) => {
-      if (res.alignValue) {
-        this.dataColumn[index].textAlign = res.alignValue;
-      }
-      if (res.minWidth) {
-        this.dataColumn[index].minWidth = parseInt(res.minWidth);
-      }
-      if (res.columnValue) {
-        this.dataColumn[index].headerText = res.columnValue;
-      }
-      if (res.color) {
-        this.dataColumn[index].color = res.color;
-        document.documentElement.style.setProperty(`--color${index + 1}`, res.color);
-      }
-      if (res.backgroundColor) {
-        this.dataColumn[index].backgroundColor = res.backgroundColor;
-        document.documentElement.style.setProperty(`--backgroundColor${index + 1}`, res.backgroundColor);
-      }
-      if (res.fontSize) {
-        this.dataColumn[index].fontSize = res.fontSize;
-        document.documentElement.style.setProperty(`--fontSize${index + 1}`, `${res.fontSize}px`);
-      }
-      if (res.textWrap) {
-        this.dataColumn[index].textWrap = res.textWrap;
-        document.documentElement.style.setProperty(`--textWrap${index + 1}`, res.textWrap);
-        if (res.textWrap === 'break-word') {
-          document.documentElement.style.setProperty(`--textOverFlow${index + 1}`, `inherit`);
-          document.documentElement.style.setProperty(`--whiteSpace${index + 1}`, `inherit`);
-          document.documentElement.style.setProperty(`--marginColumn${index + 1}`, `inherit`);
-          document.documentElement.style.setProperty(`--heightColumn${index + 1}`, `auto`);
-        } else {
-          document.documentElement.style.setProperty(`--textOverFlow${index + 1}`, `ellipsis`);
-          document.documentElement.style.setProperty(`--whiteSpace${index + 1}`, `nowrap`);
-          document.documentElement.style.setProperty(`--marginColumn${index + 1}`, `-7px`);
-          document.documentElement.style.setProperty(`--heightColumn${index + 1}`, `25px`);
-        }
-      }
-      if (res.columnType) {
-        dataTypeChange = this.dataColumn[index].type == res.columnType ? false : true;
-        this.dataColumn[index].type = res.columnType;
-      }
-      if (dataTypeChange) {
-        this.dataColumn[index].dropDownItem = [];
-        this.dataColumn[index].hasDefaultValue = false;
-        this.dataColumn[index].defaultValue = null;
-      }
-
-      this.columns = [...this.dataColumn];
-      if (dataTypeChange && this.dataColumn[index].type == 'dropdown') {
-        this.openColumnModal(contextMenuID.editColumn, {
-          field: this.dataColumn[index].field,
-          text: this.dataColumn[index].headerText,
-          columnType: this.dataColumn[index].type,
-          dropDownItem: this.dataColumn[index].dropDownItem,
-          allowEditing: this.dataColumn[index].allowEditing,
-          hasDefaultValue: this.dataColumn[index].hasDefaultValue,
-          defaultValue: this.dataColumn[index].defaultValue,
-        });
-      }
-
-      modalRef.close();
     });
   }
 
@@ -492,9 +446,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
           case 'add':
             this.addColumn(resColumn);
             break;
-          case 'edit':
-            this.editColumn(resColumn);
-            break;
           case 'mutiple-sorting':
             this.columnChecked = resColumn;
             let arr: any = [];
@@ -514,38 +465,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     });
   }
 
-  editColumn(resColumn: any) {
-    const column: any = this.dataColumn.find((col: any) => col.field == resColumn.field);
-    column.headerText = resColumn.text;
-    column.hasDefaultValue = resColumn.hasDefaultValue;
-    column.defaultValue = resColumn.defaultValue;
-    if (resColumn.columnType == 'dropdown') {
-      column.dropDownItem = resColumn.dropDownItem;
-      this.changeDataWithDropDownItemChange(resColumn.oldDropDownItem, resColumn.field);
-    }
-    this.isLoading = true;
-    setTimeout(() => {
-      this.columns = [...this.dataColumn];
-      this.isLoading = false;
-    }, 500);
-  }
-
   async addColumn(resColumn: any) {
-    const newColumn: any = {
-      field: `${resColumn.text.trim()}${this.dataColumn.length}`,
-      headerText: resColumn.text,
-      type: resColumn.columnType,
-      textAlign: 'Left',
-      width: 150,
-      minWidth: 150,
-      fontSize: 14,
-      color: '#757575',
-      allowEditing: true,
-      customAttributes: { class: `header-column-font${this.dataColumn.length + 1}` },
-      backgroundColor: '#fff',
-      hasDefaultValue: resColumn.hasDefaultValue,
-      defaultValue: resColumn.defaultValue,
-    };
+    const newColumn = this.formatNewColumn(resColumn);
 
     if (resColumn.columnType.includes('date')) {
       newColumn['format'] = 'MM/dd/yyyy';
@@ -564,6 +485,30 @@ export class HomeComponent implements OnInit, AfterViewInit {
     });
   }
 
+  private formatNewColumn(resColumn: any) {
+    return {
+      field: `${resColumn.text.trim()}${this.dataColumn.length}`,
+      headerText: resColumn.text,
+
+      type: resColumn.columnType,
+      hasDefaultValue: resColumn.hasDefaultValue,
+      defaultValue: resColumn.defaultValue,
+
+      width: 150,
+      minWidth: 150,
+
+      fontSize: 14,
+      textAlign: 'Left',
+      allowEditing: true,
+
+      color: '#757575',
+      backgroundColor: '#fff',
+      textWrap: 'normal',
+      customAttributes: { class: `header-column-font${this.dataColumn.length + 1}` },
+    };
+  }
+
+  //drop down item of column type == dropdown
   changeDataWithDropDownItemChange(oldDropDownItems: any[], field: string) {
     let isDropDownItemModified = false;
     oldDropDownItems.every((item) => {
@@ -601,24 +546,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     });
 
     this.grid.refresh();
-  }
-
-  createNewIDForRecord(insertItems: any[]) {
-    this.copyMaxID = this.copyMaxID ? this.copyMaxID : DataUtils.getMaxId(this.dataWithoutNested);
-    insertItems = insertItems.map((data: any) => {
-      this.copyMaxID++;
-      const newData = {
-        ...data,
-        taskID: this.copyMaxID,
-        taskCode: this.copyMaxID,
-      };
-
-      if (data.subtasks) {
-        newData.subtasks = this.createNewIDForRecord(data.subtasks);
-      }
-      return newData;
-    });
-    return insertItems;
   }
 
   pasteRecord(args: any, pasteType: string) {
@@ -719,15 +646,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
   }
 
-  setLevelForPasting(insertRecords: any[], pasteLevel: number) {
-    insertRecords.forEach((rec) => {
-      rec['level'] = pasteLevel;
-      if (rec.subtasks && rec.subtasks.length) {
-        this.setLevelForPasting(rec.subtasks, pasteLevel + 1);
-      }
-    });
-  }
-
   rowBound(args: RowDataBoundEventArgs) {
     const taskID: any = args?.data?.['taskID'];
     if (this.selectedRowForCopy.findIndex((item) => item.taskID === taskID) >= 0) {
@@ -735,8 +653,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
       args?.row?.style?.background = '#f8d7da';
     }
   }
-
-  actionComplete(args: any): void {}
 
   actionBegin(args: any): void {
     if (args.requestType == 'filtering' || args.requestType == 'infiniteScroll') {
@@ -748,8 +664,46 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
   }
 
+  actionComplete(args: any): void {}
+
+  setLevelForPasting(insertRecords: any[], pasteLevel: number) {
+    insertRecords.forEach((rec) => {
+      rec['level'] = pasteLevel;
+      if (rec.subtasks && rec.subtasks.length) {
+        this.setLevelForPasting(rec.subtasks, pasteLevel + 1);
+      }
+    });
+  }
+
+  getTreeColumnIndex() {
+    return this.columns.findIndex((col) => col.field == 'taskName');
+  }
+
+  getFrozenColumnIndex() {
+    const frozenColumnLength = this.frozenColumns.length;
+    return frozenColumnLength > 0 ? frozenColumnLength + 1 : 0;
+  }
+
   getLastScrollPosition(): any {
     return this.grid.element.querySelector('.e-gridcontent .e-content')?.scrollTop;
+  }
+
+  createNewIDForRecord(insertItems: any[]) {
+    this.copyMaxID = this.copyMaxID ? this.copyMaxID : DataUtils.getMaxId(this.dataWithoutNested);
+    insertItems = insertItems.map((data: any) => {
+      this.copyMaxID++;
+      const newData = {
+        ...data,
+        taskID: this.copyMaxID,
+        taskCode: this.copyMaxID,
+      };
+
+      if (data.subtasks) {
+        newData.subtasks = this.createNewIDForRecord(data.subtasks);
+      }
+      return newData;
+    });
+    return insertItems;
   }
 
   scrollBackToLastPosition(lastScrollPosition: any, selectedRowIndex?: number) {

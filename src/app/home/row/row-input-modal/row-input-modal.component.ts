@@ -48,18 +48,20 @@ export class RowInputModalComponent implements OnInit {
     const formBuilder: FormBuilder = new FormBuilder();
 
     this.columnSetting.forEach((col: any) => {
-      let value = null;
-      if (this.editingTask) {
-        value = this.editingTask[col.field];
-      } else {
-        if (col.field == 'taskID' || col.field == 'taskCode') {
-          value = this.taskID;
+      if (!col.isRowSelector) {
+        let value = null;
+        if (this.editingTask) {
+          value = this.editingTask[col.field];
+        } else {
+          if (col.field == 'taskID' || col.field == 'taskCode') {
+            value = this.taskID;
+          }
         }
+        if (!value && col.hasDefaultValue) {
+          value = col.defaultValue;
+        }
+        this.formField[col.field] = [value, Validators.required];
       }
-      if (!value && col.hasDefaultValue) {
-        value = col.defaultValue;
-      }
-      this.formField[col.field] = [value, Validators.required];
     });
     this.rowInputForm = formBuilder.group(this.formField);
   }
@@ -99,6 +101,7 @@ export class RowInputModalComponent implements OnInit {
   save(): void {
     this.showInputError = false;
     if (this.rowInputForm.invalid) {
+      console.log(this.rowInputForm);
       this.showInputError = true;
       return;
     }
