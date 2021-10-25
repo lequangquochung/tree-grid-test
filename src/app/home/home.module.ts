@@ -28,6 +28,7 @@ import { RowInputComponent } from './row/input-component/text-input/text-input.c
 import { RowInputModalComponent } from './row/row-input-modal/row-input-modal.component';
 import { DropdownInputComponent } from './row/input-component/dropdown-input/dropdown-input.component';
 import { BooleanInputComponent } from './row/input-component/boolean-input/boolean-input.component';
+import { ColumnEditorComponent } from './comlumn/column-editor/column-editor.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -50,6 +51,7 @@ import { BooleanInputComponent } from './row/input-component/boolean-input/boole
     RowInputComponent,
     DropdownInputComponent,
     BooleanInputComponent,
+    ColumnEditorComponent,
   ],
   providers: [
     ContextMenuService,

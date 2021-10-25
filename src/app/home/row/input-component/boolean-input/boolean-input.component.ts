@@ -12,7 +12,6 @@ export class BooleanInputComponent implements OnInit {
 
   ngOnInit(): void {
     this.formControl.setValue(this.formControl.value ? true : false);
-    console.log(this.formControl.value);
   }
 
   checkboxOnChange(event: any) {

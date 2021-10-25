@@ -1,5 +1,5 @@
 export const DATA_COLUMNS = [
-  { type: 'checkbox', showInColumnChooser: false, visible: false, isPrimaryKey: true },
+  { type: 'checkbox', showInColumnChooser: false, visible: false, isRowSelector: true },
   {
     field: 'taskID',
     headerText: 'Task ID1',
