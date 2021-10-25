@@ -306,7 +306,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
     modalRef.componentInstance.closeModal.subscribe((resColumn: any) => {
       if (resColumn) {
         const targetColumn = this.dataColumn.find((col) => col.field == column.field);
-        // const oldDataType = targetColumn.type;
+        const oldDataType = targetColumn.type;
+        if (resColumn.type == 'string' && oldDataType == 'date') {
+          if (isColumnHasValue) {
+            DataUtils.parseDateValueToString(this.data, targetColumn.field);
+            this.dataWithoutNested = [...DataUtils.getFullRecordWithoutNested(this.data)];
+          }
+        }
         Object.keys(resColumn).forEach((key) => {
           targetColumn[key] = resColumn[key];
         });

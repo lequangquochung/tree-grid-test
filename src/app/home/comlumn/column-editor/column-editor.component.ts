@@ -109,6 +109,7 @@ export class ColumnEditorComponent implements OnInit {
   formatNewColumnValue(value: any) {
     const newColumnValue = {
       ...value,
+      type: value.type == 'text' ? 'string' : value.type,
     };
 
     if (this.getFormValue('type') == 'dropdown') {
@@ -116,6 +117,11 @@ export class ColumnEditorComponent implements OnInit {
       newColumnValue['dropDownItem'] = this.dropDownItemString;
     }
     return newColumnValue;
+  }
+
+  dataTypeOnChange(event: any) {
+    this.setFormValue(event.value, 'type');
+    this.setFormValue(null, 'defaultValue');
   }
 
   addDropdownItem() {

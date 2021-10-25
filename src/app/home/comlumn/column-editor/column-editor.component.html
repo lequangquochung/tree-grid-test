@@ -6,7 +6,7 @@
     <div class="input-field">
       <label>Column Type</label>
       <ejs-dropdownlist
-        (change)="setFormValue($event.value, 'type')"
+        (change)="dataTypeOnChange($event)"
         [dataSource]="columnTypeData"
         [value]="getFormValue('type')"
         placeholder="Choose datatype"
