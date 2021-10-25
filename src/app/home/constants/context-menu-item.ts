@@ -45,7 +45,7 @@ export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any
     text: 'Freeze Columns',
     target: contextTarget.column,
     id: contextMenuID.freezeColumn,
-    iconCss: 'e-icons e-freeze-first-column',
+    iconCss: 'e-icons e-hide-headings',
   },
   {
     text: 'Filter Columns Off',
@@ -57,8 +57,8 @@ export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any
 
   { text: 'Add Next', target: contextTarget.row, id: contextMenuID.addRow, iconCss: 'e-icons e-plus' },
   { text: 'Add Child', target: contextTarget.row, id: contextMenuID.addChildRow, iconCss: 'e-icons e-plus' },
-  { text: 'Delete Row', target: contextTarget.row, id: contextMenuID.deleteRow, iconCss: 'e-icons e-trash' },
-  { text: 'Edit Row', target: contextTarget.row, id: contextMenuID.editRow, iconCss: 'e-icons e-edit' },
+  { text: 'Delete Row', target: contextTarget.row, id: contextMenuID.deleteRow, iconCss: 'e-icons e-edit' },
+  { text: 'Edit Row', target: contextTarget.row, id: contextMenuID.editRow, iconCss: 'e-icons e-recurrence-edit' },
   // 'Edit',
   { text: 'Copy', target: contextTarget.row, id: contextMenuID.copyRows },
   { text: 'Cut', target: contextTarget.row, id: contextMenuID.cutRows },
