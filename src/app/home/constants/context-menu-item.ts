@@ -45,7 +45,11 @@ export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any
     text: 'Freeze Columns',
     target: contextTarget.column,
     id: contextMenuID.freezeColumn,
+<<<<<<< HEAD
     iconCss: 'e-icons e-hide-headings',
+=======
+    iconCss: 'e-icons e-freeze-first-column',
+>>>>>>> d05cf0d06aa0e7e4690b9340cf819054b4561f74
   },
   {
     text: 'Filter Columns Off',
@@ -57,8 +61,13 @@ export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any
 
   { text: 'Add Next', target: contextTarget.row, id: contextMenuID.addRow, iconCss: 'e-icons e-plus' },
   { text: 'Add Child', target: contextTarget.row, id: contextMenuID.addChildRow, iconCss: 'e-icons e-plus' },
+<<<<<<< HEAD
   { text: 'Delete Row', target: contextTarget.row, id: contextMenuID.deleteRow, iconCss: 'e-icons e-edit' },
   { text: 'Edit Row', target: contextTarget.row, id: contextMenuID.editRow, iconCss: 'e-icons e-recurrence-edit' },
+=======
+  { text: 'Delete Row', target: contextTarget.row, id: contextMenuID.deleteRow, iconCss: 'e-icons e-trash' },
+  { text: 'Edit Row', target: contextTarget.row, id: contextMenuID.editRow, iconCss: 'e-icons e-edit' },
+>>>>>>> d05cf0d06aa0e7e4690b9340cf819054b4561f74
   // 'Edit',
   { text: 'Copy', target: contextTarget.row, id: contextMenuID.copyRows },
   { text: 'Cut', target: contextTarget.row, id: contextMenuID.cutRows },
