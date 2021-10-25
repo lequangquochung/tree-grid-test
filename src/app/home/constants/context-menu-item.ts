@@ -35,29 +35,20 @@ export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any
   { text: 'Add Column', target: contextTarget.column, id: contextMenuID.addColumn },
   { text: 'Delete Column', target: contextTarget.column, id: contextMenuID.deleteColumn },
   { text: 'Edit Column', target: contextTarget.column, id: contextMenuID.editColumn },
-  {
-    text: 'Show/Hide Column',
-    target: contextTarget.column,
-    id: contextMenuID.toggleShowColumn,
-    iconCss: 'e-icons e-show-hide-panel',
-  },
-  {
-    text: 'Freeze Columns',
-    target: contextTarget.column,
-    id: contextMenuID.freezeColumn,
-    iconCss: 'e-icons e-freeze-first-column',
-  },
+  { text: 'Show/Hide Column', target: contextTarget.column, id: contextMenuID.toggleShowColumn },
+  { text: 'Freeze Columns', target: contextTarget.column, id: contextMenuID.freezeColumn, iconCss: 'e-icons e-edit' },
   {
     text: 'Filter Columns Off',
     target: contextTarget.column,
     id: contextMenuID.togleFilter,
     iconCss: 'e-icons e-filter-clear',
   },
+
   //----------------ROW_CONTEXT_MENU_ITEM-----------------------
 
-  { text: 'Add Next', target: contextTarget.row, id: contextMenuID.addRow, iconCss: 'e-icons e-plus' },
-  { text: 'Add Child', target: contextTarget.row, id: contextMenuID.addChildRow, iconCss: 'e-icons e-plus' },
-  { text: 'Delete Row', target: contextTarget.row, id: contextMenuID.deleteRow, iconCss: 'e-icons e-trash' },
+  { text: 'Add Next', target: contextTarget.row, id: contextMenuID.addRow, iconCss: 'e-icons e-edit' },
+  { text: 'Add Child', target: contextTarget.row, id: contextMenuID.addChildRow, iconCss: 'e-icons e-menu' },
+  { text: 'Delete Row', target: contextTarget.row, id: contextMenuID.deleteRow, iconCss: 'e-icons e-edit' },
   { text: 'Edit Row', target: contextTarget.row, id: contextMenuID.editRow, iconCss: 'e-icons e-edit' },
   // 'Edit',
   { text: 'Copy', target: contextTarget.row, id: contextMenuID.copyRows },
