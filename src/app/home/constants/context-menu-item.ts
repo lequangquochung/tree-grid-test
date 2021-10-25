@@ -43,6 +43,7 @@ export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any
     id: contextMenuID.togleFilter,
     iconCss: 'e-icons e-filter-clear',
   },
+
   //----------------ROW_CONTEXT_MENU_ITEM-----------------------
 
   { text: 'Add Next', target: contextTarget.row, id: contextMenuID.addRow, iconCss: 'e-icons e-edit' },
