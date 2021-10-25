@@ -31,31 +31,13 @@ export enum contextMenuID {
 export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any[] = [
   //----------------COLUMN_CONTEXT_MENU_ITEM-----------------------
 
-  // { text: 'Style', target: contextTarget.column, id: contextMenuID.stylingColumn },
+  { text: 'Style', target: contextTarget.column, id: contextMenuID.stylingColumn },
   { text: 'Add Column', target: contextTarget.column, id: contextMenuID.addColumn },
   { text: 'Delete Column', target: contextTarget.column, id: contextMenuID.deleteColumn },
   { text: 'Edit Column', target: contextTarget.column, id: contextMenuID.editColumn },
-  {
-    text: 'Show/Hide Column',
-    target: contextTarget.column,
-    id: contextMenuID.toggleShowColumn,
-    iconCss: 'e-icons e-show-hide-panel ',
-  },
-  {
-    text: 'Freeze Columns',
-    target: contextTarget.column,
-    id: contextMenuID.freezeColumn,
-    iconCss: 'e-icons e-freeze-first-column',
-  },
-  {
-    text: 'Filter Columns Off',
-    target: contextTarget.column,
-    id: contextMenuID.togleFilter,
-    iconCss: 'e-icons e-filter-3',
-  },
-
-  // { text: 'Multi-sort Columns', target: contextTarget.column, id: contextMenuID.multipleSort },
-
+  { text: 'Show/Hide Column', target: contextTarget.column, id: contextMenuID.toggleShowColumn },
+  { text: 'Freeze Columns', target: contextTarget.column, id: contextMenuID.freezeColumn },
+  { text: 'Filter Columns Off', target: contextTarget.column, id: contextMenuID.togleFilter },
   //----------------ROW_CONTEXT_MENU_ITEM-----------------------
 
   { text: 'Add Next', target: contextTarget.row, id: contextMenuID.addRow, iconCss: 'e-icons e-plus' },
