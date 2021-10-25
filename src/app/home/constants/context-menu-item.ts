@@ -31,7 +31,7 @@ export enum contextMenuID {
 export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any[] = [
   //----------------COLUMN_CONTEXT_MENU_ITEM-----------------------
 
-  { text: 'Style', target: contextTarget.column, id: contextMenuID.stylingColumn },
+  // { text: 'Style', target: contextTarget.column, id: contextMenuID.stylingColumn },
   { text: 'Add Column', target: contextTarget.column, id: contextMenuID.addColumn },
   { text: 'Delete Column', target: contextTarget.column, id: contextMenuID.deleteColumn },
   { text: 'Edit Column', target: contextTarget.column, id: contextMenuID.editColumn },

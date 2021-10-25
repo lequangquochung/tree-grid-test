@@ -1,4 +1,17 @@
+import * as moment from 'moment';
+
 export class DataUtils {
+  static async parseDateValueToString(data: any[], field: string) {
+    data.forEach((record) => {
+      if (record[field]) {
+        record[field] = moment(record[field]).format('MM/DD/yyyy');
+      }
+      if (record.subtasks && record.subtasks.length) {
+        this.parseDateValueToString(record.subtasks, field);
+      }
+    });
+  }
+
   static async insertDefaultValueToData(data: any[], field: string, defaultValue: any) {
     data.forEach((record) => {
       record[field] = defaultValue;
