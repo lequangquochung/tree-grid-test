@@ -92,6 +92,12 @@
     display: block;
   }
 }
+
+#_gridcontrol_cmenu.hideFreezeContext {
+  #freezeOff {
+    display: none;
+  }
+}
 // #freeze, #freezeOff {
 //   display: none;
 // }
@@ -168,7 +174,7 @@ html {
 // freeze off
 #freezeOff::before {
   font-family: "Font Awesome 5 Free";
-  top: 5%;
+  // top: 5%;
   content: "\f84c";
   display: inline-block;
   padding-right: 3px;
