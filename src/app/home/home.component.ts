@@ -294,9 +294,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
     if (contextID === contextMenuID.togleFilter) {
       this.toggleFilter = !this.toggleFilter;
       _contextMenuItems[_contextMenuIndex].text = `Filter Columns ${this.toggleFilter ? `Off` : `On`}`;
-      _contextMenuItems[_contextMenuIndex].iconCss = `${
-        this.toggleFilter ? `e-icons e-filter-clear` : `e-icons e-filter-3`
-      }`;
+      // _contextMenuItems[_contextMenuIndex].iconCss = `${
+      //   this.toggleFilter ? `e-icons e-filter-clear` : `e-icons e-filter-3`
+      // }`;
       this.contextMenuItems = [..._contextMenuItems];
 
       //change grid content height when togle filter
@@ -377,6 +377,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   freezeColumn(args?: any) {
+    console.log(args);
     this.isLoading = true;
 
     this.columns.forEach((col) => {
