@@ -44,6 +44,12 @@ export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any
     iconCss: 'e-icons e-show-hide-panel',
   },
   {
+    text: 'Freeze Columns',
+    target: contextTarget.column,
+    id: contextMenuID.freezeColumn,
+    iconCss: 'e-icons e-hide-headings',
+  },
+  {
     text: 'Freeze Columns Off',
     target: contextTarget.column,
     id: contextMenuID.freezeColumnOff,
