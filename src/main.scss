@@ -100,34 +100,160 @@ html {
   overflow: hidden;
 }
 
-// #show-hide-column {
-//   align-items:center;
-//   position : relative;
-// }
-
-// #show-hide-column::before{
-//   content: url('./assets/images/icons/filter.svg');
-// }
-
 // .e-filter-custom{
 //   position: relative;
 // }
 
-// .e-menu-item::before {
-//   left: .5rem;
-//   top: 50%;
-//   width: 1rem;
-//   height: 1rem;
-//   display:flex;
-//   align-items: center;
-//   position: absolute;
-// }
+.e-menu-item::before {
+  left: 1.2rem;
+  // top: 50%;
+  width: 1rem;
+  height: 1rem;
+  // display:flex;
+  align-items: center;
+  position: absolute;
+}
 
-// #freeze {
-//   align-items:center;
-//   position : relative;
-// }
+#add,
+#delete,
+#freeze,
+#freezeOff,
+#show-hide-column,
+#filter,
+#add-row,
+#add-child-row,
+#delete-row,
+#copyrows,
+#cutrows {
+  align-items: center;
+  position: relative;
+}
 
-// #freeze::before{
-//   content: url('./assets/images/icons/table-svgrepo-com.svg');
-// }
+// add column
+#add::before {
+  font-family: "Font Awesome 5 Free";
+  content: "\f067";
+  // top: 5%;
+  display: inline-block;
+  padding-right: 3px;
+  vertical-align: middle;
+  font-weight: 900;
+  color: #757575;
+}
+// delete columns
+#delete::before {
+  font-family: "Font Awesome 5 Free";
+  content: "\f2ed";
+  // top: 5%;
+  display: inline-block;
+  padding-right: 3px;
+  vertical-align: middle;
+  font-weight: 900;
+  color: #757575;
+}
+
+// freeze on
+#freeze::before {
+  font-family: "Font Awesome 5 Free";
+  content: "\f84c";
+  // top: 5%;
+  display: inline-block;
+  padding-right: 3px;
+  vertical-align: middle;
+  font-weight: 900;
+  color: #757575;
+}
+// freeze off
+#freezeOff::before {
+  font-family: "Font Awesome 5 Free";
+  top: 5%;
+  content: "\f84c";
+  display: inline-block;
+  padding-right: 3px;
+  vertical-align: middle;
+  font-weight: 900;
+  color: #757575;
+}
+// show-hide-column
+#show-hide-column::before {
+  font-family: "Font Awesome 5 Free";
+  left: 1.1rem;
+  top: 5%;
+  content: "\f06e";
+  display: inline-block;
+  padding-right: 3px;
+  vertical-align: middle;
+  font-weight: 900;
+  color: #757575;
+}
+// filter
+#filter::before {
+  font-family: "Font Awesome 5 Free";
+  top: 5%;
+  left: 1.1rem;
+  content: "\f0b0";
+  display: inline-block;
+  padding-right: 3px;
+  vertical-align: middle;
+  font-weight: 900;
+  color: #757575;
+}
+
+// add row
+#add-row::before {
+  font-family: "Font Awesome 5 Free";
+  // top: 5%;
+  content: "\f067";
+  display: inline-block;
+  padding-right: 3px;
+  vertical-align: middle;
+  font-weight: 900;
+  color: #757575;
+}
+
+// add-child-row
+#add-child-row::before {
+  font-family: "Font Awesome 5 Free";
+  // top: 5%;
+  content: "\f055";
+  display: inline-block;
+  padding-right: 3px;
+  vertical-align: middle;
+  font-weight: 900;
+  color: #757575;
+}
+
+// delete-row
+#delete-row::before {
+  font-family: "Font Awesome 5 Free";
+  // top: 5%;
+  content: "\f2ed";
+  display: inline-block;
+  padding-right: 3px;
+  vertical-align: middle;
+  font-weight: 900;
+  color: #757575;
+}
+// copyrows
+#copyrows::before {
+  font-family: "Font Awesome 5 Free";
+  // top: 5%;
+  content: "\f0c5";
+  display: inline-block;
+  padding-right: 3px;
+  vertical-align: middle;
+  font-weight: 900;
+  color: #757575;
+}
+
+// cutrows
+#cutrows::before {
+  font-family: "Font Awesome 5 Free";
+  // top: 5%;
+  content: "\f0c4";
+  display: inline-block;
+  padding-right: 3px;
+  vertical-align: middle;
+  font-weight: 900;
+  color: #757575;
+}
