@@ -74,6 +74,60 @@
   }
 }
 
+#_gridcontrol_cmenu {
+  // #freeze,
+  #freezeOff {
+    display: none;
+  }
+}
+
+#_gridcontrol_cmenu.hideFreeze {
+  #freeze {
+    display: none;
+  }
+}
+
+#_gridcontrol_cmenu.showFreezeContext {
+  #freezeOff {
+    display: block;
+  }
+}
+// #freeze, #freezeOff {
+//   display: none;
+// }
+
 html {
   overflow: hidden;
 }
+
+// #show-hide-column {
+//   align-items:center;
+//   position : relative;
+// }
+
+// #show-hide-column::before{
+//   content: url('./assets/images/icons/filter.svg');
+// }
+
+// .e-filter-custom{
+//   position: relative;
+// }
+
+// .e-menu-item::before {
+//   left: .5rem;
+//   top: 50%;
+//   width: 1rem;
+//   height: 1rem;
+//   display:flex;
+//   align-items: center;
+//   position: absolute;
+// }
+
+// #freeze {
+//   align-items:center;
+//   position : relative;
+// }
+
+// #freeze::before{
+//   content: url('./assets/images/icons/table-svgrepo-com.svg');
+// }

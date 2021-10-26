@@ -163,6 +163,16 @@ export class HomeComponent implements OnInit, AfterViewInit {
     } else {
       args.element?.classList.remove('showDragDropOption');
     }
+
+    if (args.column.freezeTable !== undefined) {
+      if ('movable' === args.column.freezeTable) {
+        args.element?.classList.remove('showFreezeContext');
+        args.element?.classList.remove('hideFreeze');
+      } else {
+        args.element?.classList.add('showFreezeContext');
+        args.element?.classList.add('hideFreeze');
+      }
+    }
   }
 
   // check touch screen
@@ -178,6 +188,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
         break;
       case contextTarget.row:
         this.rowContextClick(args);
+        break;
+
         break;
     }
   }
@@ -273,7 +285,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.scrollBackToLastPosition(lastScrollPosition);
     }
 
-    if (contextID === contextMenuID.freezeColumn) {
+    if (contextID === contextMenuID.freezeColumn || contextID === contextMenuID.freezeColumnOff) {
       const lastScrollPosition = this.getLastScrollPosition();
       this.freezeColumn(args);
       this.scrollBackToLastPosition(lastScrollPosition);
