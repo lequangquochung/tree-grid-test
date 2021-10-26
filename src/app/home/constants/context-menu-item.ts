@@ -2,8 +2,9 @@ import { ContextMenuItemModel } from '@syncfusion/ej2-grids';
 import { ContextMenuItem } from '@syncfusion/ej2-treegrid';
 
 export enum contextTarget {
-  column = '.e-headercell',
+  column = '.e-columnheader',
   row = '.e-content',
+  freezeColumn = '.e-frozenheader .e-columnheader',
 }
 
 export enum contextMenuID {
@@ -12,6 +13,7 @@ export enum contextMenuID {
   deleteColumn = 'delete',
   editColumn = 'edit',
   freezeColumn = 'freeze',
+  freezeColumnOff = 'freezeOff',
   toggleShowColumn = 'show-hide-column',
   togleFilter = 'filter',
   multipleSort = 'mutiple-sorting',
@@ -42,9 +44,9 @@ export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any
     iconCss: 'e-icons e-show-hide-panel',
   },
   {
-    text: 'Freeze Columns',
+    text: 'Freeze Columns Off',
     target: contextTarget.column,
-    id: contextMenuID.freezeColumn,
+    id: contextMenuID.freezeColumnOff,
     iconCss: 'e-icons e-hide-headings',
   },
   {
