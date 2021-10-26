@@ -124,7 +124,9 @@ html {
 #add-child-row,
 #delete-row,
 #copyrows,
-#cutrows {
+#cutrows,
+#pasteChild,
+#pastesibling {
   align-items: center;
   position: relative;
 }
@@ -251,6 +253,19 @@ html {
   font-family: "Font Awesome 5 Free";
   // top: 5%;
   content: "\f0c4";
+  display: inline-block;
+  padding-right: 3px;
+  vertical-align: middle;
+  font-weight: 900;
+  color: #757575;
+}
+
+// pasteChild
+#pasteschild::before,
+#pastesibling::before {
+  font-family: "Font Awesome 5 Free";
+  // top: 5%;
+  content: "\f0ea";
   display: inline-block;
   padding-right: 3px;
   vertical-align: middle;

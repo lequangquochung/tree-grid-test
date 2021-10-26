@@ -151,20 +151,22 @@ export class HomeComponent implements OnInit, AfterViewInit {
     if (this.isDropMode && args.rowInfo.cellIndex) {
       args.cancel = true;
     }
+    console.log(args.event.target.className);
+    if (!'e-headertext' === args.event.target.className) {
+      if (this.isShowPasteOption) {
+        args.element?.classList.add('showPasteOption');
+      } else {
+        args.element?.classList.remove('showPasteOption');
+      }
 
-    if (this.isShowPasteOption) {
-      args.element?.classList.add('showPasteOption');
-    } else {
-      args.element?.classList.remove('showPasteOption');
+      if (this.isTouchScreendevice()) {
+        args.element?.classList.add('showDragDropOption');
+      } else {
+        args.element?.classList.remove('showDragDropOption');
+      }
     }
 
-    if (this.isTouchScreendevice()) {
-      args.element?.classList.add('showDragDropOption');
-    } else {
-      args.element?.classList.remove('showDragDropOption');
-    }
-
-    if (args.column.freezeTable !== undefined) {
+    if (args.column?.freezeTable) {
       if ('movable' === args.column.freezeTable) {
         args.element?.classList.remove('showFreezeContext');
         args.element?.classList.remove('hideFreeze');
