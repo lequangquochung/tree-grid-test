@@ -26,6 +26,12 @@ export class RowInputComponent implements OnInit {
     }
   }
 
+  test(event: any) {
+    if (!event.value) {
+      this.formControl.setValue(null);
+    }
+  }
+
   datePickerOnChange(value: any) {
     this.formControl.setValue(value);
   }
