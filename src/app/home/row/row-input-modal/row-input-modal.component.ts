@@ -8,7 +8,15 @@ import {
   Output,
   ViewContainerRef,
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { BooleanInputComponent } from '../input-component/boolean-input/boolean-input.component';
 import { DropdownInputComponent } from '../input-component/dropdown-input/dropdown-input.component';
 import { RowInputComponent } from '../input-component/text-input/text-input.component';
@@ -36,6 +44,7 @@ export class RowInputModalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // console.log(this.columnSetting)
     this.modalTitle = this.editingTask ? 'Edit Record' : 'Add New Record';
     this.showInputError = false;
     this.formField = {};
@@ -48,28 +57,35 @@ export class RowInputModalComponent implements OnInit {
     const formBuilder: FormBuilder = new FormBuilder();
 
     this.columnSetting.forEach((col: any) => {
-      if (!col.isRowSelector) {
+      if (!col.noEditor) {
         let value = null;
         if (this.editingTask) {
           value = this.editingTask[col.field];
         } else {
-          if (col.field == 'taskID' || col.field == 'taskCode') {
+          if (col.field == 'taskCode') {
             value = this.taskID;
           }
         }
         if (!value && col.hasDefaultValue) {
           value = col.defaultValue;
         }
-        this.formField[col.field] = [value, Validators.required];
+        this.formField[col.field] = new FormControl(value);
       }
     });
-    this.rowInputForm = formBuilder.group(this.formField);
+    this.rowInputForm = formBuilder.group({ ...this.formField, taskID: this.taskID });
   }
+
+  // dataTypeValidators(dataType: string): ValidatorFn {
+  //   return (control: AbstractControl): ValidationErrors | null => {
+  //     let validationErr = null;
+  //     return validationErr;
+  //   };
+  // }
 
   generateDOM() {
     const modalBody = this.location.element.nativeElement.querySelector('.modal-body');
     this.columnSetting.forEach((col: any) => {
-      if (col.visible) {
+      if (!col.noEditor) {
         let colInputComponent = this.switchResolverComponentFactory(col.type);
 
         let newNode = document.createElement('div');
@@ -100,8 +116,8 @@ export class RowInputModalComponent implements OnInit {
 
   save(): void {
     this.showInputError = false;
+    console.log(this.rowInputForm);
     if (this.rowInputForm.invalid) {
-      console.log(this.rowInputForm);
       this.showInputError = true;
       return;
     }

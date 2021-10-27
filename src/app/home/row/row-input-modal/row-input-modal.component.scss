@@ -63,11 +63,11 @@
       position: relative;
     }
 
-    label::after {
-      content: "*";
-      position: absolute;
-      color: red;
-      left: 110%;
-    }
+    // label::after {
+    //   content: "*";
+    //   position: absolute;
+    //   color: red;
+    //   left: 110%;
+    // }
   }
 }

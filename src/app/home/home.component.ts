@@ -432,7 +432,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         } else {
           this.pasteRow([res], args.rowInfo.rowData, contextMenuID.pasteSibling);
         }
-        this.dataWithoutNested.push(res);
+        // this.dataWithoutNested.push(res);
       }
       modalRef.close();
       this.dataWithoutNested = [...DataUtils.getFullRecordWithoutNested(this.data)];
@@ -443,7 +443,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   openEditRowModal(args: any) {
     const editingTask = args.rowInfo.rowData;
     const modalRef = this.modalService.open(RowInputModalComponent);
-    modalRef.componentInstance.columnSetting = this.grid.getColumns();
+    modalRef.componentInstance.columnSetting = this.columns;
     modalRef.componentInstance.editingTask = editingTask;
     modalRef.componentInstance.closeModal.subscribe((res: any) => {
       if (res) {

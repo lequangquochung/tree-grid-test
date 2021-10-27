@@ -1,11 +1,12 @@
 export const DATA_COLUMNS = [
-  { type: 'checkbox', showInColumnChooser: false, visible: false, isRowSelector: true },
+  { type: 'checkbox', noEditor: true, showInColumnChooser: false, visible: false, isRowSelector: true },
   {
     field: 'taskID',
     headerText: 'Task ID1',
     textAlign: 'Left',
     type: 'string',
     visible: false,
+    noEditor: true,
     isPrimaryKey: true,
     showInColumnChooser: false,
     customAttributes: { class: 'header-column-font1' },
