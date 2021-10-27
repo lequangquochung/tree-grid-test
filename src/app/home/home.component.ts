@@ -144,7 +144,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this.grid.selectRow(args.rowInfo.rowIndex, true);
       }
     }
-    // console.log(args)
 
     if (!this.isDropMode && args.rowInfo.cellIndex >= 1) {
       args.cancel = true;
@@ -154,12 +153,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
       args.cancel = true;
     }
 
-    // if(this.grid.getSelectedRows().length >=)
-    if (args.top <= 50) {
-      console.log('heaer');
-    }
-
-    // if (args.column === null) {
     if (args.top >= 50) {
       // row
       if (this.isShowPasteOption) {
@@ -173,40 +166,17 @@ export class HomeComponent implements OnInit, AfterViewInit {
       } else {
         args.element?.classList.remove('showDragDropOption');
       }
-      console.log('row');
       args.element?.classList.remove('showFreezeContext');
-      // if (args.rowInfo.row) {
-      //
-      //   // args.element?.classList.remove('showFreezeContext');
-      //   // args.element?.classList.add('hideFreezeContext');
-      // } else {
-      //   // args.element?.classList.remove('hideFreezeContext');
-      // }
     } else {
-      console.log(args);
       if ('movable' === args.column.freezeTable) {
         args.element?.classList.remove('showFreezeContext');
         args.element?.classList.remove('hideFreeze');
       } else if ('frozen-left' === args.column.freezeTable) {
         args.element?.classList.add('hideFreeze');
         args.element?.classList.add('showFreezeContext');
-      } else {
-        // args.element?.classList.remove('showFreezeContext');
-        // args.element?.classList.add('hideFreezeContext');
       }
-
       args.element?.classList.remove('showPasteOption');
     }
-    // if ('e-icons' !== args.event.target.className) {
-    //   console.log(args.event.target.className)
-
-    // } else {
-    //   console.log(args.event.target.className)
-    // }
-
-    //
-
-    // }
   }
 
   // check touch screen
@@ -411,7 +381,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   freezeColumn(args?: any) {
-    console.log(args);
     this.isLoading = true;
 
     this.columns.forEach((col) => {
