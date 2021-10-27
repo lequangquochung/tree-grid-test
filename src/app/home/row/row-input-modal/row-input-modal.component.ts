@@ -75,13 +75,6 @@ export class RowInputModalComponent implements OnInit {
     this.rowInputForm = formBuilder.group({ ...this.formField });
   }
 
-  // dataTypeValidators(dataType: string): ValidatorFn {
-  //   return (control: AbstractControl): ValidationErrors | null => {
-  //     let validationErr = null;
-  //     return validationErr;
-  //   };
-  // }
-
   generateDOM() {
     const modalBody = this.location.element.nativeElement.querySelector('.modal-body');
     this.columnSetting.forEach((col: any) => {

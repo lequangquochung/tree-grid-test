@@ -104,7 +104,11 @@
       <p style="margin: 0.5rem; color: red; font-size: 0.75rem" *ngIf="errorMsg">{{ errorMsg }}</p>
 
       <div class="e-footer-content d-flex justify-content-end mt-4">
-        <button (click)="saveColumn()" [disabled]="form.invalid" class="e-control e-btn e-lib e-primary e-flat">
+        <button
+          (click)="saveColumn()"
+          [disabled]="form.invalid || !columnType"
+          class="e-control e-btn e-lib e-primary e-flat"
+        >
           Save</button
         ><button (click)="close()" type="button" class="e-control e-btn e-lib e-flat">Cancel</button>
       </div>
