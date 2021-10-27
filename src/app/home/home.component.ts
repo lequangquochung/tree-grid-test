@@ -432,7 +432,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
         } else {
           this.pasteRow([res], args.rowInfo.rowData, contextMenuID.pasteSibling);
         }
-        // this.dataWithoutNested.push(res);
       }
       modalRef.close();
       this.dataWithoutNested = [...DataUtils.getFullRecordWithoutNested(this.data)];

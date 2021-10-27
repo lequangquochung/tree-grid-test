@@ -72,7 +72,7 @@ export class RowInputModalComponent implements OnInit {
         this.formField[col.field] = new FormControl(value);
       }
     });
-    this.rowInputForm = formBuilder.group({ ...this.formField, taskID: this.taskID });
+    this.rowInputForm = formBuilder.group({ ...this.formField });
   }
 
   // dataTypeValidators(dataType: string): ValidatorFn {
@@ -121,7 +121,7 @@ export class RowInputModalComponent implements OnInit {
       this.showInputError = true;
       return;
     }
-    this.closeModal.emit(this.rowInputForm.value);
+    this.closeModal.emit({ ...this.rowInputForm.value, taskID: this.rowInputForm.controls['taskCode'].value });
   }
 
   close(): void {
