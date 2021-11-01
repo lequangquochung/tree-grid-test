@@ -368,7 +368,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
       this.isLoading = true;
       const lastScrollPosition = this.getLastScrollPosition();
-      // this.toggleMultilSelect ?  this.multiSelect.type = 'Multiple'  : this.multiSelect.type = 'Single';
       this.grid?.refresh();
       setTimeout(() => {
         this.isLoading = false;
