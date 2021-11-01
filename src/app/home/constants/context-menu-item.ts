@@ -28,6 +28,7 @@ export enum contextMenuID {
   pasteChild = 'pasteschild',
   dragAndDrop = 'dragAndDrop',
   multilSelectRow = 'multilSelectRow',
+  multiSelect = 'multiSelect',
 }
 
 export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any[] = [
@@ -59,6 +60,12 @@ export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any
     text: 'Filter Columns Off',
     target: contextTarget.column,
     id: contextMenuID.togleFilter,
+    // iconCss: 'e-icons e-filter-clear',
+  },
+  {
+    text: 'Multil-Select On',
+    target: contextTarget.column,
+    id: contextMenuID.multiSelect,
     // iconCss: 'e-icons e-filter-clear',
   },
 
