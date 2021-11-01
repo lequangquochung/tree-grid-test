@@ -57,13 +57,13 @@ export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any
     // iconCss: 'e-icons e-hide-headings',
   },
   {
-    text: 'Filter Columns On',
+    text: 'Filter Columns Off',
     target: contextTarget.column,
     id: contextMenuID.togleFilter,
     // iconCss: 'e-icons e-filter-clear',
   },
   {
-    text: 'Multil-Select On',
+    text: 'Multil-Select Off',
     target: contextTarget.column,
     id: contextMenuID.multiSelect,
     // iconCss: 'e-icons e-filter-clear',

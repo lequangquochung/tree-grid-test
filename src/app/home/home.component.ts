@@ -313,12 +313,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.toggleFilter = !this.toggleFilter;
       // multil-select-on
       _contextMenuItems[_contextMenuIndex].text = `Filter Columns ${this.toggleFilter ? `Off` : `On`}`;
-      // _contextMenuItems[_contextMenuIndex].iconCss = `${
-      //   this.toggleFilter ? `e-icons e-filter-clear` : `e-icons e-filter-3`
-      // }`;
       this.contextMenuItems = [..._contextMenuItems];
-
-      //change grid content height when togle filter
     }
 
     if (args.item.id === contextMenuID.multipleSort) {
@@ -363,7 +358,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this.isDropMode = true;
       }
 
-      _contextMenuItems[_contextMenuIndex].text = `Multil-Select ${this.toggleMultilSelect ? `On` : `Off`}`;
+      _contextMenuItems[_contextMenuIndex].text = `Multil-Select ${this.toggleMultilSelect ? `Off` : `On`}`;
       this.contextMenuItems = [..._contextMenuItems];
 
       this.isLoading = true;
