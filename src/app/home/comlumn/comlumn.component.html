@@ -58,6 +58,7 @@
           *ngIf="columnType === 'date'"
           [value]="defaultValue"
           [format]="'MM/dd/yyyy'"
+          [allowEdit]="false"
           (valueChange)="defaultValueChange($event)"
         >
         </ejs-datepicker>

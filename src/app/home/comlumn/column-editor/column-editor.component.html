@@ -45,6 +45,7 @@
       <ejs-datepicker
         *ngIf="getFormValue('type') === 'date'"
         [value]="getFormValue('defaultValue')"
+        [allowEdit]="false"
         [format]="'MM/dd/yyyy'"
         (valueChange)="setFormValue($event, 'defaultValue')"
       >

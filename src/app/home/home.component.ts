@@ -335,6 +335,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
             this.dataWithoutNested = [...DataUtils.getFullRecordWithoutNested(this.data)];
           });
         }
+
+        if (resColumn.type == 'date') {
+          resColumn['format'] = 'MM/dd/yyyy';
+        }
+
         Object.keys(resColumn).forEach((key) => {
           targetColumn[key] = resColumn[key];
         });
