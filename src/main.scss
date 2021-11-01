@@ -132,7 +132,8 @@ html {
 #copyrows,
 #cutrows,
 #pasteChild,
-#pastesibling {
+#pastesibling,
+#multiSelect {
   align-items: center;
   position: relative;
 }
@@ -141,7 +142,6 @@ html {
 #add::before {
   font-family: "Font Awesome 5 Free";
   content: "\f067";
-  // top: 5%;
   display: inline-block;
   padding-right: 3px;
   vertical-align: middle;
@@ -152,7 +152,6 @@ html {
 #delete::before {
   font-family: "Font Awesome 5 Free";
   content: "\f2ed";
-  // top: 5%;
   display: inline-block;
   padding-right: 3px;
   vertical-align: middle;
@@ -164,7 +163,6 @@ html {
 #freeze::before {
   font-family: "Font Awesome 5 Free";
   content: "\f84c";
-  // top: 5%;
   display: inline-block;
   padding-right: 3px;
   vertical-align: middle;
@@ -174,7 +172,7 @@ html {
 // freeze off
 #freezeOff::before {
   font-family: "Font Awesome 5 Free";
-  // top: 5%;
+  top: 4%;
   content: "\f84c";
   display: inline-block;
   padding-right: 3px;
@@ -186,20 +184,7 @@ html {
 #show-hide-column::before {
   font-family: "Font Awesome 5 Free";
   left: 1.1rem;
-  top: 5%;
   content: "\f06e";
-  display: inline-block;
-  padding-right: 3px;
-  vertical-align: middle;
-  font-weight: 900;
-  color: #757575;
-}
-// filter
-#filter::before {
-  font-family: "Font Awesome 5 Free";
-  top: 5%;
-  left: 1.1rem;
-  content: "\f0b0";
   display: inline-block;
   padding-right: 3px;
   vertical-align: middle;
@@ -210,7 +195,6 @@ html {
 // add row
 #add-row::before {
   font-family: "Font Awesome 5 Free";
-  // top: 5%;
   content: "\f067";
   display: inline-block;
   padding-right: 3px;
@@ -222,7 +206,6 @@ html {
 // add-child-row
 #add-child-row::before {
   font-family: "Font Awesome 5 Free";
-  // top: 5%;
   content: "\f055";
   display: inline-block;
   padding-right: 3px;
@@ -234,7 +217,6 @@ html {
 // delete-row
 #delete-row::before {
   font-family: "Font Awesome 5 Free";
-  // top: 5%;
   content: "\f2ed";
   display: inline-block;
   padding-right: 3px;
@@ -245,7 +227,6 @@ html {
 // copyrows
 #copyrows::before {
   font-family: "Font Awesome 5 Free";
-  // top: 5%;
   content: "\f0c5";
   display: inline-block;
   padding-right: 3px;
@@ -257,7 +238,6 @@ html {
 // cutrows
 #cutrows::before {
   font-family: "Font Awesome 5 Free";
-  // top: 5%;
   content: "\f0c4";
   display: inline-block;
   padding-right: 3px;
@@ -270,11 +250,38 @@ html {
 #pasteschild::before,
 #pastesibling::before {
   font-family: "Font Awesome 5 Free";
-  // top: 5%;
   content: "\f0ea";
   display: inline-block;
   padding-right: 3px;
   vertical-align: middle;
   font-weight: 900;
   color: #757575;
+}
+
+// multiSelect
+#_gridcontrol_cmenu.multil-select-on {
+  #multiSelect::before {
+    font-family: "Font Awesome 5 Free";
+    content: "\f00c";
+    display: inline-block;
+    padding-right: 3px;
+    vertical-align: middle;
+    font-weight: 900;
+    color: #757575;
+  }
+}
+
+// filter
+
+#_gridcontrol_cmenu.filter-on {
+  #filter::before {
+    font-family: "Font Awesome 5 Free";
+    left: 1.1rem;
+    content: "\f00c";
+    display: inline-block;
+    padding-right: 3px;
+    vertical-align: middle;
+    font-weight: 900;
+    color: #757575;
+  }
 }

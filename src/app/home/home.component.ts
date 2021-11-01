@@ -68,6 +68,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   public declare allowDragAndDrop: boolean;
   public declare toggleFilter: Boolean;
   public declare toggleMultiSorting: Boolean;
+  public declare toggleMultilSelect: Boolean;
   public frozenColumns: any[] = [];
 
   public declare multiSelect: any;
@@ -84,6 +85,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     // this.frozenColumnIndex = 0;
     this.toggleMultiSorting = true;
+    this.toggleMultilSelect = true;
     this.toggleFilter = true;
     this.multiSelect = { type: 'Multiple' };
 
@@ -176,6 +178,18 @@ export class HomeComponent implements OnInit, AfterViewInit {
         args.element?.classList.add('showFreezeContext');
       }
       args.element?.classList.remove('showPasteOption');
+    }
+
+    if (this.toggleMultilSelect) {
+      args.element?.classList.add('multil-select-on');
+    } else {
+      args.element?.classList.remove('multil-select-on');
+    }
+
+    if (this.toggleFilter) {
+      args.element?.classList.add('filter-on');
+    } else {
+      args.element?.classList.remove('filter-on');
     }
   }
 
@@ -297,6 +311,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     if (contextID === contextMenuID.togleFilter) {
       this.toggleFilter = !this.toggleFilter;
+      // multil-select-on
       _contextMenuItems[_contextMenuIndex].text = `Filter Columns ${this.toggleFilter ? `Off` : `On`}`;
       // _contextMenuItems[_contextMenuIndex].iconCss = `${
       //   this.toggleFilter ? `e-icons e-filter-clear` : `e-icons e-filter-3`
@@ -311,6 +326,54 @@ export class HomeComponent implements OnInit, AfterViewInit {
       // this.toggleMultiSorting = !this.toggleMultiSorting;
       // _contextMenuItems[_contextMenuIndex].text = `Mutiple Sorting ${this.toggleMultiSorting ? `Off` : `On`}`;
       // this.contextMenuItems = [..._contextMenuItems];
+    }
+
+    // change multil select Of/Off
+    if (args.item.id === contextMenuID.multiSelect) {
+      this.toggleMultilSelect = !this.toggleMultilSelect;
+      const item = {
+        type: 'checkbox',
+        noEditor: true,
+        showInColumnChooser: false,
+        visible: false,
+        isRowSelector: true,
+      };
+      const dataCols = [...this.dataColumn];
+
+      if (!this.toggleMultilSelect) {
+        dataCols.splice(0, 1);
+        this.dataColumn = [...dataCols];
+        this.multiSelect.type = 'Single';
+      } else {
+        this.multiSelect.type = 'Multiple';
+        if (this.dataColumn[0]['type'] !== 'checkbox') {
+          this.dataColumn.splice(0, 0, item);
+        }
+      }
+
+      this.columns = this.frozenColumns.concat(
+        this.dataColumn.filter(
+          (col) => this.frozenColumns.findIndex((f_col) => f_col.field == col.field) < 0 || col.isSelectRowCell
+        )
+      );
+
+      if (this.frozenColumns.length > 0) {
+        this.isDropMode = false;
+      } else {
+        this.isDropMode = true;
+      }
+
+      _contextMenuItems[_contextMenuIndex].text = `Multil-Select ${this.toggleMultilSelect ? `On` : `Off`}`;
+      this.contextMenuItems = [..._contextMenuItems];
+
+      this.isLoading = true;
+      const lastScrollPosition = this.getLastScrollPosition();
+      // this.toggleMultilSelect ?  this.multiSelect.type = 'Multiple'  : this.multiSelect.type = 'Single';
+      this.grid?.refresh();
+      setTimeout(() => {
+        this.isLoading = false;
+        this.scrollBackToLastPosition(lastScrollPosition);
+      }, 100);
     }
   }
 
