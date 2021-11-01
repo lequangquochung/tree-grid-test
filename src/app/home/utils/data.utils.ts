@@ -19,11 +19,25 @@ export class DataUtils {
             record[parseDataArg.field] = moment(record[parseDataArg.field]).format('MM/DD/yyyy');
           }
           break;
-        case 'number':
-          if (!isNaN(parseFloat(record[parseDataArg.field]))) {
-            record[parseDataArg.field] = parseFloat(record[parseDataArg.field]);
+        case 'boolean':
+          if (record[parseDataArg.field] == 1 || record[parseDataArg.field] == 0) {
+            record[parseDataArg.field] = record[parseDataArg.field] == 1 ? true : false;
+            break;
           }
+          if (record[parseDataArg.field] == 'true' || record[parseDataArg.field] == 'false') {
+            record[parseDataArg.field] = record[parseDataArg.field] == 'true' ? true : false;
+            break;
+          }
+          record[parseDataArg.field] = parseDataArg.defaultValue;
           break;
+        case 'number':
+          if (parseDataArg.oldDataType == 'boolean') {
+            record[parseDataArg.field] = record[parseDataArg.field] ? 1 : 0;
+            break;
+          }
+          record[parseDataArg.field] = parseDataArg.defaultValue;
+          break;
+
         default:
           record[parseDataArg.field] = parseDataArg.defaultValue;
           break;
