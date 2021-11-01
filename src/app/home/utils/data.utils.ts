@@ -1,22 +1,55 @@
 import * as moment from 'moment';
 
 export class DataUtils {
-  static async parseDateValueToString(data: any[], field: string) {
-    data.forEach((record) => {
-      if (record[field]) {
-        record[field] = moment(record[field]).format('MM/DD/yyyy');
+  static async parseColumnNewDataType(
+    data: any[],
+    parseDataArg: { field: string; oldDataType: string; newDataType: string; defaultValue: any }
+  ) {
+    data.forEach(async (record) => {
+      switch (parseDataArg.newDataType) {
+        case 'string':
+          if (parseDataArg.oldDataType == 'date') {
+            if (record[parseDataArg.field]) {
+              record[parseDataArg.field] = moment(record[parseDataArg.field]).format('MM/DD/yyyy');
+            }
+          }
+          break;
+        case 'date':
+          if (moment(record[parseDataArg.field]).isValid()) {
+            record[parseDataArg.field] = moment(record[parseDataArg.field]).format('MM/DD/yyyy');
+          }
+          break;
+        case 'number':
+          if (!isNaN(parseFloat(record[parseDataArg.field]))) {
+            record[parseDataArg.field] = parseFloat(record[parseDataArg.field]);
+          }
+          break;
+        default:
+          record[parseDataArg.field] = parseDataArg.defaultValue;
+          break;
       }
+
+      if (parseDataArg.newDataType == 'number') {
+        if (!isNaN(parseFloat(record[parseDataArg.field]))) {
+          record[parseDataArg.field] = parseFloat(record[parseDataArg.field]);
+          return true;
+        }
+      }
+
+      record[parseDataArg.field] = parseDataArg.defaultValue;
+
       if (record.subtasks && record.subtasks.length) {
-        this.parseDateValueToString(record.subtasks, field);
+        await this.parseColumnNewDataType(record.subtasks, parseDataArg);
       }
+      return true;
     });
   }
 
   static async insertDefaultValueToData(data: any[], field: string, defaultValue: any) {
-    data.forEach((record) => {
+    data.forEach(async (record) => {
       record[field] = defaultValue;
       if (record.subtasks && record.subtasks.length) {
-        this.insertDefaultValueToData(record.subtasks, field, defaultValue);
+        await this.insertDefaultValueToData(record.subtasks, field, defaultValue);
       }
     });
   }

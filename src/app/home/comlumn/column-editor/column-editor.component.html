@@ -24,17 +24,14 @@
         <button (click)="addDropdownItem()">+ dropdown item</button>
       </div>
     </div>
-
+    <!-- 
     <div style="margin-top: 1rem; margin-bottom: 1rem">
-      <input
-        type="checkbox"
-        [checked]="getFormValue('hasDefaultValue')"
-        (change)="setFormValue(!getFormValue('hasDefaultValue'), 'hasDefaultValue')"
-      />
+      <input type="checkbox" [checked]="getFormValue('hasDefaultValue')"
+        (change)="setFormValue(!getFormValue('hasDefaultValue'), 'hasDefaultValue')" />
       <span style="margin-left: 0.5rem; color: #adadad; font-size: 0.8rem">Has default value</span>
-    </div>
+    </div> -->
 
-    <div *ngIf="getFormValue('hasDefaultValue')" class="default-value-input">
+    <div class="default-value-input">
       <label>Default Value</label>
       <!-- TYPE = TEXT OR NUMBER -->
       <input
@@ -48,6 +45,7 @@
       <ejs-datepicker
         *ngIf="getFormValue('type') === 'date'"
         [value]="getFormValue('defaultValue')"
+        [allowEdit]="false"
         [format]="'MM/dd/yyyy'"
         (valueChange)="setFormValue($event, 'defaultValue')"
       >

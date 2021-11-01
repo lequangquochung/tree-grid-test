@@ -58,7 +58,7 @@ export class RowInputModalComponent implements OnInit {
 
     this.columnSetting.forEach((col: any) => {
       if (!col.noEditor) {
-        let value = null;
+        let value = col.defaultValue;
         if (this.editingTask) {
           value = this.editingTask[col.field];
         } else {
@@ -66,9 +66,8 @@ export class RowInputModalComponent implements OnInit {
             value = this.taskID;
           }
         }
-        if (!value && col.hasDefaultValue) {
-          value = col.defaultValue;
-        }
+        // if (!value && col.hasDefaultValue) {
+        // }
         this.formField[col.field] = new FormControl(value);
       }
     });
