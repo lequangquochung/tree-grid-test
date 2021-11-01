@@ -28,16 +28,6 @@ export class DataUtils {
           record[parseDataArg.field] = parseDataArg.defaultValue;
           break;
       }
-
-      if (parseDataArg.newDataType == 'number') {
-        if (!isNaN(parseFloat(record[parseDataArg.field]))) {
-          record[parseDataArg.field] = parseFloat(record[parseDataArg.field]);
-          return true;
-        }
-      }
-
-      record[parseDataArg.field] = parseDataArg.defaultValue;
-
       if (record.subtasks && record.subtasks.length) {
         await this.parseColumnNewDataType(record.subtasks, parseDataArg);
       }
