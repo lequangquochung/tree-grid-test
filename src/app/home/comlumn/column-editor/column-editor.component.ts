@@ -27,12 +27,12 @@ export class ColumnEditorComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    if (this.isColumnHasValue) {
-      this.columnTypeData = ['text'];
-      if (this.targetColumn.type != 'string') {
-        this.columnTypeData.push(this.targetColumn.type);
-      }
-    }
+    // if (this.isColumnHasValue) {
+    //   this.columnTypeData = ['text'];
+    //   if (this.targetColumn.type != 'string') {
+    //     this.columnTypeData.push(this.targetColumn.type);
+    //   }
+    // }
 
     if (this.targetColumn.type == 'dropdown') {
       this.targetColumn.dropDownItem.forEach((each: any) => {
@@ -53,7 +53,7 @@ export class ColumnEditorComponent implements OnInit {
       backgroundColor: [this.targetColumn.backgroundColor, Validators.required],
       textAlign: [this.targetColumn.textAlign, Validators.required],
       textWrap: [this.targetColumn.textWrap, Validators.required],
-      hasDefaultValue: this.targetColumn.hasDefaultValue,
+      // hasDefaultValue: this.targetColumn.hasDefaultValue,
       defaultValue: this.targetColumn.defaultValue,
     });
   }
@@ -92,16 +92,19 @@ export class ColumnEditorComponent implements OnInit {
         return;
       }
     }
-
-    if (this.getFormValue('hasDefaultValue')) {
-      if (this.getFormValue('type') == 'boolean') {
-        this.setFormValue(this.getFormValue('defaultValue') ? true : false, 'defaultValue');
-      } else if (!this.getFormValue('defaultValue')) {
-        this.isError = true;
-        this.errMsg = 'Please input default value for this column';
-        return;
-      }
+    if (this.getFormValue('type') == 'boolean') {
+      this.setFormValue(this.getFormValue('defaultValue') ? true : false, 'defaultValue');
     }
+
+    // if (this.getFormValue('hasDefaultValue')) {
+    //   if (this.getFormValue('type') == 'boolean') {
+    //     this.setFormValue(this.getFormValue('defaultValue') ? true : false, 'defaultValue');
+    //   } else if (!this.getFormValue('defaultValue')) {
+    //     this.isError = true;
+    //     this.errMsg = 'Please input default value for this column';
+    //     return;
+    //   }
+    // }
     const editedColumn = this.formatNewColumnValue(this.formInput.value);
     this.closeModal.emit(editedColumn);
   }

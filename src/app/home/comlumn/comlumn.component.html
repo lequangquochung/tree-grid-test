@@ -33,7 +33,7 @@
         </div>
       </div>
 
-      <div style="margin-top: 1rem; margin-bottom: 1rem">
+      <!-- <div style="margin-top: 1rem; margin-bottom: 1rem">
         <input
           type="checkbox"
           [checked]="hasDefaultValue"
@@ -41,9 +41,9 @@
           (change)="hasDefaultValue = !hasDefaultValue"
         />
         <span style="margin-left: 0.5rem; color: #adadad; font-size: 0.8rem">Has default value</span>
-      </div>
+      </div> -->
 
-      <div *ngIf="hasDefaultValue" class="default-value-input">
+      <div class="default-value-input">
         <label *ngIf="columnType">Default Value</label>
         <!-- TYPE = TEXT OR NUMBER -->
         <input

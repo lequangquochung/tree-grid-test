@@ -28,7 +28,7 @@ export class ComlumnComponent implements OnInit {
   columnTypeData: any = ['text', 'number', 'date', 'boolean', 'dropdown'];
 
   allowChangeDefaultValue = true;
-  hasDefaultValue = false;
+  // hasDefaultValue = false;
   defaultValue: any = null;
 
   dropdownItem: any[] = [];
@@ -121,8 +121,8 @@ export class ComlumnComponent implements OnInit {
       ...this.column,
       text: this.columnName,
       columnType: this.columnType,
-      hasDefaultValue: this.hasDefaultValue,
-      defaultValue: null,
+      // hasDefaultValue: this.hasDefaultValue,
+      defaultValue: this.defaultValue,
     };
 
     if (this.columnType == 'dropdown') {
@@ -156,17 +156,19 @@ export class ComlumnComponent implements OnInit {
       columnTarget['dropDownItem'] = dropDownItem;
     }
 
-    if (columnTarget.hasDefaultValue) {
-      if (this.columnType == 'boolean') {
-        this.defaultValue = this.defaultValue ? true : false;
-      }
-      const formControlValidator = new FormControl(this.defaultValue, Validators.required);
-      if (formControlValidator.invalid) {
-        this.errorMsg = ' Please input default value for this column';
-        return;
-      }
-      columnTarget.defaultValue = this.defaultValue;
+    if (this.columnType == 'boolean') {
+      this.defaultValue = this.defaultValue ? true : false;
     }
+
+    // if (columnTarget.hasDefaultValue) {
+
+    //   const formControlValidator = new FormControl(this.defaultValue, Validators.required);
+    //   if (formControlValidator.invalid) {
+    //     this.errorMsg = ' Please input default value for this column';
+    //     return;
+    //   }
+    //   columnTarget.defaultValue = this.defaultValue;
+    // }
 
     if (columnTarget.columnType.includes('text')) {
       columnTarget.columnType = 'string';

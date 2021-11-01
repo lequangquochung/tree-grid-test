@@ -314,20 +314,26 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
   }
 
-  openEditColumnModal(column: any) {
+  async openEditColumnModal(column: any) {
     const modalRef = this.modalService.open(ColumnEditorComponent);
     const isColumnHasValue = DataUtils.isColumnHasValue(this.data, column.field);
     modalRef.componentInstance.targetColumn = column;
     modalRef.componentInstance.isColumnHasValue = isColumnHasValue;
-    modalRef.componentInstance.closeModal.subscribe((resColumn: any) => {
+    modalRef.componentInstance.closeModal.subscribe(async (resColumn: any) => {
       if (resColumn) {
         const targetColumn = this.dataColumn.find((col) => col.field == column.field);
         const oldDataType = targetColumn.type;
-        if (resColumn.type == 'string' && oldDataType == 'date') {
-          if (isColumnHasValue) {
-            DataUtils.parseDateValueToString(this.data, targetColumn.field);
+        if (resColumn.type != oldDataType) {
+          const parseDataArgs = {
+            field: targetColumn.field,
+            oldDataType: oldDataType,
+            newDataType: resColumn.type,
+            defaultValue: resColumn.defaultValue,
+          };
+
+          await DataUtils.parseColumnNewDataType(this.data, parseDataArgs).then(() => {
             this.dataWithoutNested = [...DataUtils.getFullRecordWithoutNested(this.data)];
-          }
+          });
         }
         Object.keys(resColumn).forEach((key) => {
           targetColumn[key] = resColumn[key];
@@ -515,7 +521,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       headerText: resColumn.text,
 
       type: resColumn.columnType,
-      hasDefaultValue: resColumn.hasDefaultValue,
+      // hasDefaultValue: resColumn.hasDefaultValue,
       defaultValue: resColumn.defaultValue,
 
       width: 150,
