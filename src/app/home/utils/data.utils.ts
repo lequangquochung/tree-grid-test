@@ -5,20 +5,28 @@ export class DataUtils {
     data: any[],
     parseDataArg: { field: string; oldDataType: string; newDataType: string; defaultValue: any }
   ) {
-    data.every(async (record) => {
-      if (parseDataArg.newDataType == 'string') {
-        if (parseDataArg.oldDataType == 'date') {
-          if (record[parseDataArg.field]) {
+    data.forEach(async (record) => {
+      switch (parseDataArg.newDataType) {
+        case 'string':
+          if (parseDataArg.oldDataType == 'date') {
+            if (record[parseDataArg.field]) {
+              record[parseDataArg.field] = moment(record[parseDataArg.field]).format('MM/DD/yyyy');
+            }
+          }
+          break;
+        case 'date':
+          if (moment(record[parseDataArg.field]).isValid()) {
             record[parseDataArg.field] = moment(record[parseDataArg.field]).format('MM/DD/yyyy');
           }
-        }
-        return true;
-      }
-      if (parseDataArg.newDataType == 'date') {
-        if (moment(record[parseDataArg.field]).isValid()) {
-          record[parseDataArg.field] = moment(record[parseDataArg.field]).format('MM/DD/yyyy');
-          return true;
-        }
+          break;
+        case 'number':
+          if (!isNaN(parseFloat(record[parseDataArg.field]))) {
+            record[parseDataArg.field] = parseFloat(record[parseDataArg.field]);
+          }
+          break;
+        default:
+          record[parseDataArg.field] = parseDataArg.defaultValue;
+          break;
       }
 
       if (parseDataArg.newDataType == 'number') {
