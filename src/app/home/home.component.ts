@@ -312,7 +312,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     if (contextID === contextMenuID.togleFilter) {
       this.toggleFilter = !this.toggleFilter;
       // multil-select-on
-      _contextMenuItems[_contextMenuIndex].text = `Filter Columns ${this.toggleFilter ? `Off` : `On`}`;
+      _contextMenuItems[_contextMenuIndex].text = `Filter Columns ${this.toggleFilter ? `On` : `Off`}`;
       // _contextMenuItems[_contextMenuIndex].iconCss = `${
       //   this.toggleFilter ? `e-icons e-filter-clear` : `e-icons e-filter-3`
       // }`;

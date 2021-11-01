@@ -57,7 +57,7 @@ export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any
     // iconCss: 'e-icons e-hide-headings',
   },
   {
-    text: 'Filter Columns Off',
+    text: 'Filter Columns On',
     target: contextTarget.column,
     id: contextMenuID.togleFilter,
     // iconCss: 'e-icons e-filter-clear',
