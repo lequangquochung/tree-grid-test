@@ -15,8 +15,10 @@ export class DataUtils {
           }
           break;
         case 'date':
-          if (moment(record[parseDataArg.field]).isValid()) {
-            record[parseDataArg.field] = moment(record[parseDataArg.field]).format('MM/DD/yyyy');
+          if (parseDataArg.oldDataType == 'string') {
+            if (moment(record[parseDataArg.field]).isValid()) {
+              record[parseDataArg.field] = moment(record[parseDataArg.field]).format('MM/DD/yyyy');
+            }
           }
           break;
         case 'boolean':
