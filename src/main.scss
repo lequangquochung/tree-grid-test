@@ -162,24 +162,26 @@ html {
 // freeze on
 #freeze::before {
   font-family: "Font Awesome 5 Free";
-  content: "\f84c";
+  // content: "\f84c";
   display: inline-block;
   padding-right: 3px;
   vertical-align: middle;
   font-weight: 900;
   color: #757575;
 }
+
 // freeze off
 #freezeOff::before {
   font-family: "Font Awesome 5 Free";
   top: 4%;
-  content: "\f84c";
+  content: "\f00c";
   display: inline-block;
   padding-right: 3px;
   vertical-align: middle;
   font-weight: 900;
   color: #757575;
 }
+
 // show-hide-column
 #show-hide-column::before {
   font-family: "Font Awesome 5 Free";
