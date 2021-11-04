@@ -96,15 +96,6 @@ export class ColumnEditorComponent implements OnInit {
       this.setFormValue(this.getFormValue('defaultValue') ? true : false, 'defaultValue');
     }
 
-    // if (this.getFormValue('hasDefaultValue')) {
-    //   if (this.getFormValue('type') == 'boolean') {
-    //     this.setFormValue(this.getFormValue('defaultValue') ? true : false, 'defaultValue');
-    //   } else if (!this.getFormValue('defaultValue')) {
-    //     this.isError = true;
-    //     this.errMsg = 'Please input default value for this column';
-    //     return;
-    //   }
-    // }
     const editedColumn = this.formatNewColumnValue(this.formInput.value);
     this.closeModal.emit(editedColumn);
   }

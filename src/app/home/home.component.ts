@@ -407,6 +407,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
           resColumn['format'] = 'MM/dd/yyyy';
         }
 
+        if (resColumn.type == 'number') {
+          resColumn['format'] = '';
+        }
+
         Object.keys(resColumn).forEach((key) => {
           targetColumn[key] = resColumn[key];
         });

@@ -117,6 +117,7 @@
     display: none;
   }
 }
+
 // #freeze, #freezeOff {
 //   display: none;
 // }
@@ -129,6 +130,12 @@ html {
 // .e-filter-custom{
 //   position: relative;
 // }
+
+.e-headercelldiv {
+  -webkit-user-select: none !important; /* Chrome all / Safari all */
+  -moz-user-select: none !important; /* Firefox all */
+  -ms-user-select: none !important;
+}
 
 .e-menu-item::before {
   left: 1.2rem;
