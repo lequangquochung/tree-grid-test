@@ -79,6 +79,15 @@
   #freezeOff {
     display: none;
   }
+  #freeze::before {
+    font-family: "Font Awesome 5 Free";
+    content: "\f14a";
+    display: inline-block;
+    padding-right: 3px;
+    vertical-align: middle;
+    font-weight: 400;
+    color: #757575;
+  }
 }
 
 #_gridcontrol_cmenu.hideFreeze {
@@ -90,6 +99,16 @@
 #_gridcontrol_cmenu.showFreezeContext {
   #freezeOff {
     display: block;
+  }
+  #freezeOff::before {
+    font-family: "Font Awesome 5 Free";
+    top: 4%;
+    content: "\f0c8";
+    display: inline-block;
+    padding-right: 3px;
+    vertical-align: middle;
+    font-weight: 400;
+    color: #757575;
   }
 }
 
@@ -168,27 +187,18 @@ html {
 }
 
 // freeze on
-#freeze::before {
-  font-family: "Font Awesome 5 Free";
-  // content: "\f84c";
-  display: inline-block;
-  padding-right: 3px;
-  vertical-align: middle;
-  font-weight: 900;
-  color: #757575;
-}
 
 // freeze off
-#freezeOff::before {
-  font-family: "Font Awesome 5 Free";
-  top: 4%;
-  content: "\f00c";
-  display: inline-block;
-  padding-right: 3px;
-  vertical-align: middle;
-  font-weight: 900;
-  color: #757575;
-}
+// #freezeOff::before.checked-freeze {
+//   font-family: "Font Awesome 5 Free";
+//   top: 4%;
+//   content: "\f14a";
+//   display: inline-block;
+//   padding-right: 3px;
+//   vertical-align: middle;
+//   font-weight: 400;
+//   color: #757575;
+// }
 
 // show-hide-column
 #show-hide-column::before {
@@ -272,11 +282,22 @@ html {
 #_gridcontrol_cmenu.multil-select-on {
   #multiSelect::before {
     font-family: "Font Awesome 5 Free";
-    content: "\f00c";
+    content: "\f0c8";
     display: inline-block;
     padding-right: 3px;
     vertical-align: middle;
-    font-weight: 900;
+    font-weight: 400;
+    color: #757575;
+  }
+}
+#_gridcontrol_cmenu.multil-select-off {
+  #multiSelect::before {
+    font-family: "Font Awesome 5 Free";
+    content: "\f14a";
+    display: inline-block;
+    padding-right: 3px;
+    vertical-align: middle;
+    font-weight: 400;
     color: #757575;
   }
 }
@@ -286,12 +307,24 @@ html {
 #_gridcontrol_cmenu.filter-on {
   #filter::before {
     font-family: "Font Awesome 5 Free";
-    left: 1.1rem;
-    content: "\f00c";
+    // left: 1.1rem;
+    content: "\f0c8";
     display: inline-block;
     padding-right: 3px;
     vertical-align: middle;
-    font-weight: 900;
+    font-weight: 400;
+    color: #757575;
+  }
+}
+#_gridcontrol_cmenu.filter-off {
+  #filter::before {
+    font-family: "Font Awesome 5 Free";
+    left: 1.1rem;
+    content: "\f14a";
+    display: inline-block;
+    padding-right: 3px;
+    vertical-align: middle;
+    font-weight: 400;
     color: #757575;
   }
 }
