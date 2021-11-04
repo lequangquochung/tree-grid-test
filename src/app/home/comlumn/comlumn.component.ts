@@ -157,18 +157,8 @@ export class ComlumnComponent implements OnInit {
     }
 
     if (this.columnType == 'boolean') {
-      this.defaultValue = this.defaultValue ? true : false;
+      columnTarget.defaultValue = this.defaultValue ? true : false;
     }
-
-    // if (columnTarget.hasDefaultValue) {
-
-    //   const formControlValidator = new FormControl(this.defaultValue, Validators.required);
-    //   if (formControlValidator.invalid) {
-    //     this.errorMsg = ' Please input default value for this column';
-    //     return;
-    //   }
-    //   columnTarget.defaultValue = this.defaultValue;
-    // }
 
     if (columnTarget.columnType.includes('text')) {
       columnTarget.columnType = 'string';

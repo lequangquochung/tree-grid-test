@@ -41,7 +41,6 @@ export class DataUtils {
           }
           record[parseDataArg.field] = parseDataArg.defaultValue;
           break;
-
         default:
           record[parseDataArg.field] = parseDataArg.defaultValue;
           break;
