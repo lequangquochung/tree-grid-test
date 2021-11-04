@@ -18,6 +18,8 @@ export class DataUtils {
           if (parseDataArg.oldDataType == 'string') {
             if (moment(record[parseDataArg.field]).isValid()) {
               record[parseDataArg.field] = moment(record[parseDataArg.field]).format('MM/DD/yyyy');
+            } else {
+              record[parseDataArg.field] = parseDataArg.defaultValue;
             }
           }
           break;
