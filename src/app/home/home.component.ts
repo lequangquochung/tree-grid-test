@@ -324,51 +324,51 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
 
     // change multil select Of/Off
-    if (args.item.id === contextMenuID.multiSelect) {
-      this.toggleMultilSelect = !this.toggleMultilSelect;
-      const item = {
-        type: 'checkbox',
-        noEditor: true,
-        showInColumnChooser: false,
-        visible: false,
-        isRowSelector: true,
-      };
-      const dataCols = [...this.dataColumn];
+    // if (args.item.id === contextMenuID.multiSelect) {
+    //   this.toggleMultilSelect = !this.toggleMultilSelect;
+    //   const item = {
+    //     type: 'checkbox',
+    //     noEditor: true,
+    //     showInColumnChooser: false,
+    //     visible: false,
+    //     isRowSelector: true,
+    //   };
+    //   const dataCols = [...this.dataColumn];
 
-      if (!this.toggleMultilSelect) {
-        dataCols.splice(0, 1);
-        this.dataColumn = [...dataCols];
-        this.multiSelect.type = 'Single';
-      } else {
-        this.multiSelect.type = 'Multiple';
-        if (this.dataColumn[0]['type'] !== 'checkbox') {
-          this.dataColumn.splice(0, 0, item);
-        }
-      }
+    //   if (!this.toggleMultilSelect) {
+    //     dataCols.splice(0, 1);
+    //     this.dataColumn = [...dataCols];
+    //     this.multiSelect.type = 'Single';
+    //   } else {
+    //     this.multiSelect.type = 'Multiple';
+    //     if (this.dataColumn[0]['type'] !== 'checkbox') {
+    //       this.dataColumn.splice(0, 0, item);
+    //     }
+    //   }
 
-      this.columns = this.frozenColumns.concat(
-        this.dataColumn.filter(
-          (col) => this.frozenColumns.findIndex((f_col) => f_col.field == col.field) < 0 || col.isSelectRowCell
-        )
-      );
+    //   this.columns = this.frozenColumns.concat(
+    //     this.dataColumn.filter(
+    //       (col) => this.frozenColumns.findIndex((f_col) => f_col.field == col.field) < 0 || col.isSelectRowCell
+    //     )
+    //   );
 
-      if (this.frozenColumns.length > 0) {
-        this.isDropMode = false;
-      } else {
-        this.isDropMode = true;
-      }
+    //   if (this.frozenColumns.length > 0) {
+    //     this.isDropMode = false;
+    //   } else {
+    //     this.isDropMode = true;
+    //   }
 
-      _contextMenuItems[_contextMenuIndex].text = `Multil-Select ${this.toggleMultilSelect ? `Off` : `On`}`;
-      this.contextMenuItems = [..._contextMenuItems];
+    //   _contextMenuItems[_contextMenuIndex].text = `Multil-Select ${this.toggleMultilSelect ? `Off` : `On`}`;
+    //   this.contextMenuItems = [..._contextMenuItems];
 
-      this.isLoading = true;
-      const lastScrollPosition = this.getLastScrollPosition();
-      this.grid?.refresh();
-      setTimeout(() => {
-        this.isLoading = false;
-        this.scrollBackToLastPosition(lastScrollPosition);
-      }, 100);
-    }
+    //   this.isLoading = true;
+    //   const lastScrollPosition = this.getLastScrollPosition();
+    //   this.grid?.refresh();
+    //   setTimeout(() => {
+    //     this.isLoading = false;
+    //     this.scrollBackToLastPosition(lastScrollPosition);
+    //   }, 100);
+    // }
   }
 
   async openEditColumnModal(column: any) {
