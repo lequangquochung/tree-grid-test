@@ -81,7 +81,8 @@
   }
   #freeze::before {
     font-family: "Font Awesome 5 Free";
-    content: "\f14a";
+    content: "\f0c8";
+
     display: inline-block;
     padding-right: 3px;
     vertical-align: middle;
@@ -103,7 +104,7 @@
   #freezeOff::before {
     font-family: "Font Awesome 5 Free";
     top: 4%;
-    content: "\f0c8";
+    content: "\f14a";
     display: inline-block;
     padding-right: 3px;
     vertical-align: middle;
@@ -319,7 +320,7 @@ html {
 #_gridcontrol_cmenu.filter-off {
   #filter::before {
     font-family: "Font Awesome 5 Free";
-    left: 1.1rem;
+    // left: 1.1rem;
     content: "\f14a";
     display: inline-block;
     padding-right: 3px;

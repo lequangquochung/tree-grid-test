@@ -181,19 +181,19 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
 
     if (this.toggleMultilSelect) {
-      args.element?.classList.add('multil-select-on');
-      args.element?.classList.remove('multil-select-off');
-    } else {
       args.element?.classList.remove('multil-select-on');
       args.element?.classList.add('multil-select-off');
+    } else {
+      args.element?.classList.add('multil-select-on');
+      args.element?.classList.remove('multil-select-off');
     }
 
     if (this.toggleFilter) {
-      args.element?.classList.add('filter-on');
-      args.element?.classList.remove('filter-off');
-    } else {
       args.element?.classList.remove('filter-on');
       args.element?.classList.add('filter-off');
+    } else {
+      args.element?.classList.add('filter-on');
+      args.element?.classList.remove('filter-off');
     }
   }
 
