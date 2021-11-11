@@ -322,7 +322,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     if (contextID === contextMenuID.togleFilter) {
       this.toggleFilter = !this.toggleFilter;
       // multil-select-on
-      _contextMenuItems[_contextMenuIndex].text = `Filter Columns ${this.toggleFilter ? `Off` : `On`}`;
+      // _contextMenuItems[_contextMenuIndex].text = `Filter Columns ${this.toggleFilter ? `Off` : `On`}`;
       this.contextMenuItems = [..._contextMenuItems];
     }
 
@@ -368,7 +368,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this.isDropMode = true;
       }
 
-      _contextMenuItems[_contextMenuIndex].text = `Multil-Select ${this.toggleMultilSelect ? `Off` : `On`}`;
+      // _contextMenuItems[_contextMenuIndex].text = `Multil-Select ${this.toggleMultilSelect ? `Off` : `On`}`;
       this.contextMenuItems = [..._contextMenuItems];
 
       this.isLoading = true;
