@@ -16,12 +16,15 @@ export class DataUtils {
           break;
         case 'date':
           if (parseDataArg.oldDataType == 'string') {
-            if (moment(record[parseDataArg.field]).isValid()) {
-              record[parseDataArg.field] = moment(record[parseDataArg.field]).format('MM/DD/yyyy');
-            } else {
-              record[parseDataArg.field] = parseDataArg.defaultValue;
+            const regex = /[\d]{2}\/[\d]{2}\/[\d]{4}/gm;
+            if (regex.test(record[parseDataArg.field])) {
+              if (moment(record[parseDataArg.field]).isValid()) {
+                record[parseDataArg.field] = moment(record[parseDataArg.field]).format('MM/DD/yyyy');
+                break;
+              }
             }
           }
+          record[parseDataArg.field] = parseDataArg.defaultValue;
           break;
         case 'boolean':
           if (record[parseDataArg.field] == 1 || record[parseDataArg.field] == 0) {
