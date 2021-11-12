@@ -147,13 +147,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
       }
     }
 
-    if (!this.isDropMode && args.rowInfo.cellIndex >= 1) {
-      args.cancel = true;
-    }
+    // if (!this.isDropMode && args.rowInfo.cellIndex >= 1) {
+    //   args.cancel = true;
+    // }
 
-    if (this.isDropMode && args.rowInfo.cellIndex) {
-      args.cancel = true;
-    }
+    // if (this.isDropMode && args.rowInfo.cellIndex) {
+    //   args.cancel = true;
+    // }
 
     if (args.top >= 50) {
       // row
@@ -551,10 +551,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
         switch (res.event.type) {
           case 'add':
             this.addColumn(resColumn);
+            console.log(this.dataColumn);
             break;
           case 'mutiple-sorting':
             this.columnChecked = resColumn;
-            let arr: any = [];
+
             if (this.columnChecked.length > 0) {
               this.columnChecked.forEach((item: any) => {
                 if (item.isChecked) {
@@ -573,6 +574,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   async addColumn(resColumn: any) {
     const newColumn = this.formatNewColumn(resColumn);
+    console.log(newColumn);
 
     if (resColumn.columnType.includes('date')) {
       newColumn['format'] = 'MM/dd/yyyy';
@@ -581,14 +583,23 @@ export class HomeComponent implements OnInit, AfterViewInit {
       newColumn['dropDownItem'] = resColumn.dropDownItem;
     }
     this.isLoading = true;
+
     await DataUtils.insertDefaultValueToData(this.data, newColumn.field, newColumn.defaultValue).then(() => {
       this.dataColumn = [...this.columns];
       this.dataColumn.push(newColumn);
       this.columns = [...this.dataColumn];
+
       setTimeout(() => {
         this.isLoading = false;
       }, 500);
     });
+
+    this.setColumnCssProperties(newColumn);
+    this.grid.refresh();
+    // let index = this.dataColumn.findIndex((col: any) => col.field === newColumn.field);
+    // console.log(index);
+    console.log(this.dataColumn);
+    console.log(this.columns);
   }
 
   private formatNewColumn(resColumn: any) {
@@ -601,16 +612,18 @@ export class HomeComponent implements OnInit, AfterViewInit {
       defaultValue: resColumn.defaultValue,
 
       width: 150,
-      minWidth: 150,
+      minWidth: resColumn.minWidth,
 
-      fontSize: 14,
-      textAlign: 'Left',
+      fontSize: resColumn.fontSize,
+      textAlign: resColumn.textAlign,
       allowEditing: true,
 
-      color: '#757575',
-      backgroundColor: '#fff',
-      textWrap: 'normal',
-      customAttributes: { class: `header-column-font${this.dataColumn.length + 1}` },
+      color: resColumn.color,
+      backgroundColor: resColumn.backgroundColor,
+      textWrap: resColumn.textWrap,
+      customAttributes: {
+        class: `header-column-font${this.multiSelect ? this.dataColumn.length : this.dataColumn.length + 1}`,
+      },
     };
   }
 

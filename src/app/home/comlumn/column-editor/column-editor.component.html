@@ -3,8 +3,19 @@
     <h6 class="modal-title" id="modal-basic-title">Edit Column</h6>
   </div>
   <div class="modal-body">
+    <!-- Column Name -->
     <div class="input-field">
-      <label>Column Data Type</label>
+      <label>Column-Name</label>
+      <input
+        type="text"
+        class="e-input"
+        [value]="getFormValue('headerText')"
+        (change)="setFormValue($event.target.value, 'headerText')"
+      />
+    </div>
+    <!-- data type -->
+    <div class="input-field">
+      <label>Data-Type</label>
       <ejs-dropdownlist
         (change)="dataTypeOnChange($event)"
         [dataSource]="columnTypeData"
@@ -32,10 +43,10 @@
     </div> -->
 
     <div class="default-value-input">
-      <label>Default Value</label>
+      <label>Default-Value</label>
       <!-- TYPE = TEXT OR NUMBER -->
       <input
-        *ngIf="getFormValue('type') === 'text' || getFormValue('type') === 'number'"
+        *ngIf="getFormValue('type') === 'Text' || getFormValue('type') === 'Num'"
         [type]="getFormValue('type')"
         class="e-input"
         [value]="getFormValue('defaultValue')"
@@ -43,7 +54,7 @@
       />
       <!-- TYPE = DATE -->
       <ejs-datepicker
-        *ngIf="getFormValue('type') === 'date'"
+        *ngIf="getFormValue('type') === 'Date'"
         [value]="getFormValue('defaultValue')"
         [allowEdit]="false"
         [format]="'MM/dd/yyyy'"
@@ -52,14 +63,14 @@
       </ejs-datepicker>
       <!-- TYPE = BOOLEAN -->
       <input
-        *ngIf="getFormValue('type') === 'boolean'"
+        *ngIf="getFormValue('type') === 'Boolean'"
         type="checkbox"
         [checked]="getFormValue('defaultValue')"
         (change)="setFormValue($event.target.checked, 'defaultValue')"
       />
       <!-- TYPE = DROPDOWN -->
       <ejs-dropdownlist
-        *ngIf="getFormValue('type') === 'dropdown'"
+        *ngIf="getFormValue('type') === 'DropDownList'"
         placeholder="Choose default value"
         [dataSource]="dropDownItemString"
         (change)="setFormValue($event.value, 'defaultValue')"
@@ -67,19 +78,9 @@
       >
       </ejs-dropdownlist>
     </div>
-
+    <!-- Minimum width -->
     <div class="input-field">
-      <label>Column Name</label>
-      <input
-        type="text"
-        class="e-input"
-        [value]="getFormValue('headerText')"
-        (change)="setFormValue($event.target.value, 'headerText')"
-      />
-    </div>
-
-    <div class="input-field">
-      <label>Minimum width</label>
+      <label>Minimum-Column-Width</label>
       <input
         type="number"
         class="e-input"
@@ -88,9 +89,9 @@
         (change)="setNumberValue($event, 'minWidth')"
       />
     </div>
-
+    <!-- Font size -->
     <div class="input-field">
-      <label>Font size</label>
+      <label>Font-size</label>
       <input
         type="number"
         class="e-input"
@@ -99,9 +100,9 @@
         (change)="setNumberValue($event, 'fontSize')"
       />
     </div>
-
+    <!-- Font color -->
     <div class="input-field">
-      <label>Font color</label>
+      <label>Font-color</label>
       <input
         readonly
         class="e-input"
@@ -113,9 +114,9 @@
         [style.background]="getFormValue('color')"
       />
     </div>
-
+    <!-- Background color -->
     <div class="input-field">
-      <label>Background color</label>
+      <label>Background-color</label>
       <input
         readonly
         class="e-input"
@@ -125,9 +126,9 @@
         [style.background]="getFormValue('backgroundColor')"
       />
     </div>
-
+    <!-- Align type -->
     <div class="input-field">
-      <label>Align type</label>
+      <label>Alignment</label>
       <ejs-dropdownlist
         (change)="('')"
         [dataSource]="alignType"
@@ -137,9 +138,9 @@
       >
       </ejs-dropdownlist>
     </div>
-
+    <!-- Text wrap -->
     <div class="input-field">
-      <label>Text wrap</label>
+      <label>Text-wrap</label>
       <ejs-dropdownlist
         (change)="('')"
         [dataSource]="textWrapType"
