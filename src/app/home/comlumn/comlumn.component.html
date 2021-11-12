@@ -10,8 +10,29 @@
   </div>
   <div class="modal-body">
     <form #form="ngForm">
+      <div class="form-group">
+        <div class="e-float-input e-control-wrapper e-valid-input">
+          <input
+            required
+            name="column"
+            style="text-align: Left"
+            class="form-control e-field e-defaultcell e-control e-textbox e-lib"
+            type="text"
+            value="3"
+            id="_gridcontroltaskID"
+            name="taskID"
+            e-mappinguid="grid-column1000"
+            role="textbox"
+            [(ngModel)]="columnName"
+            aria-labelledby="label__gridcontroltaskID"
+          /><span class="e-float-line"></span
+          ><label class="e-float-text e-label-top" id="label__gridcontroltaskID" for="_gridcontroltaskID"
+            >Column-Name</label
+          >
+        </div>
+      </div>
       <div *ngIf="type === 'add'" class="form-group mb-3">
-        <label class="text-header">Column Data Type</label>
+        <label class="text-header">Data-Type</label>
         <ejs-dropdownlist
           (change)="onChangeColumnType($event)"
           id="ddlelement"
@@ -44,10 +65,10 @@
       </div> -->
 
       <div class="default-value-input">
-        <label *ngIf="columnType">Default Value</label>
+        <label *ngIf="columnType">Default-Value</label>
         <!-- TYPE = TEXT OR NUMBER -->
         <input
-          *ngIf="columnType === 'text' || columnType === 'number'"
+          *ngIf="columnType === 'Text' || columnType === 'Num'"
           [type]="columnType"
           class="e-input"
           [value]="defaultValue"
@@ -55,7 +76,7 @@
         />
         <!-- TYPE = DATE -->
         <ejs-datepicker
-          *ngIf="columnType === 'date'"
+          *ngIf="columnType === 'Date'"
           [value]="defaultValue"
           [format]="'MM/dd/yyyy'"
           [allowEdit]="false"
@@ -64,14 +85,14 @@
         </ejs-datepicker>
         <!-- TYPE = BOOLEAN -->
         <input
-          *ngIf="columnType === 'boolean'"
+          *ngIf="columnType === 'Boolean'"
           type="checkbox"
           [checked]="defaultValue"
           (change)="defaultValueChange($event)"
         />
         <!-- TYPE = DROPDOWN -->
         <ejs-dropdownlist
-          *ngIf="columnType === 'dropdown'"
+          *ngIf="columnType === 'DropDownList'"
           placeholder="Choose default value"
           [dataSource]="dropDownItemString"
           (change)="defaultValueChange($event)"
@@ -80,26 +101,82 @@
         </ejs-dropdownlist>
       </div>
 
-      <div class="form-group">
-        <div class="e-float-input e-control-wrapper e-valid-input">
-          <input
-            required
-            name="column"
-            style="text-align: Left"
-            class="form-control e-field e-defaultcell e-control e-textbox e-lib"
-            type="text"
-            value="3"
-            id="_gridcontroltaskID"
-            name="taskID"
-            e-mappinguid="grid-column1000"
-            role="textbox"
-            [(ngModel)]="columnName"
-            aria-labelledby="label__gridcontroltaskID"
-          /><span class="e-float-line"></span
-          ><label class="e-float-text e-label-top" id="label__gridcontroltaskID" for="_gridcontroltaskID"
-            >Column Name</label
-          >
-        </div>
+      <!-- Minimum width -->
+      <div class="input-field">
+        <label>Minimum-Column-Width</label>
+        <input
+          type="number"
+          class="e-input"
+          min="10"
+          [value]="getFormValue('minWidth')"
+          (change)="setNumberValue($event, 'minWidth')"
+        />
+      </div>
+
+      <!-- Font size -->
+      <div class="input-field">
+        <label>Font-size</label>
+        <input
+          type="number"
+          class="e-input"
+          min="10"
+          [value]="getFormValue('fontSize')"
+          (change)="setNumberValue($event, 'fontSize')"
+        />
+      </div>
+
+      <!-- Font color -->
+      <div class="input-field">
+        <label>Font-color</label>
+        <input
+          readonly
+          class="e-input"
+          type="text"
+          style="text-align: Left"
+          [value]="getFormValue('color')"
+          [colorPicker]="getFormValue('color')"
+          (colorPickerChange)="setFormValue($event, 'color')"
+          [style.background]="getFormValue('color')"
+        />
+      </div>
+
+      <!-- Background color -->
+      <div class="input-field">
+        <label>Background-color</label>
+        <input
+          readonly
+          class="e-input"
+          [value]="getFormValue('backgroundColor')"
+          [colorPicker]="getFormValue('backgroundColor')"
+          (colorPickerChange)="setFormValue($event, 'backgroundColor')"
+          [style.background]="getFormValue('backgroundColor')"
+        />
+      </div>
+
+      <!-- Align type -->
+      <div class="input-field">
+        <label>Alignment</label>
+        <ejs-dropdownlist
+          (change)="('')"
+          [dataSource]="alignType"
+          [value]="getFormValue('textAlign')"
+          (change)="setFormValue($event.value, 'textAlign')"
+          placeholder="Choose align type"
+        >
+        </ejs-dropdownlist>
+      </div>
+
+      <!-- Text wrap -->
+      <div class="input-field">
+        <label>Text-wrap</label>
+        <ejs-dropdownlist
+          (change)="('')"
+          [dataSource]="textWrapType"
+          [value]="getFormValue('textWrap')"
+          (change)="setFormValue($event.value, 'textWrap')"
+          placeholder="Choose text wrap type"
+        >
+        </ejs-dropdownlist>
       </div>
 
       <p style="margin: 0.5rem; color: red; font-size: 0.75rem" *ngIf="errorMsg">{{ errorMsg }}</p>

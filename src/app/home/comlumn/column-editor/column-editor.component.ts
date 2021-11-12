@@ -12,7 +12,7 @@ export class ColumnEditorComponent implements OnInit {
   @Input() declare isColumnHasValue: boolean;
   @Output() closeModal = new EventEmitter<any>();
 
-  columnTypeData: any = ['text', 'number', 'date', 'boolean', 'dropdown'];
+  columnTypeData: any = ['Text', 'Num', 'Date', 'Boolean', 'DropDownList'];
   alignType: any = ['Left', 'Center', 'Right'];
   textWrapType: any = ['normal', 'break-word'];
 

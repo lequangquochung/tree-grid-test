@@ -16,6 +16,7 @@ export class ComlumnComponent implements OnInit {
   @Input() declare columnChecked: any;
   @Output() columnEmitter = new EventEmitter<any>();
 
+  // declare formInput: FormGroup;
   declare form: FormGroup;
 
   cols: any[] = [];
@@ -25,38 +26,49 @@ export class ComlumnComponent implements OnInit {
   columnName: string = '';
   columnTitle: string = '';
   columnType: string = '';
-  columnTypeData: any = ['text', 'number', 'date', 'boolean', 'dropdown'];
+  columnTypeData: any = ['Text', 'Num', 'Date', 'Boolean', 'DropDownList'];
+
+  alignType: any = ['Left', 'Center', 'Right'];
+  textWrapType: any = ['normal', 'break-word'];
 
   allowChangeDefaultValue = true;
   // hasDefaultValue = false;
   defaultValue: any = null;
+  // minWidth:any = 20;
 
   dropdownItem: any[] = [];
   dropDownItemString: string[] = [];
   declare oldDropDownItem: any[];
   declare errorMsg: string;
 
+  dataDefaultValue = {
+    width: 160,
+    minWidth: 150,
+
+    fontSize: 14,
+    textAlign: 'Left',
+    allowEditing: true,
+
+    color: '#757575',
+    backgroundColor: '#fff',
+    textWrap: 'normal',
+    // customAttributes: { class: `header-column-font${this.dataColumn.length + 1}` }
+  };
+
   constructor() {}
 
   ngOnInit(): void {
-    // const fb = new FormBuilder();
-    // this.form = fb.group({
-    //   colArr: fb.array([]),
-    // });
-
     this.columnTitle = this.type === 'add' ? 'Add' : 'Edit';
-    // if (this.type === 'mutiple-sorting') {
-    //   this.sortingType = true;
-    //   this.columnTitle = 'Multil Sorting';
-    //   this.getColumns(this.column, 'field');
-    //   this.columnChecked.forEach((each: any) => {
-    //     this.cols.find((col) => col.colName == each.name).isChecked = each.isChecked;
-    //   });
 
-    //   this.rowSelected = [...this.columnChecked];
-    // } else {
-    //   this.sortingType = false;
-    // }
+    const fb = new FormBuilder();
+    this.form = fb.group({
+      minWidth: [this.dataDefaultValue.minWidth, Validators.required],
+      fontSize: [this.dataDefaultValue.fontSize, Validators.required],
+      color: [this.dataDefaultValue.color, Validators.required],
+      backgroundColor: [this.dataDefaultValue.backgroundColor, Validators.required],
+      textAlign: [this.dataDefaultValue.textAlign, Validators.required],
+      textWrap: [this.dataDefaultValue.textWrap, Validators.required],
+    });
   }
 
   close() {
@@ -123,6 +135,12 @@ export class ComlumnComponent implements OnInit {
       columnType: this.columnType,
       // hasDefaultValue: this.hasDefaultValue,
       defaultValue: this.defaultValue,
+      minWidth: this.form.controls['minWidth'].value,
+      fontSize: this.form.controls['fontSize'].value,
+      color: this.form.controls['color'].value,
+      backgroundColor: this.form.controls['backgroundColor'].value,
+      textAlign: this.form.controls['textAlign'].value,
+      textWrap: this.form.controls['textWrap'].value,
     };
 
     if (this.columnType == 'dropdown') {
@@ -152,6 +170,10 @@ export class ComlumnComponent implements OnInit {
         return;
       }
 
+      // if (this.getFormValue('type') == 'boolean') {
+      //   this.setFormValue(this.getFormValue('defaultValue') ? true : false, 'defaultValue');
+      // }
+
       const dropDownItem = this.dropdownItem.map((each) => each.name);
       columnTarget['dropDownItem'] = dropDownItem;
     }
@@ -163,6 +185,7 @@ export class ComlumnComponent implements OnInit {
     if (columnTarget.columnType.includes('text')) {
       columnTarget.columnType = 'string';
     }
+    console.log(columnTarget.columnType);
 
     this.columnEmitter.emit({
       event: {
@@ -173,7 +196,7 @@ export class ComlumnComponent implements OnInit {
   }
 
   onCheckboxChange(e: any) {
-    const colArr: FormArray = this.form.get('colArr') as FormArray;
+    // const colArr: FormArray = this.form.get('colArr') as FormArray;
 
     if (e.target.checked) {
       let param = {
@@ -217,5 +240,17 @@ export class ComlumnComponent implements OnInit {
         column: [...this.rowSelected],
       },
     });
+  }
+
+  setNumberValue(event: any, target: string) {
+    const numVal = Number.parseFloat(event.target.value);
+    this.setFormValue(numVal, target);
+  }
+
+  getFormValue(target: string) {
+    return this.form.controls[target].value;
+  }
+  setFormValue(value: any, target: string) {
+    this.form.controls[target].setValue(value);
   }
 }

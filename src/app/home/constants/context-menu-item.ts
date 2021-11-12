@@ -34,35 +34,35 @@ export enum contextMenuID {
 export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any[] = [
   //----------------COLUMN_CONTEXT_MENU_ITEM-----------------------
 
-  { text: 'Add Column', target: contextTarget.column, id: contextMenuID.addColumn },
-  { text: 'Delete Column', target: contextTarget.column, id: contextMenuID.deleteColumn },
-  { text: 'Edit Column', target: contextTarget.column, id: contextMenuID.editColumn, iconCss: 'e-icons e-edit' },
+  { text: 'NewCol', target: contextTarget.column, id: contextMenuID.addColumn },
+  { text: 'DelCol', target: contextTarget.column, id: contextMenuID.deleteColumn },
+  { text: 'EditCol', target: contextTarget.column, id: contextMenuID.editColumn, iconCss: 'e-icons e-edit' },
   {
-    text: 'Show/Hide Column',
+    text: 'ChooseCol',
     target: contextTarget.column,
     id: contextMenuID.toggleShowColumn,
     // iconCss: 'e-icons e-show-hide-panel',
   },
   {
-    text: 'Freeze Columns',
+    text: 'FreezeCol',
     target: contextTarget.column,
     id: contextMenuID.freezeColumn,
     // iconCss: 'e-icons e-hide-headings',
   },
   {
-    text: 'Freeze Columns',
+    text: 'FreezeCol',
     target: contextTarget.column,
     id: contextMenuID.freezeColumnOff,
     // iconCss: 'e-icons e-hide-headings',
   },
   {
-    text: 'Filter Columns',
+    text: 'FilterCol',
     target: contextTarget.column,
     id: contextMenuID.togleFilter,
     // iconCss: 'e-icons e-filter-clear',
   },
   {
-    text: 'Multi-Select',
+    text: 'MultiSort',
     target: contextTarget.column,
     id: contextMenuID.multiSelect,
     type: 'checkbox',
@@ -71,14 +71,14 @@ export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any
 
   //----------------ROW_CONTEXT_MENU_ITEM-----------------------
 
-  { text: 'Add Next', target: contextTarget.row, id: contextMenuID.addRow },
-  { text: 'Add Child', target: contextTarget.row, id: contextMenuID.addChildRow },
-  { text: 'Delete Row', target: contextTarget.row, id: contextMenuID.deleteRow },
-  { text: 'Edit Row', target: contextTarget.row, id: contextMenuID.editRow, iconCss: 'e-icons e-edit' },
+  { text: 'AddNext', target: contextTarget.row, id: contextMenuID.addRow },
+  { text: 'AddChild', target: contextTarget.row, id: contextMenuID.addChildRow },
+  { text: 'DelRow', target: contextTarget.row, id: contextMenuID.deleteRow },
+  { text: 'EditRow', target: contextTarget.row, id: contextMenuID.editRow, iconCss: 'e-icons e-edit' },
   // 'Edit',
-  { text: 'Copy', target: contextTarget.row, id: contextMenuID.copyRows },
-  { text: 'Cut', target: contextTarget.row, id: contextMenuID.cutRows },
-  { text: 'Paste next', target: contextTarget.row, id: contextMenuID.pasteSibling },
-  { text: 'Paste as child', target: contextTarget.row, id: contextMenuID.pasteChild },
+  { text: 'CopyRows', target: contextTarget.row, id: contextMenuID.copyRows },
+  { text: 'CutRows', target: contextTarget.row, id: contextMenuID.cutRows },
+  { text: 'PasteNext', target: contextTarget.row, id: contextMenuID.pasteSibling },
+  { text: 'PasteChild', target: contextTarget.row, id: contextMenuID.pasteChild },
   { text: 'Drag and drop', target: contextTarget.row, id: contextMenuID.dragAndDrop },
 ];
