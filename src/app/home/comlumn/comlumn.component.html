@@ -40,6 +40,7 @@
           [dataSource]="columnTypeData"
           [value]="columnType"
           placeholder="Please choose column type"
+          [fields]="fields"
         ></ejs-dropdownlist>
       </div>
 
@@ -68,7 +69,7 @@
         <label *ngIf="columnType">Default-Value</label>
         <!-- TYPE = TEXT OR NUMBER -->
         <input
-          *ngIf="columnType === 'Text' || columnType === 'Num'"
+          *ngIf="columnType === 'text' || columnType === 'number'"
           [type]="columnType"
           class="e-input"
           [value]="defaultValue"
@@ -76,7 +77,7 @@
         />
         <!-- TYPE = DATE -->
         <ejs-datepicker
-          *ngIf="columnType === 'Date'"
+          *ngIf="columnType === 'date'"
           [value]="defaultValue"
           [format]="'MM/dd/yyyy'"
           [allowEdit]="false"
@@ -85,14 +86,14 @@
         </ejs-datepicker>
         <!-- TYPE = BOOLEAN -->
         <input
-          *ngIf="columnType === 'Boolean'"
+          *ngIf="columnType === 'boolean'"
           type="checkbox"
           [checked]="defaultValue"
           (change)="defaultValueChange($event)"
         />
         <!-- TYPE = DROPDOWN -->
         <ejs-dropdownlist
-          *ngIf="columnType === 'DropDownList'"
+          *ngIf="columnType === 'dropdown'"
           placeholder="Choose default value"
           [dataSource]="dropDownItemString"
           (change)="defaultValueChange($event)"
@@ -168,15 +169,22 @@
 
       <!-- Text wrap -->
       <div class="input-field">
-        <label>Text-wrap</label>
-        <ejs-dropdownlist
+        <label for="textWrap" class="text-wrap">Text-wrap</label>
+        <input
+          type="checkbox"
+          name=""
+          id="textWrap"
+          [value]="getFormValue('textWrap')"
+          (change)="setFormValue($event, 'textWrap')"
+        />
+        <!-- <ejs-dropdownlist
           (change)="('')"
           [dataSource]="textWrapType"
           [value]="getFormValue('textWrap')"
           (change)="setFormValue($event.value, 'textWrap')"
-          placeholder="Choose text wrap type"
+          placeholder="Choose text wrap type" 
         >
-        </ejs-dropdownlist>
+        </ejs-dropdownlist> -->
       </div>
 
       <p style="margin: 0.5rem; color: red; font-size: 0.75rem" *ngIf="errorMsg">{{ errorMsg }}</p>

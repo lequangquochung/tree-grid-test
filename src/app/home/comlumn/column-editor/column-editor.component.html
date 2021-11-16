@@ -21,6 +21,7 @@
         [dataSource]="columnTypeData"
         [value]="getFormValue('type')"
         placeholder="Choose datatype"
+        [fields]="fields"
       >
       </ejs-dropdownlist>
     </div>
@@ -46,7 +47,7 @@
       <label>Default-Value</label>
       <!-- TYPE = TEXT OR NUMBER -->
       <input
-        *ngIf="getFormValue('type') === 'Text' || getFormValue('type') === 'Num'"
+        *ngIf="getFormValue('type') === 'text' || getFormValue('type') === 'number'"
         [type]="getFormValue('type')"
         class="e-input"
         [value]="getFormValue('defaultValue')"
@@ -54,7 +55,7 @@
       />
       <!-- TYPE = DATE -->
       <ejs-datepicker
-        *ngIf="getFormValue('type') === 'Date'"
+        *ngIf="getFormValue('type') === 'date'"
         [value]="getFormValue('defaultValue')"
         [allowEdit]="false"
         [format]="'MM/dd/yyyy'"
@@ -63,14 +64,14 @@
       </ejs-datepicker>
       <!-- TYPE = BOOLEAN -->
       <input
-        *ngIf="getFormValue('type') === 'Boolean'"
+        *ngIf="getFormValue('type') === 'boolean'"
         type="checkbox"
         [checked]="getFormValue('defaultValue')"
         (change)="setFormValue($event.target.checked, 'defaultValue')"
       />
       <!-- TYPE = DROPDOWN -->
       <ejs-dropdownlist
-        *ngIf="getFormValue('type') === 'DropDownList'"
+        *ngIf="getFormValue('type') === 'dropdown'"
         placeholder="Choose default value"
         [dataSource]="dropDownItemString"
         (change)="setFormValue($event.value, 'defaultValue')"
@@ -140,15 +141,23 @@
     </div>
     <!-- Text wrap -->
     <div class="input-field">
-      <label>Text-wrap</label>
-      <ejs-dropdownlist
+      <label for="textWrap" class="text-wrap">Text-wrap</label>
+      <input
+        type="checkbox"
+        name=""
+        id="textWrap"
+        [value]="getFormValue('textWrap')"
+        (change)="setFormValue($event, 'textWrap')"
+        [checked]="isBreakWord"
+      />
+      <!-- <ejs-dropdownlist
         (change)="('')"
         [dataSource]="textWrapType"
         [value]="getFormValue('textWrap')"
         (change)="setFormValue($event.value, 'textWrap')"
         placeholder="Choose text wrap type"
       >
-      </ejs-dropdownlist>
+      </ejs-dropdownlist> -->
     </div>
   </div>
 

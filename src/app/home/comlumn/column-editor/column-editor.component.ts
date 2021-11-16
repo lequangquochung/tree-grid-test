@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, Type } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { getUid } from '@syncfusion/ej2-angular-grids';
 
@@ -12,10 +12,18 @@ export class ColumnEditorComponent implements OnInit {
   @Input() declare isColumnHasValue: boolean;
   @Output() closeModal = new EventEmitter<any>();
 
-  columnTypeData: any = ['Text', 'Num', 'Date', 'Boolean', 'DropDownList'];
+  // columnTypeData: any = ['text', 'number', 'date', 'boolean', 'dropdown'];
+  columnTypeData: any = [
+    { id: 'text', text: 'Text' },
+    { id: 'number', text: 'Num' },
+    { id: 'date', text: 'Date' },
+    { id: 'boolean', text: 'Boolean' },
+    { id: 'dropdown', text: 'DropDownList' },
+  ];
+  fields: Object = { text: 'text', value: 'id' };
   alignType: any = ['Left', 'Center', 'Right'];
-  textWrapType: any = ['normal', 'break-word'];
-
+  // textWrapType: any = ['normal', 'break-word'];
+  isBreakWord = true;
   dropDownDataTypeItem: any[] = [];
   oldDropDownItem: any[] = [];
   dropDownItemString: string[] = []; //this is for the default value of dropdown data type
@@ -42,6 +50,12 @@ export class ColumnEditorComponent implements OnInit {
       });
       this.dropDownItemString = this.dropDownDataTypeItem.map((each) => each.name);
     }
+    if (this.targetColumn.textWrap !== 'normal') {
+      this.isBreakWord = true;
+    } else {
+      this.isBreakWord = false;
+    }
+    console.log(this.targetColumn);
 
     const fb = new FormBuilder();
     this.formInput = fb.group({
@@ -114,6 +128,7 @@ export class ColumnEditorComponent implements OnInit {
   }
 
   dataTypeOnChange(event: any) {
+    console.log(event);
     this.setFormValue(event.value, 'type');
     this.setFormValue(null, 'defaultValue');
   }
@@ -168,7 +183,15 @@ export class ColumnEditorComponent implements OnInit {
   }
 
   setFormValue(value: any, target: string) {
-    this.formInput.controls[target].setValue(value);
+    if (target === 'textWrap') {
+      if (value.target.checked) {
+        this.formInput.controls[target].setValue('break-word');
+      } else {
+        this.formInput.controls[target].setValue('normal');
+      }
+    } else {
+      this.formInput.controls[target].setValue(value);
+    }
   }
 
   getFormValue(target: string) {

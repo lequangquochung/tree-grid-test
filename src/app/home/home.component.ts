@@ -382,6 +382,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   async openEditColumnModal(column: any) {
+    console.log(column);
     const modalRef = this.modalService.open(ColumnEditorComponent);
     const isColumnHasValue = DataUtils.isColumnHasValue(this.data, column.field);
     modalRef.componentInstance.targetColumn = column;
