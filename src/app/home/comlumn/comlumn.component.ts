@@ -26,7 +26,15 @@ export class ComlumnComponent implements OnInit {
   columnName: string = '';
   columnTitle: string = '';
   columnType: string = '';
-  columnTypeData: any = ['Text', 'Num', 'Date', 'Boolean', 'DropDownList'];
+  // columnTypeData: any = ['Text', 'Num', 'Date', 'Boolean', 'DropDownList'];
+  columnTypeData: any = [
+    { id: 'text', text: 'Text' },
+    { id: 'number', text: 'Num' },
+    { id: 'date', text: 'Date' },
+    { id: 'boolean', text: 'Boolean' },
+    { id: 'dropdown', text: 'DropDownList' },
+  ];
+  fields: Object = { text: 'text', value: 'id' };
 
   alignType: any = ['Left', 'Center', 'Right'];
   textWrapType: any = ['normal', 'break-word'];
@@ -76,6 +84,7 @@ export class ComlumnComponent implements OnInit {
   }
 
   onChangeColumnType(args: any): void {
+    console.log(args);
     this.columnType = args.value;
     this.dropdownItem = [];
     this.dropDownItemString = this.dropdownItem.map((each) => each.name);
@@ -185,8 +194,8 @@ export class ComlumnComponent implements OnInit {
     if (columnTarget.columnType.includes('text')) {
       columnTarget.columnType = 'string';
     }
-    console.log(columnTarget.columnType);
-
+    // console.log(columnTarget.columnType);
+    // console.log(columnTarget.textWrap)
     this.columnEmitter.emit({
       event: {
         type: this.type,
@@ -204,14 +213,14 @@ export class ComlumnComponent implements OnInit {
         isChecked: true,
       };
       this.rowSelected.push(param);
-      console.log(this.rowSelected);
+      // console.log(this.rowSelected);
     } else {
       for (let i = 0; i < this.rowSelected.length; i++) {
         if (this.rowSelected[i]['name'] === e.target.value) {
           this.rowSelected[i]['isChecked'] = false;
         }
       }
-      console.log(this.rowSelected);
+      // console.log(this.rowSelected);
     }
   }
 
@@ -250,7 +259,18 @@ export class ComlumnComponent implements OnInit {
   getFormValue(target: string) {
     return this.form.controls[target].value;
   }
+
   setFormValue(value: any, target: string) {
-    this.form.controls[target].setValue(value);
+    if (target === 'textWrap') {
+      if (value.target.checked) {
+        let textWrapValue = (this.dataDefaultValue.textWrap = 'break-word');
+        this.form.controls[target].setValue(textWrapValue);
+      } else {
+        let textWrapValue = (this.dataDefaultValue.textWrap = 'normal');
+        this.form.controls[target].setValue(textWrapValue);
+      }
+    } else {
+      this.form.controls[target].setValue(value);
+    }
   }
 }
