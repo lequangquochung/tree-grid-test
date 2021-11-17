@@ -55,7 +55,7 @@ export class ColumnEditorComponent implements OnInit {
     } else {
       this.isBreakWord = false;
     }
-    console.log(this.targetColumn);
+    // console.log(this.targetColumn);
 
     const fb = new FormBuilder();
     this.formInput = fb.group({
@@ -128,7 +128,6 @@ export class ColumnEditorComponent implements OnInit {
   }
 
   dataTypeOnChange(event: any) {
-    console.log(event);
     this.setFormValue(event.value, 'type');
     this.setFormValue(null, 'defaultValue');
   }
