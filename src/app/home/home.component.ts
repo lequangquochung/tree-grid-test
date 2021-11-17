@@ -54,6 +54,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   private isShowPasteOption = false;
   private isDropMode = true;
   private selectedRowForCopy: any[] = [];
+  private isMobileMode = false;
 
   public declare pageSettings: any;
   public declare commands: any;
@@ -116,6 +117,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     if (this.isTouchScreendevice()) {
       this.isDropMode = false;
+      this.isMobileMode = true;
     }
     // Allow Drag / Drop to change order row
     TreeGrid.Inject(RowDD, Selection);
@@ -146,14 +148,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this.grid.selectRow(args.rowInfo.rowIndex, true);
       }
     }
-
-    // if (!this.isDropMode && args.rowInfo.cellIndex >= 1) {
-    //   args.cancel = true;
-    // }
-
-    // if (this.isDropMode && args.rowInfo.cellIndex) {
-    //   args.cancel = true;
-    // }
 
     if (args.top >= 50) {
       // row
@@ -345,28 +339,50 @@ export class HomeComponent implements OnInit, AfterViewInit {
       };
       const dataCols = [...this.dataColumn];
 
-      if (!this.toggleMultilSelect) {
-        dataCols.splice(0, 1);
-        this.dataColumn = [...dataCols];
-        this.multiSelect.type = 'Single';
+      if (!this.isMobileMode) {
+        if (!this.toggleMultilSelect) {
+          dataCols.splice(0, 1);
+          this.dataColumn = [...dataCols];
+          this.multiSelect.type = 'Single';
+        } else {
+          this.multiSelect.type = 'Multiple';
+          if (this.dataColumn[0]['type'] !== 'checkbox') {
+            this.dataColumn.splice(0, 0, item);
+          }
+        }
+        // this.columns = this.frozenColumns.concat(
+        //   this.dataColumn.filter(
+        //     (col) => this.frozenColumns.findIndex((f_col) => f_col.field == col.field) < 0 || col.isSelectRowCell
+        //   )
+        // );
+
+        if (this.frozenColumns.length > 0) {
+          this.isDropMode = false;
+        } else {
+          this.isDropMode = true;
+        }
       } else {
-        this.multiSelect.type = 'Multiple';
-        if (this.dataColumn[0]['type'] !== 'checkbox') {
-          this.dataColumn.splice(0, 0, item);
+        if (!this.toggleMultilSelect) {
+          dataCols.splice(0, 1);
+          this.dataColumn = [...dataCols];
+          this.multiSelect.type = 'Single';
+          this.columns = this.frozenColumns.concat(
+            this.dataColumn.filter(
+              (col) => this.frozenColumns.findIndex((f_col) => f_col.field == col.field) < 0 || col.isSelectRowCell
+            )
+          );
+        } else {
+          this.multiSelect.type = 'Multiple';
+          if (this.dataColumn[0]['type'] !== 'checkbox') {
+            this.dataColumn.splice(0, 0, item);
+          }
         }
       }
-
       this.columns = this.frozenColumns.concat(
         this.dataColumn.filter(
           (col) => this.frozenColumns.findIndex((f_col) => f_col.field == col.field) < 0 || col.isSelectRowCell
         )
       );
-
-      if (this.frozenColumns.length > 0) {
-        this.isDropMode = false;
-      } else {
-        this.isDropMode = true;
-      }
 
       // _contextMenuItems[_contextMenuIndex].text = `Multil-Select ${this.toggleMultilSelect ? `Off` : `On`}`;
       this.contextMenuItems = [..._contextMenuItems];
@@ -382,7 +398,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   async openEditColumnModal(column: any) {
-    console.log(column);
     const modalRef = this.modalService.open(ColumnEditorComponent);
     const isColumnHasValue = DataUtils.isColumnHasValue(this.data, column.field);
     modalRef.componentInstance.targetColumn = column;
@@ -552,7 +567,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
         switch (res.event.type) {
           case 'add':
             this.addColumn(resColumn);
-            console.log(this.dataColumn);
             break;
           case 'mutiple-sorting':
             this.columnChecked = resColumn;
@@ -575,7 +589,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   async addColumn(resColumn: any) {
     const newColumn = this.formatNewColumn(resColumn);
-    console.log(newColumn);
 
     if (resColumn.columnType.includes('date')) {
       newColumn['format'] = 'MM/dd/yyyy';
@@ -597,10 +610,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     this.setColumnCssProperties(newColumn);
     this.grid.refresh();
-    // let index = this.dataColumn.findIndex((col: any) => col.field === newColumn.field);
-    // console.log(index);
-    console.log(this.dataColumn);
-    console.log(this.columns);
   }
 
   private formatNewColumn(resColumn: any) {

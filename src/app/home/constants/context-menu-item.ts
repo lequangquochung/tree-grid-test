@@ -62,7 +62,7 @@ export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any
     // iconCss: 'e-icons e-filter-clear',
   },
   {
-    text: 'MultiSort',
+    text: 'MultiSelect',
     target: contextTarget.column,
     id: contextMenuID.multiSelect,
     type: 'checkbox',
