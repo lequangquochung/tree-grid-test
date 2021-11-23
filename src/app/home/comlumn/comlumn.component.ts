@@ -50,7 +50,7 @@ export class ComlumnComponent implements OnInit {
   declare errorMsg: string;
 
   dataDefaultValue = {
-    width: 160,
+    width: 150,
     minWidth: 150,
 
     fontSize: 14,
