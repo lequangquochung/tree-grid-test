@@ -61,7 +61,12 @@ export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any
     id: contextMenuID.togleFilter,
     // iconCss: 'e-icons e-filter-clear',
   },
-
+  {
+    text: 'MultiSort',
+    target: contextTarget.column,
+    id: contextMenuID.multipleSort,
+    // iconCss: 'e-icons e-filter-clear',
+  },
   //----------------ROW_CONTEXT_MENU_ITEM-----------------------
 
   { text: 'AddNext', target: contextTarget.row, id: contextMenuID.addRow },
@@ -73,12 +78,6 @@ export const CONTEXT_MENU_ITEM: ContextMenuItemModel[] | ContextMenuItem[] | any
   { text: 'CutRows', target: contextTarget.row, id: contextMenuID.cutRows },
   { text: 'PasteNext', target: contextTarget.row, id: contextMenuID.pasteSibling },
   { text: 'PasteChild', target: contextTarget.row, id: contextMenuID.pasteChild },
+  { text: 'MultiSelect', target: contextTarget.row, id: contextMenuID.multiSelect, type: 'checkbox' },
   { text: 'Drag and drop', target: contextTarget.row, id: contextMenuID.dragAndDrop },
-  {
-    text: 'MultiSelect',
-    target: contextTarget.row,
-    id: contextMenuID.multiSelect,
-    type: 'checkbox',
-    // iconCss: 'e-icons e-filter-clear',
-  },
 ];
