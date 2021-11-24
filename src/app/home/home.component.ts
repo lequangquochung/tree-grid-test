@@ -17,7 +17,7 @@ import {
   Selection,
   TreeGrid,
 } from '@syncfusion/ej2-treegrid';
-import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript';
+import { collapseTextChangeRangesAcrossMultipleVersions, isSpreadAssignment } from 'typescript';
 import { ColumnEditorComponent } from './comlumn/column-editor/column-editor.component';
 import { ComlumnComponent } from './comlumn/comlumn.component';
 import { contextMenuID, contextTarget, CONTEXT_MENU_ITEM } from './constants/context-menu-item';
@@ -133,6 +133,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     this.data = sampleData;
     this.dataWithoutNested = [...DataUtils.getFullRecordWithoutNested(this.data)];
+    console.log(this.columns);
   }
 
   public uniqueIdRule: (args: { [key: string]: string }) => boolean = (args: { [key: string]: string }) => {
@@ -357,6 +358,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     if (contextID === contextMenuID.editColumn) {
       this.openEditColumnModal(args.column);
+      // console.log(this.columns)
     }
 
     if (contextID === contextMenuID.deleteColumn) {
@@ -413,6 +415,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     modalRef.componentInstance.closeModal.subscribe(async (resColumn: any) => {
       if (resColumn) {
         const targetColumn = this.dataColumn.find((col) => col.field == column.field);
+        console.log(targetColumn);
         const oldDataType = targetColumn.type;
         if (resColumn.type != oldDataType) {
           const parseDataArgs = {
@@ -442,7 +445,18 @@ export class HomeComponent implements OnInit, AfterViewInit {
         if (resColumn.type == 'dropdown') {
           this.changeDataWithDropDownItemChange(resColumn.oldDropDownItem, column.field);
         }
-
+        // check freeze column before edit
+        if (this.frozenColumns.length > 0) {
+          this.isDropMode = false;
+          let colFz = this.frozenColumns.find((col) => col.field == targetColumn.field);
+          if (colFz) {
+            Object.keys(targetColumn).forEach((key) => {
+              colFz[key] = targetColumn[key];
+            });
+          }
+        } else {
+          this.isDropMode = true;
+        }
         //freecolumn might cause error
         this.columns = this.frozenColumns.concat(
           this.dataColumn.filter(
@@ -450,11 +464,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
           )
         );
 
-        if (this.frozenColumns.length > 0) {
-          this.isDropMode = false;
-        } else {
-          this.isDropMode = true;
-        }
+        // if (this.frozenColumns.length > 0) {
+        //   this.isDropMode = false;
+        // } else {
+        //   this.isDropMode = true;
+        // }
 
         this.setColumnCssProperties(targetColumn);
         this.isLoading = true;
@@ -524,6 +538,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.isLoading = false;
     });
+    console.log(this.frozenColumns);
   }
 
   openAddRowModal(args: any, isPasteAsChild: boolean) {
@@ -792,7 +807,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   actionBegin(args: any): void {
-    console.log(args);
+    // console.log(args);
     if (args.requestType == 'filtering' || args.requestType == 'infiniteScroll') {
       if (args.requestType == 'infiniteScroll') {
         this.loadedRecordCount += this.pageSettings.pageSize;
