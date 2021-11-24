@@ -173,7 +173,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       }
       args.element?.classList.remove('showPasteOption');
     }
-
+    // check multi-select
     if (this.toggleMultilSelect) {
       args.element?.classList.remove('multil-select-on');
       args.element?.classList.add('multil-select-off');
@@ -181,13 +181,21 @@ export class HomeComponent implements OnInit, AfterViewInit {
       args.element?.classList.add('multil-select-on');
       args.element?.classList.remove('multil-select-off');
     }
-
+    // check filter
     if (this.toggleFilter) {
       args.element?.classList.remove('filter-on');
       args.element?.classList.add('filter-off');
     } else {
       args.element?.classList.add('filter-on');
       args.element?.classList.remove('filter-off');
+    }
+    // check multi-sort
+    if (!this.toggleMultiSorting) {
+      args.element?.classList.add('multisort-on');
+      args.element?.classList.remove('multisort-off');
+    } else {
+      args.element?.classList.remove('multisort-on');
+      args.element?.classList.add('multisort-off');
     }
   }
 
@@ -391,7 +399,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     if (args.item.id === contextMenuID.multipleSort) {
       // this.openColumnModal(args.item.id, this.columns, this.columnChecked);
-      // this.toggleMultiSorting = !this.toggleMultiSorting;
+      this.toggleMultiSorting = !this.toggleMultiSorting;
       // _contextMenuItems[_contextMenuIndex].text = `Mutiple Sorting ${this.toggleMultiSorting ? `Off` : `On`}`;
       // this.contextMenuItems = [..._contextMenuItems];
     }

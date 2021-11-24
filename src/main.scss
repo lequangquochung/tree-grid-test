@@ -329,3 +329,29 @@ html {
     color: #757575;
   }
 }
+
+// multi-sort
+#_gridcontrol_cmenu.multisort-on {
+  #mutiple-sorting::before {
+    font-family: "Font Awesome 5 Free";
+    // left: 1.1rem;
+    content: "\f0c8";
+    display: inline-block;
+    padding-right: 3px;
+    vertical-align: middle;
+    font-weight: 400;
+    color: #757575;
+  }
+}
+#_gridcontrol_cmenu.multisort-off {
+  #mutiple-sorting::before {
+    font-family: "Font Awesome 5 Free";
+    // left: 1.1rem;
+    content: "\f14a";
+    display: inline-block;
+    padding-right: 3px;
+    vertical-align: middle;
+    font-weight: 400;
+    color: #757575;
+  }
+}
