@@ -372,18 +372,20 @@ export class HomeComponent implements OnInit, AfterViewInit {
         return;
       }
 
-      const lastScrollPosition = this.getLastScrollPosition();
-      this.dataColumn = [...this.columns];
-      this.dataColumn = this.dataColumn.filter((column: any) => column.field !== args.column.field);
-      this.columns = [...this.dataColumn];
+      if (confirm('Are you sure you want to delete ' + args.column.headerText + ' ?')) {
+        const lastScrollPosition = this.getLastScrollPosition();
+        this.dataColumn = [...this.columns];
+        this.dataColumn = this.dataColumn.filter((column: any) => column.field !== args.column.field);
+        this.columns = [...this.dataColumn];
 
-      this.isLoading = true;
-      this.grid?.refresh();
-      setTimeout(() => {
-        this.isLoading = false;
+        this.isLoading = true;
+        this.grid?.refresh();
+        setTimeout(() => {
+          this.isLoading = false;
+          this.scrollBackToLastPosition(lastScrollPosition);
+        }, 100);
         this.scrollBackToLastPosition(lastScrollPosition);
-      }, 100);
-      this.scrollBackToLastPosition(lastScrollPosition);
+      }
     }
 
     if (contextID === contextMenuID.freezeColumn || contextID === contextMenuID.freezeColumnOff) {
