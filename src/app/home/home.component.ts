@@ -6,6 +6,7 @@ import {
   SortSettingsModel,
   ToolbarItems,
   TreeGridComponent,
+  VirtualScrollService,
 } from '@syncfusion/ej2-angular-treegrid';
 import {
   Freeze,
@@ -32,6 +33,7 @@ import { DataUtils } from './utils/data.utils';
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
+  providers: [VirtualScrollService],
 })
 export class HomeComponent implements OnInit, AfterViewInit {
   @ViewChild('grid') declare grid: TreeGridComponent;
@@ -76,6 +78,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   public columnChecked: any[] = [];
 
+  public declare isVirtualization: Boolean;
+  public declare isInfiniteScrolling: Boolean;
+
   constructor(public modalService: NgbModal) {
     this.filterSettings = { type: 'FilterBar', hierarchyMode: 'Parent', mode: 'Immediate' };
 
@@ -83,6 +88,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.pageSettings = { pageSize: 50 };
     this.loadedRecordCount = this.pageSettings.pageSize;
     this.infiniteOptions = { initialBlocks: 1 };
+    this.isInfiniteScrolling = false;
+
+    // Virtualization scroll
+    this.isVirtualization = true;
 
     // this.frozenColumnIndex = 0;
     this.toggleMultiSorting = true;
@@ -133,7 +142,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     this.data = sampleData;
     this.dataWithoutNested = [...DataUtils.getFullRecordWithoutNested(this.data)];
-    console.log(this.columns);
   }
 
   public uniqueIdRule: (args: { [key: string]: string }) => boolean = (args: { [key: string]: string }) => {
@@ -391,6 +399,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
     if (contextID === contextMenuID.freezeColumn || contextID === contextMenuID.freezeColumnOff) {
       const lastScrollPosition = this.getLastScrollPosition();
       this.freezeColumn(args);
+      if (this.frozenColumns.length > 0) {
+        this.isInfiniteScrolling = true;
+        this.isVirtualization = false;
+      } else {
+        this.isInfiniteScrolling = false;
+        this.isVirtualization = true;
+      }
       this.scrollBackToLastPosition(lastScrollPosition);
     }
 
@@ -540,7 +555,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.isLoading = false;
     });
-    console.log(this.frozenColumns);
   }
 
   openAddRowModal(args: any, isPasteAsChild: boolean) {
@@ -809,7 +823,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   actionBegin(args: any): void {
-    // console.log(args);
+    console.log(args);
     if (args.requestType == 'filtering' || args.requestType == 'infiniteScroll') {
       if (args.requestType == 'infiniteScroll') {
         this.loadedRecordCount += this.pageSettings.pageSize;
