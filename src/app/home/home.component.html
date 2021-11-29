@@ -11,7 +11,7 @@
     [pageSettings]="pageSettings"
     [selectionSettings]="multiSelect"
     [infiniteScrollSettings]="infiniteOptions"
-    [enableInfiniteScrolling]="true"
+    [enableInfiniteScrolling]="isInfiniteScrolling"
     [allowRowDragAndDrop]="isDropMode"
     [allowReordering]="true"
     [allowSelection]="true"
@@ -29,6 +29,7 @@
     (contextMenuClick)="contextMenuClick($event)"
     (contextMenuOpen)="contextMenuOpen($event)"
     [showColumnChooser]="true"
+    [enableVirtualization]="isVirtualization"
   >
   </ejs-treegrid>
   <div class="loading" *ngIf="isLoading">
