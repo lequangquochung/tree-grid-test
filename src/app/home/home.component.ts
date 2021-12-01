@@ -88,10 +88,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.pageSettings = { pageSize: 50 };
     this.loadedRecordCount = this.pageSettings.pageSize;
     this.infiniteOptions = { initialBlocks: 1 };
-    this.isInfiniteScrolling = true;
+    this.isInfiniteScrolling = false;
 
     // Virtualization scroll
-    this.isVirtualization = false;
+    this.isVirtualization = true;
 
     // this.frozenColumnIndex = 0;
     this.toggleMultiSorting = true;
