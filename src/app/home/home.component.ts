@@ -141,6 +141,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     TreeGrid.Inject(Freeze);
 
     this.data = sampleData;
+
     this.dataWithoutNested = [...DataUtils.getFullRecordWithoutNested(this.data)];
   }
 
@@ -824,6 +825,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   actionBegin(args: any): void {
     console.log(args);
+    console.log(this.data.length);
     if (args.requestType == 'filtering' || args.requestType == 'infiniteScroll') {
       if (args.requestType == 'infiniteScroll') {
         this.loadedRecordCount += this.pageSettings.pageSize;
