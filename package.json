@@ -37,6 +37,7 @@
     "@syncfusion/ej2-angular-dropdowns": "^19.2.62",
     "@syncfusion/ej2-angular-grids": "^19.2.62",
     "@syncfusion/ej2-angular-inputs": "^19.3.44",
+    "@syncfusion/ej2-angular-navigations": "^19.3.46",
     "@syncfusion/ej2-angular-treegrid": "^19.2.60",
     "bootstrap": "^5.0.2",
     "moment": "^2.29.1",

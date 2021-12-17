@@ -62,3 +62,4 @@ Thumbs.db
 
 # Logs
 package-lock.json
+.vscode/launch.json
